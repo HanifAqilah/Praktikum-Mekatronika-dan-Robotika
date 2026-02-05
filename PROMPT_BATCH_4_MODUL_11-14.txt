@@ -1,0 +1,1911 @@
+PROMPT PRAKTIKUM MEKATRONIKA DAN ROBOTIKA - BATCH 4 (MODUL 11-14)
+ESP32-ROS2 INTEGRATION, STATE MACHINE, WEB IoT, OBSERVABILITY
+
+==============================================================================
+KONTEKS UMUM PROGRAM
+==============================================================================
+
+Batch 4 fokus pada: SYSTEM INTEGRATION LAYER + REMOTE MONITORING
+Dari ROS2 embedded (Batch 3) → IoT cloud & web interface
+
+ARSITEKTUR SISTEM 5-LAYER:
+- Layer A: Plant/Robot (Mekanik + Elektronik) — dari Batch 1
+- Layer B: Real-time Control (ESP32) — dari Batch 2
+- Layer C: Edge Compute (ROS2 Ubuntu) — dari Batch 3
+- Layer D: Otomasi Industri (optional)
+- Layer E: Webserver IoT (BATCH 4 FOCUS) ← Web, Database, Monitoring
+
+DURASI: Modul 11-14 (4-5 minggu)
+
+==============================================================================
+BATCH 4: MODUL 11-14 (SYSTEM INTEGRATION & IoT OBSERVABILITY)
+==============================================================================
+
+MODUL 11: ESP32 ↔ ROS2 BRIDGE (COMMUNICATION RELIABILITY)
+MODUL 12: STATE MACHINE & SEQUENCING (OPERATION LOGIC)
+MODUL 13: WEBSERVER IoT (REST API, DASHBOARD, DATABASE)
+MODUL 14: OBSERVABILITY & DATA ENGINEERING (MONITORING, KPI, ALARM)
+
+==============================================================================
+PREREQUISITE & INTEGRATION
+==============================================================================
+
+DARI BATCH 1-3:
+- Hardware dengan motor, sensor, firmware (Batch 1-2)
+- ROS2 robot control node (Batch 3)
+- Kinematics, trajectory planning (Batch 3)
+
+UNTUK BATCH 4:
+- Bridge firmware (ESP32) dengan ROS2 (Ubuntu)
+- Implement state machine untuk robot operation
+- Web interface untuk remote control & monitoring
+- Database untuk data logging & analysis
+
+CAPSTONE PROJECT:
+- Batch 4 provide monitoring & logging untuk capstone (AGV, Pick&Place, Production Cell)
+
+==============================================================================
+MODUL 11: ESP32 ↔ ROS2 BRIDGE (COMMUNICATION RELIABILITY)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Communication protocol design (MQTT vs micro-ROS vs serial)
+- Reliable message exchange (acknowledge, retry, timeout)
+- Data serialization (JSON, binary, protobuf)
+- Error handling & recovery
+- Latency optimization
+- Multi-device communication
+
+KONSEP UTAMA:
+1. Protocol choice: MQTT (low bandwidth, broker-based), micro-ROS (DDS native), serial (direct, simple)
+2. Message format: human-readable (JSON), compact (binary), standard (ROS message)
+3. Reliability: best-effort (fast, lossy) vs reliable (slow, guaranteed)
+4. Acknowledge & retry: ensure message received, handle timeout
+5. Serialization: encode message untuk transport (json.dumps, struct.pack, etc)
+6. Deserialization: decode message ke structure (json.loads, struct.unpack, etc)
+7. Connection state: detect disconnection, auto-reconnect
+8. Latency: measure round-trip time, optimize protocol choice
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Serial bridge implementation (ESP32 → Ubuntu)
+- MQTT broker setup & integration
+- Protocol implementation (JSON message format)
+- Message acknowledge & retry
+- Latency measurement
+- Multi-device communication (2 motor, 1 sensor)
+- Failover & recovery
+- Data integrity check (CRC)
+
+PANDUAN MATERI.MD (MODUL 11):
+
+1. DEFINISI
+   - Communication bridge: connect embedded (ESP32) dengan high-level (ROS2/Ubuntu)
+   - Protocol: rule untuk message format & exchange (define what & how)
+   - Reliability: guarantee message delivery (vs best-effort)
+
+2. KONSEP INTI
+   - MQTT: publish-subscribe protocol, lightweight, widely used IoT
+   - MQTT broker: central hub (mosquitto, HiveMQ, AWS IoT Core)
+   - MQTT topic: hierarchical name untuk message (robot/sensor/imu)
+   - QoS level: 0 (fire & forget), 1 (at least once), 2 (exactly once)
+   - Micro-ROS: ROS2 on embedded, native DDS, more heavyweight
+   - Serial communication: direct UART, simple, low latency
+   - JSON format: human-readable, verbose, but easier debug
+   - Binary format: compact, fast, but harder read
+   - CRC: check sum untuk detect corrupted message
+   - Timeout & retry: handle lost message, prevent infinite wait
+
+3. DIAGRAM & ILUSTRASI
+   - System diagram: ESP32 ↔ bridge ↔ ROS2 node ↔ application
+   - Message flow: sensor data path, command path
+   - MQTT topic hierarchy (multi-level)
+   - Message format (JSON example)
+   - Acknowledge & retry flow (timeline)
+   - State machine: connection state (disconnected, connecting, connected, error)
+   - Latency timeline: send → transport → receive → processing
+
+4. CONTOH KASUS INDUSTRI
+   - Industrial robot: MQTT untuk sensor data, reliable delivery
+   - Smart factory: 100+ device communicate via MQTT broker, scale well
+   - AGV fleet: multiple robot publish position topic, central station subscribe
+
+5. RINGKASAN
+   - MQTT simple, reliable, widely adopted untuk IoT
+   - Serial direct, low latency, but lower capacity
+   - Message format choice critical untuk latency & bandwidth
+   - Acknowledgement & timeout essential untuk robust system
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 11)
+   Point yang HARUS dijelaskan:
+   - Communication challenge: ESP32 (firmware) ↔ ROS2 (Ubuntu) di protokol berbeda
+   - Protocol selection: MQTT / micro-ROS / serial, trade-off analysis
+   - Message format design: JSON vs binary (example both)
+   - MQTT setup: install broker, configure topic hierarchy
+   - Serial communication: baud rate setting, cable connection
+   - Bridge architecture: firmware side (publish sensor), Ubuntu side (subscribe & control)
+   - Acknowledge & retry mechanism: how ensure message delivered?
+   - Error handling: timeout, disconnection detection, auto-reconnect
+   - Latency measurement: timing plot, bottleneck identification
+   - Security (optional): encryption, authentication untuk sensitive data
+   - Troubleshooting: message not arriving, slow latency (debug method)
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 11):
+
+1. TUJUAN PRAKTIKUM
+   - Select communication protocol
+   - Design message format (JSON/binary)
+   - Implement firmware publisher (sensor data)
+   - Implement Ubuntu subscriber (receive & process)
+   - Message acknowledge & retry
+   - Connection reliability test
+   - Latency measurement
+   - Multi-device communication test
+   - Error recovery test
+
+2. ALAT & BAHAN
+   - ESP32 dengan firmware (dari Batch 2)
+   - Ubuntu dengan ROS2
+   - MQTT broker (mosquitto)
+   - Serial cable (USB to UART)
+   - Network connection (if using MQTT)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: PROTOCOL SELECTION & DESIGN
+   - Compare 3 protocol option: MQTT, micro-ROS, serial
+   - Create comparison table (latency, bandwidth, complexity, cost)
+   - Select one untuk implement
+   - Design message format: identify field (sensor_id, value, timestamp)
+   
+   Example message (JSON):
+   ```json
+   {
+     "type": "sensor_data",
+     "sensor_id": 1,
+     "sensor_type": "imu",
+     "timestamp_ms": 1234567890,
+     "data": {
+       "accel_x": 9.81,
+       "accel_y": 0.0,
+       "accel_z": 0.0
+     },
+     "seq": 42,
+     "crc": "a1b2"
+   }
+   ```
+   
+   Deliverable: Protocol comparison table, message format spec, selection justification
+   
+   ---
+   
+   PERCOBAAN 2: MQTT SETUP & FIRMWARE PUBLISH
+   - Install MQTT broker: sudo apt install mosquitto mosquitto-clients
+   - Firmware change: publish sensor data to MQTT topic
+   
+   Firmware code (Arduino/PlatformIO):
+   ```cpp
+   #include <WiFi.h>
+   #include <PubSubClient.h>
+   #include <ArduinoJson.h>
+   
+   WiFiClient espClient;
+   PubSubClient client(espClient);
+   
+   void setup() {
+       WiFi.begin(ssid, password);
+       client.setServer(mqtt_server, 1883);
+       client.setCallback(mqtt_callback);
+   }
+   
+   void loop() {
+       if (!client.connected()) {
+           reconnect();
+       }
+       client.loop();
+       
+       if (should_publish()) {
+           // Read sensor
+           float accel_x = read_accelerometer();
+           
+           // Create JSON message
+           StaticJsonDocument<200> doc;
+           doc["type"] = "sensor_data";
+           doc["sensor_id"] = 1;
+           doc["timestamp_ms"] = millis();
+           doc["data"]["accel_x"] = accel_x;
+           doc["seq"] = seq_num++;
+           
+           // Serialize & publish
+           String message;
+           serializeJson(doc, message);
+           client.publish("robot/sensor/imu", message.c_str());
+       }
+   }
+   ```
+   
+   Test:
+   ```bash
+   mosquitto_sub -h localhost -t "robot/sensor/imu"  # Listen on terminal
+   # Should see message appearing every 100ms or so
+   ```
+   
+   Deliverable: Firmware code, MQTT publish working (visible in mosquitto_sub)
+   
+   ---
+   
+   PERCOBAAN 3: ROS2 SUBSCRIBER & BRIDGE
+   - Create ROS2 node: subscribe MQTT, convert to ROS2 message
+   
+   Python code:
+   ```python
+   import rclpy
+   from rclpy.node import Node
+   import paho.mqtt.client as mqtt
+   import json
+   from sensor_msgs.msg import Imu
+   
+   class MqttBridge(Node):
+       def __init__(self):
+           super().__init__('mqtt_bridge')
+           self.publisher = self.create_publisher(Imu, '/robot/sensor/imu', 10)
+           
+           # Setup MQTT
+           self.mqtt_client = mqtt.Client()
+           self.mqtt_client.on_connect = self.on_mqtt_connect
+           self.mqtt_client.on_message = self.on_mqtt_message
+           self.mqtt_client.connect("localhost", 1883, 60)
+           self.mqtt_client.loop_start()
+       
+       def on_mqtt_connect(self, client, userdata, flags, rc):
+           self.get_logger().info(f"MQTT connected with result code {rc}")
+           client.subscribe("robot/sensor/imu")
+       
+       def on_mqtt_message(self, client, userdata, msg):
+           # Parse JSON
+           payload = json.loads(msg.payload.decode())
+           
+           # Convert to ROS2 message
+           imu_msg = Imu()
+           imu_msg.header.stamp = self.get_clock().now().to_msg()
+           imu_msg.linear_acceleration.x = payload['data']['accel_x']
+           
+           # Publish
+           self.publisher.publish(imu_msg)
+           self.get_logger().debug(f"Published IMU: {payload}")
+   ```
+   
+   Test:
+   ```bash
+   ros2 run my_robot_pkg mqtt_bridge_node
+   ros2 topic echo /robot/sensor/imu
+   ```
+   
+   Deliverable: Bridge node, message conversion working, ROS2 topic receiving data
+   
+   ---
+   
+   PERCOBAAN 4: ACKNOWLEDGE & RETRY
+   - Firmware add: ack message when command received
+   - Ubuntu ROS2: send command, wait for ack (timeout 1 second)
+   
+   Firmware ACK handling:
+   ```cpp
+   void mqtt_callback(char* topic, byte* payload, unsigned int length) {
+       // Receive command
+       StaticJsonDocument<200> doc;
+       deserializeJson(doc, payload);
+       
+       if (doc["type"] == "motor_command") {
+           int motor_id = doc["motor_id"];
+           float angle = doc["target_angle"];
+           
+           // Execute command
+           move_motor(motor_id, angle);
+           
+           // Send ACK
+           StaticJsonDocument<200> ack;
+           ack["type"] = "ack";
+           ack["seq"] = doc["seq"];
+           ack["status"] = "success";
+           String ack_msg;
+           serializeJson(ack, ack_msg);
+           client.publish("robot/ack", ack_msg.c_str());
+       }
+   }
+   ```
+   
+   ROS2 command with retry:
+   ```python
+   def send_command_with_retry(self, command_dict, max_retry=3):
+       for attempt in range(max_retry):
+           # Send command
+           seq = self.seq_counter
+           self.seq_counter += 1
+           command_dict['seq'] = seq
+           message = json.dumps(command_dict)
+           self.mqtt_client.publish("robot/command", message)
+           
+           # Wait for ACK (timeout 1 sec)
+           start_time = time.time()
+           while time.time() - start_time < 1.0:
+               if seq in self.ack_received:
+                   self.get_logger().info(f"Command {seq} acknowledged")
+                   return True
+               time.sleep(0.01)
+           
+           self.get_logger().warn(f"Command {seq} timeout, retry {attempt+1}")
+       
+       return False  # All retry failed
+   ```
+   
+   Deliverable: ACK mechanism implementation, retry working, timeout test
+   
+   ---
+   
+   PERCOBAAN 5: LATENCY MEASUREMENT
+   - Send message, measure round-trip time (send → firmware process → ACK → receive)
+   - Repeat 100 times, calculate average, max, min
+   
+   Code:
+   ```python
+   import time
+   
+   def measure_latency(self, num_samples=100):
+       latencies = []
+       for i in range(num_samples):
+           start = time.time()
+           self.send_command_with_retry({'type': 'ping', 'seq': i})
+           latency = (time.time() - start) * 1000  # Convert to ms
+           latencies.append(latency)
+       
+       avg = np.mean(latencies)
+       min_lat = np.min(latencies)
+       max_lat = np.max(latencies)
+       std = np.std(latencies)
+       
+       self.get_logger().info(f"Latency - Avg: {avg:.2f}ms, Min: {min_lat:.2f}ms, Max: {max_lat:.2f}ms, Std: {std:.2f}ms")
+       
+       return latencies
+   ```
+   
+   Data:
+   | Protocol | Avg Latency (ms) | Min (ms) | Max (ms) | Std (ms) |
+   |---|---|---|---|---|
+   | MQTT | ___ | ___ | ___ | ___ |
+   | Serial | ___ | ___ | ___ | ___ |
+   
+   Deliverable: Latency plot, statistics, protocol comparison
+   
+   ---
+   
+   PERCOBAAN 6: MULTI-DEVICE COMMUNICATION
+   - Firmware: 2 motor, 1 sensor all publish to MQTT (different topic)
+   - ROS2: subscribe all 3 topic, merge state
+   
+   Firmware (simplified):
+   ```cpp
+   // Publish motor 1 position
+   client.publish("robot/motor/1/position", String(motor1_angle).c_str());
+   // Publish motor 2 position
+   client.publish("robot/motor/2/position", String(motor2_angle).c_str());
+   // Publish sensor
+   client.publish("robot/sensor/pressure", String(pressure).c_str());
+   ```
+   
+   ROS2:
+   ```python
+   class RobotStateAggregator(Node):
+       def __init__(self):
+           super().__init__('state_aggregator')
+           self.motor1_pos = 0.0
+           self.motor2_pos = 0.0
+           self.pressure = 0.0
+           
+           self.mqtt_client.subscribe("robot/motor/1/position")
+           self.mqtt_client.subscribe("robot/motor/2/position")
+           self.mqtt_client.subscribe("robot/sensor/pressure")
+           self.mqtt_client.on_message = self.on_message
+       
+       def on_message(self, client, userdata, msg):
+           topic = msg.topic
+           value = float(msg.payload.decode())
+           
+           if topic == "robot/motor/1/position":
+               self.motor1_pos = value
+           elif topic == "robot/motor/2/position":
+               self.motor2_pos = value
+           elif topic == "robot/sensor/pressure":
+               self.pressure = value
+           
+           self.get_logger().info(f"Robot state: M1={self.motor1_pos}, M2={self.motor2_pos}, P={self.pressure}")
+   ```
+   
+   Test:
+   ```bash
+   # Firmware running, sensor/motor publish data
+   # ROS2 node receive all 3 topic, aggregate state
+   ```
+   
+   Deliverable: Multi-device setup working, state aggregation correct
+
+4. DATA PENGAMATAN
+   - Protocol selection table (latency, bandwidth, complexity)
+   - Message format specification
+   - MQTT topic list (mosquitto_sub -h localhost -v -t '#')
+   - Message log (JSON sample)
+   - ACK mechanism test result
+   - Latency measurement table & plot
+   - Multi-device communication test (all topic working)
+
+5. ANALISIS
+   - Protocol choice suitable untuk application?
+   - Message format readable & compact balance?
+   - ACK mechanism reliable (success rate 100%)?
+   - Latency acceptable (< 100ms typical)?
+   - Multi-device communication stable?
+
+6. KESIMPULAN
+   - Communication bridge critical untuk embedded ↔ high-level integration
+   - MQTT reliable, simple protocol untuk this application
+   - Acknowledge & retry ensure robust delivery
+   - Latency consider untuk real-time control requirement
+
+---
+
+PANDUAN PROJECT.MD (MODUL 11):
+
+JUDUL: "ROBUST ROBOT COMMUNICATION SYSTEM WITH ERROR HANDLING"
+
+SPESIFIKASI:
+- Select & implement communication protocol (MQTT recommended)
+- Message format design (JSON + CRC checksum)
+- Bidirectional communication: firmware publish sensor, ROS2 subscribe & command
+- Acknowledge & retry mechanism (guarantee delivery)
+- Connection state management (detect disconnection, auto-reconnect)
+- Latency optimization (measure & reduce)
+- Multi-device support (2+ motor, 3+ sensor)
+- Security (optional: TLS, authentication)
+- Logging & debugging tools
+- Performance test & optimization
+
+DELIVERABLE:
+1. Communication protocol specification document
+2. Message format specification (JSON schema)
+3. Firmware code (MQTT client, sensor publish, command receive)
+4. ROS2 bridge node (MQTT ↔ ROS2 conversion)
+5. State aggregator node (merge multi-device data)
+6. ACK & retry handler
+7. Connection state manager
+8. Latency measurement tool
+9. Performance test report (latency, reliability, throughput)
+10. Troubleshooting guide
+11. Code di GitHub (modular, documented)
+12. Video demo (bidirectional communication, error recovery, multi-device)
+
+BONUS:
+- Redundant communication path (2 broker failover)
+- Encryption (TLS for MQTT)
+- Custom protocol optimization (binary format)
+- High-speed variant (raw socket for low-latency)
+
+==============================================================================
+MODUL 12: STATE MACHINE & SEQUENCING (OPERATION LOGIC)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- State machine design untuk robot operation
+- Event-driven programming
+- Transition condition & guard
+- Mode switching (manual, auto, emergency)
+- Fault detection & recovery
+- Sequencing complex task (multi-step)
+
+KONSEP UTAMA:
+1. State: robot operational mode (idle, homing, moving, working, error)
+2. Event: trigger state transition (command, sensor signal, timer)
+3. Transition: move from one state to next (define condition)
+4. Guard: condition must true untuk transition execute
+5. Action: command execute saat enter/exit state atau during transition
+6. Hierarchy: sub-state untuk complex state
+7. Concurrency: parallel state (multiple independent state machine)
+8. Fault recovery: error state + recovery sequence
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Simple state machine (3-5 state)
+- Event queue & processing
+- Transition table definition
+- Sub-state hierarchy
+- Fault detection & recovery
+- Multi-state machine coordination
+- Test state transition coverage
+- State machine visualization
+
+PANDUAN MATERI.MD (MODUL 12):
+
+1. DEFINISI
+   - State machine: abstract machine dengan finite state (define behavior)
+   - Event: signal dapat trigger state change
+   - Transition: rule untuk move state (if condition, then next state)
+
+2. KONSEP INTI
+   - Moore machine: output depend current state only
+   - Mealy machine: output depend current state AND event
+   - Hierarchical state: state contain sub-state (better organize complex behavior)
+   - Event queue: store event, process sequential order
+   - Guard condition: must satisfy untuk transition execute
+   - Entry action: execute saat enter state
+   - Exit action: execute saat leave state
+   - Internal transition: handle event without state change
+
+3. DIAGRAM & ILUSTRASI
+   - State diagram (circle = state, arrow = transition, label = event/condition)
+   - Example: robot state machine (idle → homing → ready → moving → working → idle)
+   - Transition table: state, event, condition, next_state, action
+   - Event queue: FIFO store event
+   - Hierarchical state: parent state contain child state
+   - Fault recovery: error state + recovery sequence
+
+4. CONTOH KASUS INDUSTRI
+   - Robot arm: state sequence (idle → home → move → work → idle)
+   - Safety system: state (normal → warning → error), fault recovery
+   - AGV: state (idle → navigate → approach → dock → charge → ready)
+   - Production cell: state coordination multiple machine
+
+5. RINGKASAN
+   - State machine formalize operation logic, easier understand & verify
+   - Hierarchical state reduce complexity untuk large system
+   - Event-driven architecture decouple component, improve maintainability
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 12)
+   Point yang HARUS dijelaskan:
+   - State machine concept: state, event, transition
+   - Robot operation state: idle, homing, ready, moving, working, error
+   - Transition diagram: example state diagram dengan 6-8 state
+   - Transition guard: condition untuk transition execute (sensor ready? motor enable?)
+   - Action execute: enter state → execute command (start homing? enable motor?)
+   - Error recovery: error state detected → run recovery procedure
+   - Sub-state: homing state contain sub-state (move left → check sensor → move right)
+   - Event queue: asynchronous event handling, prevent race condition
+   - Implementation: code structure (state class, transition logic)
+   - Testing: verify all state transition, edge case (double command, shutdown during move)
+   - Visualization: state diagram image, state transition flow
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 12):
+
+1. TUJUAN PRAKTIKUM
+   - Design state machine untuk robot application
+   - Create transition table
+   - Implement state class & transition logic
+   - Implement event queue
+   - Guard condition & entry/exit action
+   - Hierarchical state (sub-state)
+   - Test all state transition
+   - Error recovery sequence
+   - State machine visualization
+
+2. ALAT & BAHAN
+   - Python (for state machine simulation)
+   - Firmware (for state machine implementation)
+   - Robot hardware (for real-world testing)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: STATE MACHINE DESIGN
+   - Define operation state: idle, homing, ready, moving, working, error
+   - Define event: start_command, reached_home, motor_enable, fault_detected
+   - Draw transition diagram
+   - Create transition table
+   
+   Transition table example:
+   | Current State | Event | Guard | Action | Next State |
+   |---|---|---|---|---|
+   | Idle | start_command | motor_enabled=true | publish ready signal | Homing |
+   | Homing | reached_home | all joint homed | disable move command | Ready |
+   | Ready | move_command | path_clear=true | send motor command | Moving |
+   | Moving | reached_target | path_check=ok | - | Working |
+   | Working | task_complete | - | log result | Idle |
+   | Any | fault_detected | - | stop motor, alarm | Error |
+   | Error | reset_command | fault_clear=true | reset state | Idle |
+   
+   Deliverable: State diagram image, transition table
+   
+   ---
+   
+   PERCOBAAN 2: STATE MACHINE IMPLEMENTATION
+   - Create base State class
+   - Implement state subclass (IdleState, HomingState, etc)
+   - Implement state machine controller
+   
+   Python code:
+   ```python
+   from abc import ABC, abstractmethod
+   from enum import Enum
+   from queue import Queue
+   import time
+   
+   class StateType(Enum):
+       IDLE = 1
+       HOMING = 2
+       READY = 3
+       MOVING = 4
+       WORKING = 5
+       ERROR = 6
+   
+   class State(ABC):
+       def __init__(self, state_type):
+           self.type = state_type
+       
+       def on_enter(self):
+           """Execute when entering state"""
+           pass
+       
+       def on_exit(self):
+           """Execute when leaving state"""
+           pass
+       
+       def handle_event(self, event):
+           """Handle event in this state"""
+           return None  # return next state or None if no transition
+   
+   class IdleState(State):
+       def __init__(self):
+           super().__init__(StateType.IDLE)
+       
+       def on_enter(self):
+           print("Entering IDLE state")
+           # Disable motors, stop publishing
+       
+       def handle_event(self, event):
+           if event['type'] == 'start_command':
+               if event.get('motor_enabled', False):
+                   return StateType.HOMING
+           return None
+   
+   class HomingState(State):
+       def __init__(self):
+           super().__init__(StateType.HOMING)
+       
+       def on_enter(self):
+           print("Entering HOMING state")
+           # Execute homing sequence
+       
+       def handle_event(self, event):
+           if event['type'] == 'reached_home':
+               return StateType.READY
+           elif event['type'] == 'fault_detected':
+               return StateType.ERROR
+           return None
+   
+   class StateMachine:
+       def __init__(self):
+           self.states = {
+               StateType.IDLE: IdleState(),
+               StateType.HOMING: HomingState(),
+               # ... other state ...
+           }
+           self.current_state = self.states[StateType.IDLE]
+           self.event_queue = Queue()
+           self.running = True
+       
+       def post_event(self, event):
+           """Add event to queue"""
+           self.event_queue.put(event)
+       
+       def process_events(self):
+           """Process one event from queue"""
+           if not self.event_queue.empty():
+               event = self.event_queue.get()
+               next_state_type = self.current_state.handle_event(event)
+               
+               if next_state_type:
+                   self.transition_to(next_state_type)
+       
+       def transition_to(self, next_state_type):
+           """Execute state transition"""
+           self.current_state.on_exit()
+           self.current_state = self.states[next_state_type]
+           self.current_state.on_enter()
+           print(f"Transitioned to {next_state_type}")
+       
+       def run(self):
+           """Main loop"""
+           while self.running:
+               self.process_events()
+               time.sleep(0.01)  # 100 Hz
+   ```
+   
+   Deliverable: State class implementation, state machine controller, compilation success
+   
+   ---
+   
+   PERCOBAAN 3: EVENT HANDLING & TRANSITION TEST
+   - Create test sequence: start → homing → ready → move → work → idle
+   - Verify state transition correct, action execute
+   
+   Test code:
+   ```python
+   def test_state_transition():
+       sm = StateMachine()
+       
+       # Test 1: Idle → Homing
+       sm.post_event({'type': 'start_command', 'motor_enabled': True})
+       sm.process_events()
+       assert sm.current_state.type == StateType.HOMING
+       print("✓ Test 1: start command transition ok")
+       
+       # Test 2: Homing → Ready
+       sm.post_event({'type': 'reached_home'})
+       sm.process_events()
+       assert sm.current_state.type == StateType.READY
+       print("✓ Test 2: homing finish transition ok")
+       
+       # Test 3: Ready → Moving
+       sm.post_event({'type': 'move_command', 'path_clear': True})
+       sm.process_events()
+       assert sm.current_state.type == StateType.MOVING
+       print("✓ Test 3: move command transition ok")
+       
+       # Test 4: Error recovery
+       sm.post_event({'type': 'fault_detected'})
+       sm.process_events()
+       assert sm.current_state.type == StateType.ERROR
+       sm.post_event({'type': 'reset_command', 'fault_clear': True})
+       sm.process_events()
+       assert sm.current_state.type == StateType.IDLE
+       print("✓ Test 4: error recovery transition ok")
+   ```
+   
+   Deliverable: Test code, all transition test pass, test report
+   
+   ---
+   
+   PERCOBAAN 4: GUARD CONDITION & ACTION
+   - Add guard condition: transition only if condition true
+   - Add action: execute on_enter, on_exit
+   
+   Enhanced code:
+   ```python
+   class GuardedTransition:
+       def __init__(self, event_type, condition, next_state, action=None):
+           self.event_type = event_type
+           self.condition = condition  # Lambda function, return True/False
+           self.next_state = next_state
+           self.action = action  # Function to execute during transition
+   
+   class EnhancedState(State):
+       def __init__(self, state_type):
+           super().__init__(state_type)
+           self.transitions = []
+       
+       def add_transition(self, event_type, condition, next_state, action=None):
+           self.transitions.append(GuardedTransition(event_type, condition, next_state, action))
+       
+       def handle_event(self, event, context):
+           for trans in self.transitions:
+               if event['type'] == trans.event_type:
+                   if trans.condition(context):  # Check guard
+                       if trans.action:
+                           trans.action(context)  # Execute action
+                       return trans.next_state
+           return None
+   ```
+   
+   Example usage:
+   ```python
+   ready_state = EnhancedState(StateType.READY)
+   ready_state.add_transition(
+       event_type='move_command',
+       condition=lambda ctx: ctx['path_clear'] and ctx['motor_enabled'],
+       next_state=StateType.MOVING,
+       action=lambda ctx: print("Executing move sequence")
+   )
+   ```
+   
+   Deliverable: Guard condition implementation, action execute verified
+   
+   ---
+   
+   PERCOBAAN 5: HIERARCHICAL STATE
+   - Moving state contain sub-state: trajectory_init → trajectory_execute → trajectory_finish
+   - Show example complex state decompose
+   
+   Code:
+   ```python
+   class SubStateMachine:
+       def __init__(self, parent_state_type):
+           self.parent = parent_state_type
+           self.states = {}
+           self.current_sub_state = None
+       
+       def add_state(self, state_type, state_obj):
+           self.states[state_type] = state_obj
+       
+       def process_event(self, event):
+           if self.current_sub_state:
+               next_state = self.current_sub_state.handle_event(event)
+               if next_state:
+                   self.current_sub_state = self.states[next_state]
+   
+   class MovingState(State):
+       def __init__(self):
+           super().__init__(StateType.MOVING)
+           self.sub_sm = SubStateMachine(StateType.MOVING)
+           # Define sub-state...
+       
+       def handle_event(self, event):
+           # Process event in sub-state
+           next_sub = self.sub_sm.process_event(event)
+           
+           # Check if reach final sub-state (trajectory finish)
+           if next_sub == None and self.sub_sm.current_sub_state == FinalSubState:
+               return StateType.WORKING  # Transition out of Moving
+           return None
+   ```
+   
+   Deliverable: Hierarchical state implementation, sub-state transition verified
+
+4. DATA PENGAMATAN
+   - State diagram & transition table
+   - Test sequence log (state change record)
+   - State transition timing (time in each state)
+   - Event queue log (event process order)
+   - Error recovery sequence test
+
+5. ANALISIS
+   - All transition test pass?
+   - Guard condition working correctly?
+   - Action execute at correct time (enter/exit)?
+   - Hierarchical state reduce complexity?
+   - Edge case handled (multiple event, rapid transition)?
+
+6. KESIMPULAN
+   - State machine formalize operation logic, easier design & verify
+   - Event queue prevent race condition
+   - Hierarchical state useful untuk complex behavior
+   - Test coverage critical untuk state machine correctness
+
+---
+
+PANDUAN PROJECT.MD (MODUL 12):
+
+JUDUL: "ROBOT OPERATION STATE MACHINE & TASK SEQUENCING"
+
+SPESIFIKASI:
+- Design complete state machine untuk robot operation (8-12 state)
+- Support manual & automatic mode
+- Error detection & recovery sequence
+- Sub-state hierarchy untuk complex operation
+- Event-driven architecture dengan queue
+- Guard condition untuk safety (prevent unsafe transition)
+- Action: start motor, stop motor, log event, publish status
+- State persistence (save/restore state)
+- Comprehensive testing (all transition, edge case)
+- Visualization & monitoring
+
+DELIVERABLE:
+1. State machine design document (with diagram)
+2. Transition table (all state, event, guard, action)
+3. State class implementation (base + all state subclass)
+4. State machine controller
+5. Event queue & handler
+6. Guard condition checker
+7. Action executor
+8. Error recovery procedure
+9. Test suite (all transition, guard condition, error recovery)
+10. State visualization tool (show current state, transition log)
+11. Performance test (event latency, state change time)
+12. Documentation & user guide
+13. Code di GitHub (modular, well-tested)
+14. Video demo (state transition, error recovery, mode switching)
+
+BONUS:
+- Time-based transition (timer state, timeout recovery)
+- Learning-based state machine (AI optimize transition)
+- Distributed state machine (coordinate multiple robot)
+- Formal verification (prove state machine correctness)
+
+==============================================================================
+MODUL 13: WEBSERVER IoT (REST API, DASHBOARD, DATABASE)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Web framework (Flask/FastAPI) setup
+- REST API design & implementation
+- WebSocket untuk real-time communication
+- Database design (PostgreSQL atau SQLite)
+- Web dashboard design (HTML/CSS/JavaScript)
+- Authentication & authorization
+- API documentation (OpenAPI/Swagger)
+
+KONSEP UTAMA:
+1. REST API: stateless, HTTP method (GET/POST/PUT/DELETE), JSON response
+2. Endpoint: URL path untuk specific resource (/api/robot/status, /api/motor/1/position)
+3. Status code: 200 OK, 400 Bad Request, 404 Not Found, 500 Server Error
+4. Authentication: API key atau JWT token
+5. WebSocket: bidirectional, persistent connection (real-time update)
+6. Database: store robot state history, sensor log, command log
+7. Dashboard: visualize robot state, control interface, history plot
+8. CORS: Cross-Origin Resource Sharing (allow web browser request)
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Flask/FastAPI web server setup
+- REST API untuk robot status, motor control, sensor read
+- WebSocket untuk real-time sensor data
+- Database schema design
+- Simple CRUD operation (Create, Read, Update, Delete)
+- Web dashboard (HTML/CSS/JS)
+- Graph/chart untuk sensor history
+- Authentication (API key)
+- API documentation (Swagger UI)
+
+PANDUAN MATERI.MD (MODUL 13):
+
+1. DEFINISI
+   - Web server: application terima HTTP request → return response
+   - REST API: architectural style untuk web service (resource-based, stateless)
+   - Dashboard: web interface untuk visualization & control
+
+2. KONSEP INTI
+   - HTTP method: GET (retrieve), POST (create), PUT (update), DELETE (remove)
+   - URL path: /api/v1/robot/status, /api/v1/motor/1/position
+   - JSON: lightweight data format (key-value pair, array, nested object)
+   - Request body: data send ke server (POST/PUT)
+   - Response body: data server return (all method)
+   - Status code: indicate success/failure (200, 400, 404, 500)
+   - Middleware: process request/response (logging, auth, CORS)
+   - Database ORM: abstract database query (SQLAlchemy)
+   - WebSocket: upgrade HTTP → persistent connection, both-way message
+   - Dashboard: client-side (browser) render UI, call API, visualize data
+
+3. DIAGRAM & ILUSTRASI
+   - Request-response flow: client → server → response
+   - API endpoint list (table)
+   - REST resource hierarchy (/api/robot, /api/robot/1, /api/robot/1/motor)
+   - Database schema (table, column, relationship)
+   - Dashboard layout (component: status box, control button, history chart)
+   - WebSocket message flow (client ↔ server, update real-time)
+   - Authentication flow (send API key, server validate)
+
+4. CONTOH KASUS INDUSTRI
+   - Robot cloud platform: REST API untuk control 100+ robot, web dashboard untuk monitoring
+   - Smart factory: database log all robot action, query history, analytics
+   - Mobile app: client app call API, realtime update via WebSocket
+
+5. RINGKASAN
+   - REST API simple, stateless, widely adopted
+   - WebSocket enable real-time communication untuk dashboard
+   - Database important untuk audit trail & analysis
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 13)
+   Point yang HARUS dijelaskan:
+   - Web server architecture: framework choice (Flask/FastAPI), route definition
+   - REST API design: endpoint, method, request/response example
+   - Status code: success (200), error (400, 404, 500)
+   - Request body: JSON format example
+   - Response format: success & error response structure
+   - Database: schema design, table relationship
+   - WebSocket: real-time update mechanism (vs polling)
+   - Dashboard: HTML layout, CSS style, JavaScript interaction
+   - Authentication: API key handling, security
+   - CORS: why needed? How enable?
+   - API documentation: Swagger UI, endpoint description
+   - Error handling: input validation, database error, recovery
+   - Testing: curl command test API, browser test dashboard
+   - Deployment: web server run, accessible from other computer
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 13):
+
+1. TUJUAN PRAKTIKUM
+   - Create Flask/FastAPI web server
+   - Design & implement REST API (minimum 5 endpoint)
+   - Database schema design
+   - Simple CRUD operation
+   - WebSocket real-time update
+   - Web dashboard HTML/CSS/JS
+   - API authentication (API key)
+   - API documentation (auto-generated)
+   - Error handling & validation
+
+2. ALAT & BAHAN
+   - Python 3.10+
+   - Flask atau FastAPI
+   - SQLAlchemy (ORM)
+   - PostgreSQL atau SQLite (database)
+   - HTML/CSS/JavaScript (for dashboard)
+   - Postman atau curl (for API testing)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: FLASK WEB SERVER SETUP
+   - Create Flask app
+   - Define simple route
+   - Test with curl / browser
+   
+   Code:
+   ```python
+   from flask import Flask, jsonify
+   
+   app = Flask(__name__)
+   
+   @app.route('/api/robot/status', methods=['GET'])
+   def get_robot_status():
+       return jsonify({
+           'status': 'ok',
+           'motor_1_angle': 45.5,
+           'motor_2_angle': 90.0,
+           'timestamp': '2024-01-15T10:30:00'
+       })
+   
+   if __name__ == '__main__':
+       app.run(host='0.0.0.0', port=5000, debug=True)
+   ```
+   
+   Test:
+   ```bash
+   curl http://localhost:5000/api/robot/status
+   ```
+   
+   Deliverable: Flask app running, GET endpoint working
+   
+   ---
+   
+   PERCOBAAN 2: REST API DESIGN & IMPLEMENTATION
+   - Design API endpoint: robot status, motor control, sensor read
+   - Implement GET, POST endpoint
+   
+   API design:
+   ```
+   GET /api/robot/status → return current robot state
+   GET /api/motor/1/position → return motor 1 angle
+   POST /api/motor/1/command → move motor 1 to target angle
+   GET /api/sensor/imu → return IMU data
+   ```
+   
+   Implementation:
+   ```python
+   @app.route('/api/motor/1/command', methods=['POST'])
+   def move_motor():
+       data = request.json
+       target_angle = data.get('target_angle')
+       speed = data.get('speed', 1.0)
+       
+       # Validate input
+       if not isinstance(target_angle, (int, float)):
+           return jsonify({'error': 'Invalid target_angle'}), 400
+       
+       # Execute motor command (call ROS2 service / firmware)
+       success = move_motor_1(target_angle, speed)
+       
+       if success:
+           return jsonify({'status': 'success', 'target': target_angle}), 200
+       else:
+           return jsonify({'error': 'Motor command failed'}), 500
+   ```
+   
+   Deliverable: REST API endpoint implemented, tested with curl
+   
+   ---
+   
+   PERCOBAAN 3: DATABASE & CRUD
+   - Create database schema (robot_log table)
+   - Implement C.R.U.D operation
+   
+   Database schema (SQLAlchemy):
+   ```python
+   from flask_sqlalchemy import SQLAlchemy
+   from datetime import datetime
+   
+   db = SQLAlchemy()
+   
+   class RobotLog(db.Model):
+       __tablename__ = 'robot_log'
+       id = db.Column(db.Integer, primary_key=True)
+       timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+       event_type = db.Column(db.String(50))  # 'motor_command', 'sensor_read', 'error'
+       device_id = db.Column(db.Integer)
+       value = db.Column(db.Float)
+       description = db.Column(db.String(255))
+   
+   class MotorState(db.Model):
+       __tablename__ = 'motor_state'
+       id = db.Column(db.Integer, primary_key=True)
+       motor_id = db.Column(db.Integer, unique=True)
+       position = db.Column(db.Float)
+       speed = db.Column(db.Float)
+       last_update = db.Column(db.DateTime, default=datetime.utcnow)
+   ```
+   
+   CRUD operation:
+   ```python
+   # Create
+   @app.route('/api/log', methods=['POST'])
+   def create_log():
+       data = request.json
+       log = RobotLog(event_type=data['type'], value=data['value'])
+       db.session.add(log)
+       db.session.commit()
+       return jsonify({'id': log.id}), 201
+   
+   # Read
+   @app.route('/api/log/<int:log_id>', methods=['GET'])
+   def get_log(log_id):
+       log = RobotLog.query.get(log_id)
+       if not log:
+           return jsonify({'error': 'Not found'}), 404
+       return jsonify({'id': log.id, 'type': log.event_type, 'value': log.value})
+   
+   # Update
+   @app.route('/api/log/<int:log_id>', methods=['PUT'])
+   def update_log(log_id):
+       log = RobotLog.query.get(log_id)
+       if not log:
+           return jsonify({'error': 'Not found'}), 404
+       log.value = request.json['value']
+       db.session.commit()
+       return jsonify({'status': 'updated'})
+   
+   # Delete
+   @app.route('/api/log/<int:log_id>', methods=['DELETE'])
+   def delete_log(log_id):
+       log = RobotLog.query.get(log_id)
+       if not log:
+           return jsonify({'error': 'Not found'}), 404
+       db.session.delete(log)
+       db.session.commit()
+       return '', 204
+   ```
+   
+   Deliverable: Database schema created, CRUD operation working
+   
+   ---
+   
+   PERCOBAAN 4: WEB DASHBOARD
+   - Create simple dashboard HTML
+   - Display robot status, motor position
+   - Create control button untuk motor
+   
+   HTML template:
+   ```html
+   <!DOCTYPE html>
+   <html>
+   <head>
+       <title>Robot Dashboard</title>
+       <style>
+           body { font-family: Arial; margin: 20px; }
+           .status-box { padding: 10px; border: 1px solid #ccc; margin: 10px 0; }
+           .control { margin: 20px 0; }
+           button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+           button:hover { background: #0056b3; }
+           #status { font-weight: bold; }
+       </style>
+   </head>
+   <body>
+       <h1>Robot Control Dashboard</h1>
+       
+       <div class="status-box">
+           <h2>Robot Status</h2>
+           <div id="status">Loading...</div>
+       </div>
+       
+       <div class="control">
+           <h2>Motor Control</h2>
+           <label>Target angle (deg):</label>
+           <input type="number" id="targetAngle" value="90">
+           <label>Speed:</label>
+           <input type="number" id="speed" value="1.0" step="0.1">
+           <button onclick="moveMotor()">Move Motor 1</button>
+       </div>
+       
+       <canvas id="chart" width="400" height="200"></canvas>
+       
+       <script>
+           // Fetch robot status
+           async function updateStatus() {
+               try {
+                   const response = await fetch('/api/robot/status');
+                   const data = await response.json();
+                   document.getElementById('status').innerHTML = `
+                       Status: ${data.status}<br>
+                       Motor 1: ${data.motor_1_angle}°<br>
+                       Motor 2: ${data.motor_2_angle}°
+                   `;
+               } catch (e) {
+                   console.error('Error:', e);
+               }
+           }
+           
+           // Send motor command
+           async function moveMotor() {
+               const angle = document.getElementById('targetAngle').value;
+               const speed = document.getElementById('speed').value;
+               
+               try {
+                   const response = await fetch('/api/motor/1/command', {
+                       method: 'POST',
+                       headers: {'Content-Type': 'application/json'},
+                       body: JSON.stringify({target_angle: angle, speed: speed})
+                   });
+                   const data = await response.json();
+                   alert(JSON.stringify(data));
+               } catch (e) {
+                   console.error('Error:', e);
+               }
+           }
+           
+           // Update every 1 second
+           setInterval(updateStatus, 1000);
+           updateStatus();  // Initial call
+       </script>
+   </body>
+   </html>
+   ```
+   
+   Deliverable: Dashboard HTML, display status, control button working
+   
+   ---
+   
+   PERCOBAAN 5: WEBSOCKET REAL-TIME UPDATE
+   - Setup WebSocket server
+   - Publish sensor data real-time (dari Batch 3 ROS2 node)
+   - Dashboard subscribe WebSocket, update chart
+   
+   Code (using flask-socketio):
+   ```python
+   from flask_socketio import SocketIO, emit, join_room
+   
+   socketio = SocketIO(app)
+   
+   @socketio.on('connect')
+   def handle_connect():
+       print('Client connected')
+       emit('response', {'data': 'Connected to server'})
+   
+   @socketio.on('disconnect')
+   def handle_disconnect():
+       print('Client disconnected')
+   
+   # Background task: publish sensor data every 100ms
+   def publish_sensor_data():
+       while True:
+           # Get sensor data from ROS2 (or firmware)
+           sensor_data = get_imu_data()
+           socketio.emit('sensor_update', {
+               'timestamp': time.time(),
+               'accel_x': sensor_data['accel_x'],
+               'accel_y': sensor_data['accel_y']
+           })
+           time.sleep(0.1)
+   
+   # Start thread for publishing
+   import threading
+   thread = threading.Thread(target=publish_sensor_data, daemon=True)
+   thread.start()
+   ```
+   
+   Dashboard WebSocket client (JavaScript):
+   ```javascript
+   const socket = io();
+   const dataPoints = [];
+   
+   socket.on('sensor_update', function(data) {
+       dataPoints.push(data);
+       if (dataPoints.length > 100) {
+           dataPoints.shift();  // Keep only last 100
+       }
+       updateChart(dataPoints);
+   });
+   ```
+   
+   Deliverable: WebSocket server working, real-time chart update
+   
+   ---
+   
+   PERCOBAAN 6: API DOCUMENTATION
+   - Generate Swagger/OpenAPI documentation
+   - Create API reference document
+   
+   Using Flasgger:
+   ```python
+   from flasgger import Swagger
+   
+   swagger = Swagger(app)
+   
+   @app.route('/api/motor/1/command', methods=['POST'])
+   def move_motor():
+       """
+       Move motor 1 to target angle
+       ---
+       parameters:
+         - name: body
+           in: body
+           required: true
+           schema:
+             properties:
+               target_angle:
+                 type: number
+                 description: Target angle in degrees
+               speed:
+                 type: number
+                 description: Speed (0-1)
+       responses:
+         200:
+           description: Motor command success
+         400:
+           description: Invalid input
+       """
+       # Implementation...
+   ```
+   
+   Access documentation: http://localhost:5000/apidocs/
+   
+   Deliverable: API documentation auto-generated, visible di Swagger UI
+
+4. DATA PENGAMATAN
+   - API endpoint list & specification
+   - API response example (success & error)
+   - Database table schema
+   - Dashboard screenshot
+   - WebSocket latency test (chart update rate)
+   - API documentation (Swagger screenshot)
+
+5. ANALISIS
+   - API endpoint cover all required functionality?
+   - Response format consistent & clear?
+   - Database schema normalized?
+   - Dashboard user-friendly & responsive?
+   - WebSocket latency acceptable (< 100ms)?
+
+6. KESIMPULAN
+   - Web server enable remote monitoring & control
+   - REST API standard untuk web service
+   - Database important untuk audit trail & analysis
+   - Dashboard provide user-friendly interface
+
+---
+
+PANDUAN PROJECT.MD (MODUL 13):
+
+JUDUL: "COMPLETE WEB IoT SYSTEM FOR ROBOT MONITORING & CONTROL"
+
+SPESIFIKASI:
+- Full-stack web application (backend + frontend)
+- REST API untuk all robot function (15+ endpoint)
+- WebSocket untuk real-time sensor data
+- Database dengan 5+ table (robot, motor, sensor, log, user)
+- Web dashboard (responsive design)
+- History visualization (chart, graph)
+- User authentication (login, api key)
+- API documentation (OpenAPI/Swagger)
+- Error handling & validation
+- CORS support untuk cross-origin request
+- Deployment ready (Docker optional)
+
+DELIVERABLE:
+1. Backend code (Flask/FastAPI)
+2. Database schema (normalized, indexed)
+3. REST API implementation (full CRUD)
+4. WebSocket implementation
+5. Frontend HTML/CSS/JavaScript
+6. Authentication system
+7. API documentation (auto-generated)
+8. Error handling & validation
+9. Unit test (API endpoint)
+10. Deployment guide
+11. Code di GitHub (frontend + backend)
+12. Video demo (API testing, dashboard, real-time update)
+
+BONUS:
+- User permission system (admin, user, viewer)
+- Advanced chart (time-series, heatmap)
+- Search & filter functionality
+- Data export (CSV, Excel)
+- Mobile-responsive dashboard
+- Containerization (Docker)
+
+==============================================================================
+MODUL 14: OBSERVABILITY & DATA ENGINEERING (MONITORING, KPI, ALARM)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Time-series database (InfluxDB)
+- Data visualization (Grafana)
+- KPI definition & calculation
+- Alarm & alert system
+- Root cause analysis
+- Data pipeline & ETL
+- Performance optimization
+
+KONSEP UTAMA:
+1. Time-series data: sequence observation dengan timestamp (sensor data, event log)
+2. Time-series database: optimized untuk store & query time-series (InfluxDB, TimescaleDB)
+3. Metric: measurable value (motor temperature, energy consumption, cycle time)
+4. KPI: Key Performance Indicator (business metric: productivity, availability, efficiency)
+5. Threshold: limit value untuk trigger alarm (motor > 80°C)
+6. Alert: notification saat threshold exceed
+7. Grafana: visualization dashboard untuk time-series data
+8. ETL: Extract-Transform-Load pipeline untuk data preparation
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- InfluxDB setup & data insert
+- Grafana dashboard design
+- KPI calculation (availability, efficiency, energy)
+- Alarm rule definition & trigger
+- Time-series query & aggregation
+- Data visualization (gauge, graph, heatmap)
+- Email alert notification
+- Data retention policy
+
+PANDUAN MATERI.MD (MODUL 14):
+
+1. DEFINISI
+   - Observability: ability monitor & understand system behavior (metric + log + trace)
+   - Metric: quantitative measurement (counter, gauge, histogram)
+   - KPI: metric aligned dengan business goal
+
+2. KONSEP INTI
+   - Time-series: sequence data point, evenly spaced time (vs random access data)
+   - InfluxDB: optimized untuk time-series, fast ingest, efficient query
+   - Retention policy: automatic delete old data (keep 30 days, etc)
+   - Aggregation: combine multiple data point (average, max, min over time window)
+   - Downsampling: reduce data resolution untuk long-term storage (daily average)
+   - Grafana: open-source dashboard, connect InfluxDB query data, visualize
+   - KPI definition: business metric (robot availability = uptime / total time)
+   - Alarm rule: IF metric > threshold THEN send notification
+
+3. DIAGRAM & ILUSTRASI
+   - Data flow: sensor → InfluxDB → Grafana dashboard
+   - Time-series example: temperature over 24 hours
+   - KPI calculation: input → aggregation → KPI value
+   - Alarm rule state machine: normal → warning → alert → resolved
+   - Grafana panel type: gauge (current value), graph (trend), heatmap (2D distribution)
+   - Dashboard layout: multiple panel untuk different aspect (performance, health, cost)
+
+4. CONTOH KASUS INDUSTRI
+   - Production monitoring: track robot cycle time, alert saat delay
+   - Predictive maintenance: monitor bearing temperature, predict failure
+   - Energy optimization: monitor power consumption, reduce idle time
+   - Quality control: track defect rate, trigger alert saat exceed
+
+5. RINGKASAN
+   - Time-series database designed untuk high-volume metric data
+   - Grafana powerful untuk visualization & monitoring
+   - KPI align operation dengan business goal
+   - Alarm system proactive detect & respond issue
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 14)
+   Point yang HARUS dijelaskan:
+   - Observability importance: why monitor sistem?
+   - Time-series data: characteristic, example
+   - InfluxDB vs relational DB: difference, advantage
+   - Data insert: firmware/ROS2 node push metric ke InfluxDB
+   - InfluxQL query: SELECT, WHERE, aggregation function
+   - Grafana setup: add InfluxDB datasource, create dashboard
+   - KPI definition: business metric vs technical metric
+   - KPI calculation: example (robot availability = sum(working time) / total time)
+   - Alarm rule: threshold, action (email, webhook, notification)
+   - Alert state: normal → warning → alert → resolve
+   - Root cause analysis: when alarm trigger, how to find cause?
+   - Performance optimization: retention policy (keep recent data, archive old)
+   - Real example: robot operation monitoring (runtime, temperature, energy)
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 14):
+
+1. TUJUAN PRAKTIKUM
+   - Install & configure InfluxDB
+   - Insert time-series data
+   - Design Grafana dashboard
+   - Calculate KPI (availability, efficiency, energy)
+   - Define alarm rule & trigger
+   - Email notification
+   - Time-series query & aggregation
+   - Performance optimization (retention policy)
+
+2. ALAT & BAHAN
+   - InfluxDB 2.0
+   - Grafana
+   - Python (for data insert script)
+   - SMTP server (for email alert)
+   - Robot system (Batch 1-3) untuk provide sensor data
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: INFLUXDB SETUP & DATA INSERT
+   - Install InfluxDB
+   - Create bucket (similar to database in relational DB)
+   - Generate API token
+   - Write Python script to insert metric
+   
+   Setup:
+   ```bash
+   # Install InfluxDB 2.0
+   sudo apt-get install influxdb2
+   sudo systemctl start influxdb
+   # Access http://localhost:8086 untuk setup
+   ```
+   
+   Python data insert:
+   ```python
+   import influxdb_client
+   from influxdb_client.client.write_api import SYNCHRONOUS
+   
+   client = influxdb_client.InfluxDBClient(url="http://localhost:8086", token="my-token", org="my-org")
+   write_api = client.write_api(write_options=SYNCHRONOUS)
+   
+   # Insert motor temperature metric
+   point = influxdb_client.Point("motor_temp") \
+       .tag("motor_id", "1") \
+       .field("temperature_c", 65.3) \
+       .time(1234567890)
+   
+   write_api.write(bucket="my-bucket", record=point)
+   ```
+   
+   Test: use influx CLI to query data
+   ```bash
+   influx query 'from(bucket: "my-bucket") |> range(start: -1h)'
+   ```
+   
+   Deliverable: InfluxDB running, data insert working, query return result
+   
+   ---
+   
+   PERCOBAAN 2: TIME-SERIES QUERY & AGGREGATION
+   - Query motor temperature data
+   - Aggregation: average, max, min per hour
+   - Downsample: 1-minute data → 10-minute data
+   
+   Flux query (InfluxDB query language):
+   ```flux
+   from(bucket: "my-bucket")
+     |> range(start: -24h)
+     |> filter(fn: (r) => r["_measurement"] == "motor_temp")
+     |> filter(fn: (r) => r["motor_id"] == "1")
+     |> aggregateWindow(every: 1h, fn: mean)  // Average every hour
+   ```
+   
+   Downsample query:
+   ```flux
+   from(bucket: "my-bucket")
+     |> range(start: -30d)
+     |> filter(fn: (r) => r["_measurement"] == "motor_temp")
+     |> aggregateWindow(every: 10m, fn: mean)  // 10-minute average
+     |> keep(columns: ["_time", "_value"])
+   ```
+   
+   Deliverable: Query result returned, aggregation correct
+   
+   ---
+   
+   PERCOBAAN 3: GRAFANA DASHBOARD
+   - Add InfluxDB datasource
+   - Create dashboard dengan 4 panel: gauge, graph, stat, heatmap
+   
+   Grafana setup:
+   - Add datasource: http://localhost:8086 (InfluxDB)
+   - Create dashboard
+   - Add panel 1: Gauge (current motor temperature)
+   - Add panel 2: Graph (temperature trend 24h)
+   - Add panel 3: Stat (max temperature today)
+   - Add panel 4: Table (top 10 event log)
+   
+   Each panel:
+   - Select metric
+   - Write Flux query
+   - Select visualization type
+   - Configure scale, color, threshold
+   
+   Deliverable: Grafana dashboard created, 4 panel visible, query result displayed
+   
+   ---
+   
+   PERCOBAAN 4: KPI DEFINITION & CALCULATION
+   - Define 3 KPI: robot availability, cycle time average, energy efficiency
+   - Calculate KPI per day, per week
+   - Store KPI di InfluxDB
+   
+   KPI 1: Robot availability
+   ```
+   Availability = sum(uptime) / total_time × 100%
+   
+   Calculation:
+   - Get all "robot_state" metric
+   - Filter state='running' → sum duration
+   - Total duration = 24 hours
+   - Availability = running_time / 24h
+   ```
+   
+   KPI 2: Cycle time average
+   ```
+   CycleTime = (task_end_time - task_start_time)
+   AvgCycleTime = sum(cycle_time) / number_of_cycle
+   ```
+   
+   KPI 3: Energy efficiency
+   ```
+   Energy_per_cycle = total_energy / number_of_cycle
+   ```
+   
+   Python script to calculate & store KPI:
+   ```python
+   from influxdb_client import InfluxDBClient
+   from datetime import datetime, timedelta
+   
+   def calculate_kpi_availability():
+       # Query running time
+       query = '''
+       from(bucket: "my-bucket")
+         |> range(start: -1d)
+         |> filter(fn: (r) => r["_measurement"] == "robot_state")
+         |> filter(fn: (r) => r["state"] == "running")
+         |> aggregateWindow(every: 1d, fn: sum)
+       '''
+       result = client.query_api().query(org="my-org", query=query)
+       
+       running_time = 0
+       for table in result:
+           for record in table.records:
+               running_time = record["_value"]
+       
+       availability = (running_time / (24*3600)) * 100  # Assume 24h = total
+       
+       # Store KPI
+       point = influxdb_client.Point("kpi_availability") \
+           .field("percentage", availability) \
+           .time(datetime.utcnow())
+       
+       write_api.write(bucket="my-bucket", record=point)
+       
+       return availability
+   ```
+   
+   Deliverable: KPI calculation working, stored di InfluxDB, visible di Grafana
+   
+   ---
+   
+   PERCOBAAN 5: ALARM RULE & ALERT
+   - Define alarm: IF motor_temp > 80°C THEN send email
+   - Test alarm trigger
+   - Configure email notification
+   
+   Alarm rule definition (manual configuration di Grafana atau Python):
+   ```python
+   # Alarm rule: motor temperature exceed 80°C
+   rule = {
+       'name': 'Motor Temperature Alert',
+       'metric': 'motor_temp',
+       'threshold': 80,
+       'comparison': '>',
+       'duration': '5m',  # Exceed for 5 minute before alert
+       'action': 'send_email',
+       'email_to': 'operator@example.com'
+   }
+   ```
+   
+   Python alert handler:
+   ```python
+   import smtplib
+   from email.mime.text import MIMEText
+   
+   def send_email_alert(subject, message):
+       sender = "robot-alert@example.com"
+       receiver = "operator@example.com"
+       
+       email = MIMEText(message)
+       email['Subject'] = subject
+       email['From'] = sender
+       email['To'] = receiver
+       
+       with smtplib.SMTP('smtp.gmail.com', 587) as server:
+           server.starttls()
+           server.login(sender, password)
+           server.sendmail(sender, receiver, email.as_string())
+   
+   def check_alarm_condition(metric_value, threshold):
+       if metric_value > threshold:
+           send_email_alert(
+               'Motor Temperature Alert',
+               f'Motor temperature exceed {threshold}°C: {metric_value}°C'
+           )
+   ```
+   
+   Test alarm:
+   - Send temperature data > 80°C
+   - Check email received
+   
+   Deliverable: Alarm rule defined, email notification received
+   
+   ---
+   
+   PERCOBAAN 6: DATA RETENTION & OPTIMIZATION
+   - Define retention policy (keep 30 days, archive beyond)
+   - Test downsample effectiveness (reduce data size)
+   - Monitor storage usage
+   
+   Retention policy setup (InfluxDB 2.0):
+   ```bash
+   influx bucket update --id <bucket-id> --retention 30d
+   ```
+   
+   Downsample task (automatic):
+   ```flux
+   option task = {
+       name: "Downsample motor_temp",
+       every: 1h,
+       delay: 5m,
+   }
+   
+   from(bucket: "my-bucket")
+     |> range(start: -1h)
+     |> filter(fn: (r) => r["_measurement"] == "motor_temp")
+     |> aggregateWindow(every: 10m, fn: mean)
+     |> to(bucket: "my-bucket-downsampled", org: "my-org")
+   ```
+   
+   Storage monitor:
+   ```bash
+   du -sh /var/lib/influxdb2/  # Check disk usage
+   ```
+   
+   Deliverable: Retention policy configured, downsampling working, storage optimized
+
+4. DATA PENGAMATAN
+   - InfluxDB metric list
+   - Time-series query result
+   - KPI calculation result (availability %, cycle time, energy)
+   - Grafana dashboard screenshot
+   - Alarm log (when triggered, email sent)
+   - Storage usage statistic
+
+5. ANALISIS
+   - KPI calculation accurate?
+   - Alarm threshold appropriate (not too sensitive, not too late)?
+   - Grafana dashboard informative & easy understand?
+   - Data retention balanced between storage & history length?
+   - Email alert reliable & timely?
+
+6. KESIMPULAN
+   - Time-series database efficient untuk large-volume metric data
+   - Grafana powerful untuk visualization & monitoring
+   - KPI quantify operation health & align dengan business goal
+   - Alarm system enable proactive response issue
+
+---
+
+PANDUAN PROJECT.MD (MODUL 14):
+
+JUDUL: "COMPREHENSIVE OBSERVABILITY SYSTEM FOR ROBOT OPERATION MONITORING"
+
+SPESIFIKASI:
+- Complete observability platform (metric collection, storage, visualization)
+- InfluxDB dengan 10+ metric type (motor, sensor, energy, event)
+- Data retention & downsample policy
+- Grafana dashboard (8+ panel)
+- KPI system (5+ KPI: availability, efficiency, cost, quality, safety)
+- Alarm & alert (10+ rule, email/webhook notification)
+- Root cause analysis tool (query anomaly, find pattern)
+- ETL pipeline (data cleaning, enrichment, aggregation)
+- Performance optimization (query speed, storage efficiency)
+- Documentation & runbook
+
+DELIVERABLE:
+1. Metric schema design (measurement, tag, field)
+2. Data collection script (firmware / ROS2 node → InfluxDB)
+3. InfluxDB configuration (bucket, retention policy, downsampling)
+4. Grafana dashboard (multiple page, 20+ panel)
+5. KPI definition & calculation script
+6. Alarm rule definition & handler
+7. Email/webhook notification setup
+8. Root cause analysis query
+9. ETL pipeline (data cleaning, aggregation)
+10. Performance optimization (query tuning, storage optimization)
+11. Runbook & troubleshooting guide
+12. Documentation
+13. Code di GitHub (Python script, Grafana dashboard JSON)
+14. Video demo (metric ingestion, Grafana visualization, KPI tracking, alarm trigger)
+
+BONUS:
+- Machine learning predict anomaly (detect unusual behavior)
+- Predictive maintenance (estimate remaining useful life)
+- Automatic root cause analysis (correlation analysis)
+- Multi-tenant observability (monitor multiple robot)
+- Cost optimization recommendation
+
+==============================================================================
+TOOLS & PLATFORM (BATCH 4)
+==============================================================================
+
+WEB & BACKEND:
+- Flask atau FastAPI (web server)
+- SQLAlchemy (ORM)
+- PostgreSQL atau SQLite (database)
+- Paho MQTT (MQTT client)
+
+FRONTEND:
+- HTML/CSS/JavaScript (dashboard)
+- Chart.js atau Plotly (data visualization)
+
+TIME-SERIES & MONITORING:
+- InfluxDB (time-series database)
+- Grafana (visualization dashboard)
+- Telegraf (metric collection agent, optional)
+
+DATA PROCESSING:
+- Python (pandas, numpy untuk data pipeline)
+
+NOTIFICATION:
+- SMTP (email), Slack API, webhook
+
+DEPLOYMENT:
+- Docker (containerization)
+- Docker Compose (multi-service orchestration)
+- Nginx (reverse proxy)
+
+VERSION CONTROL:
+- Git & GitHub
+
+==============================================================================
+INTEGRATION WITH BATCH 1-3 & CAPSTONE
+==============================================================================
+
+BATCH 1-2 → BATCH 3:
+- Firmware publish sensor data & accept motor command
+
+BATCH 3 → BATCH 4:
+- ROS2 node subscribe sensor, publish to MQTT
+- MQTT bridge convert to REST API / InfluxDB metric
+- Batch 4 provide web interface & monitoring
+
+FOR CAPSTONE PROJECT:
+- Batch 4 monitoring & logging support capstone task (AGV route, pick&place cycle, production KPI)
+- Remote operator dapat monitoring capstone robot via web dashboard
+- Capstone data stored untuk post-project analysis
+
+---
+
+DEPLOYMENT STRATEGY:
+- Batch 1-2: firmware flash ke ESP32, run standalone
+- Batch 3: ROS2 node run di Ubuntu
+- Batch 4: web server run di Ubuntu sama dengan ROS2 atau separate server
+- Docker optional untuk easy deployment
+
+---
+
+TESTING & VALIDATION:
+- Unit test: each API endpoint, each Grafana query
+- Integration test: end-to-end data flow (firmware → ROS2 → InfluxDB → Grafana)
+- Load test: simulate 1000+ metric per second, check InfluxDB performance
+- User acceptance test: operator confirm KPI & alarm useful for operation
+
+==============================================================================
+ASSESSMENT NOTES
+==============================================================================
+
+BATCH 4 DELIVERABLE SUMMARY:
+- Modul 11: Communication bridge (ESP32 ↔ ROS2) dengan protocol choice, acknowledge, latency
+- Modul 12: State machine (8-12 state) dengan event queue, guard condition, error recovery
+- Modul 13: Web server (REST API 15+ endpoint, WebSocket, dashboard, database)
+- Modul 14: Observability (InfluxDB, Grafana 20+ panel, KPI, alarm system)
+
+COMPETENCY ASSESSMENT:
+- Hardware integration (Batch 1-2 firmware) ✓
+- Software architecture (ROS2 Batch 3, web Batch 4) ✓
+- Real-time system (latency, reliability) ✓
+- User interface (dashboard, control) ✓
+- Data science (KPI, anomaly detection optional) ✓
+
+For Capstone Project:
+- Batch 1-3 provide complete robot control system
+- Batch 4 provide monitoring & logging
+- Capstone demonstrate end-to-end integration + real application (AGV/Pick&Place/Production)
+
+==============================================================================
+GOOD LUCK! 🚀🤖📊
+==============================================================================

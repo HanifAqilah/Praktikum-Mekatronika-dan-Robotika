@@ -1,0 +1,1274 @@
+PROMPT PRAKTIKUM MEKATRONIKA DAN ROBOTIKA - BATCH 2 (MODUL 4-6)
+SENSOR FUSION, MOTOR & DRIVE, MOTION CONTROL
+
+==============================================================================
+KONTEKS UMUM PROGRAM
+==============================================================================
+
+Program praktikum END-TO-END sistem mekatronika & robotika.
+Batch ini fokus pada HARDWARE CONTROL: sensor fusion, motor actuation, & closed-loop control.
+
+ARSITEKTUR SISTEM 5-LAYER:
+- Layer A: Plant/Robot (Mekanik + Elektronik) ← BATCH 1 prepare
+- Layer B: Real-time Control (ESP32 embedded) ← BATCH 2 FOCUS
+- Layer C: Edge Compute (ROS2 Ubuntu)
+- Layer D: Otomasi Industri (PLC + SCADA)
+- Layer E: Webserver IoT (Monitoring)
+
+DURASI PROGRAM: 14 modul + capstone
+BATCH 2 DURATION: Modul 4-6 (3-4 minggu)
+
+==============================================================================
+BATCH 2: MODUL 4-6 (HARDWARE CONTROL)
+==============================================================================
+
+MODUL 4: SENSOR FUSION & CONDITIONING (ADVANCED)
+MODUL 5: MOTOR & DRIVE SYSTEM (INDUSTRIAL-STYLE)
+MODUL 6: MOTION CONTROL DI ESP32 (CLOSED-LOOP PID)
+
+==============================================================================
+PREREQUISITE & INTEGRATION
+==============================================================================
+
+DARI BATCH 1:
+- Modul 1: Arsitektur sistem, blok diagram, pin mapping
+- Modul 2: Safety system, E-Stop, limit switch, state machine
+- Modul 3: Power distribution, EMC, noise filtering
+
+UNTUK BATCH 2:
+- Gunakan hardware & PCB design dari Batch 1
+- Safety system dari Batch 1 masih aktif
+- Power distribution & EMC design apply untuk Batch 2
+
+UNTUK BATCH 3:
+- Batch 2 provide firmware + sensor data
+- Batch 3 implement ROS2 bridge & high-level control
+
+==============================================================================
+DELIVERABLE FORMAT (SETIAP MODUL)
+==============================================================================
+
+Modul-XX_NamaModul/
+├── Materi.md                    # Teori pembelajaran
+├── Jobsheet.md                  # Percobaan praktis (5-6 percobaan)
+├── Project.md                   # Project aplikatif
+├── Referensi.md                 # Pustaka
+│
+├── Praktikum/
+│   ├── Desain_PCB/              # EasyEDA schematic (motor driver, sensor circuit)
+│   ├── Code_Embedded/           # PlatformIO (esp32/, arduino_mega/)
+│   │   ├── main.cpp             # Entry point
+│   │   ├── config.h             # Semua parameter & pin
+│   │   ├── sensor.h/cpp         # Sensor reading & filtering
+│   │   ├── motor.h/cpp          # Motor PWM control
+│   │   ├── pid.h/cpp            # PID controller (Modul 6)
+│   │   ├── filter.h/cpp         # Sensor filter (Modul 4)
+│   │   └── fusion.h/cpp         # Sensor fusion (Modul 4)
+│   ├── output/                  # Test result, plot, data
+│   │   ├── sensor_data.csv      # Raw sensor log
+│   │   ├── motor_response.csv   # Motor step response
+│   │   ├── pid_tuning.csv       # PID tuning result
+│   │   └── plot_*.png           # Grafik matplotlib/excel
+│   └── README.md                # How to compile, upload, test
+│
+├── Data/
+│   ├── images/                  # Foto hardware setup, oscilloscope screenshot
+│   ├── videos/                  # Demo motor control, sensor response, PID tuning
+│   └── sensor_characterization/ # Datasheet extract, sensor calibration data
+│
+└── requirements.txt (Python packages untuk plot)
+
+==============================================================================
+MODUL 4: SENSOR FUSION & CONDITIONING (ADVANCED)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Implementasi sensor filtering yang robust
+- Sensor fusion (combine multiple sensor)
+- Noise vs latency trade-off
+- Sensor redundancy & voting
+
+KONSEP UTAMA:
+1. Sensor type: Encoder (position), IMU (accel/gyro), limit switch (digital), proximity
+2. Filtering: moving average, low-pass RC filter, complementary filter, Kalman filter basic
+3. Sensor fusion: combine encoder + IMU untuk robust position estimate
+4. Noise source: electrical noise, mechanical vibration, air pressure (untuk pressure sensor)
+5. Sensor redundancy: backup sensor, voting logic, fault detection
+6. Sampling rate vs latency: jangan terlalu cepat (noisy), jangan terlalu lambat (miss event)
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Sensor reading raw + noise analysis (FFT)
+- Moving average filter implementation
+- Low-pass RC filter (software digital simulation)
+- Complementary filter (fusion encoder + accelerometer)
+- Kalman filter basic untuk 1D motion
+- Sensor redundancy voting logic
+- Latency measurement
+
+PANDUAN MATERI.MD (MODUL 4):
+
+1. DEFINISI
+   - Sensor conditioning: prepare raw sensor signal untuk control logic
+   - Filtering: reduce noise tanpa delay terlalu besar
+   - Fusion: combine multiple sensor untuk estimate yang lebih robust
+   - Trade-off: filtering baik (less noise) vs control responsiveness (low latency)
+
+2. KONSEP INTI
+   - Noise source: thermal (Johnson noise), electromagnetic interference (EMI), quantization (ADC)
+   - Noise characteristic: white noise (flat spectrum), 1/f noise (low freq), impulse (spike)
+   - Sampling theorem: sampling rate minimum 2× highest frequency (Nyquist)
+   - Filter type: FIR (finite impulse response, no feedback), IIR (infinite, dengan feedback)
+   - Moving average: simple, latency = window_size × sample_time
+   - Low-pass filter: RC (analog), digital simulation (exponential moving average)
+   - Complementary filter: encoder (low drift, high noise) + accelerometer (low noise, drift)
+   - Kalman filter: optimal filter untuk linear system (predict → measure → update cycle)
+   - Redundancy: 2-out-of-3 voting (2 agree → use value, 1 outlier → discard)
+
+3. DIAGRAM & ILUSTRASI
+   - Sensor signal before/after filter (time-domain waveform)
+   - Frequency spectrum (FFT) before/after filter
+   - Filter frequency response (Bode plot: gain vs frequency)
+   - Complementary filter block diagram (encoder path + accel path + weight)
+   - Kalman filter state transition diagram (predict → observe → update)
+   - Sensor fusion architecture (3 sensor → voting logic → best estimate)
+   - Phase lag example (filter delay effect pada control)
+
+4. CONTOH KASUS INDUSTRI
+   - Robot arm: encoder noisy → complementary filter dengan accel → smooth position
+   - AGV: LiDAR + wheel encoder fusion untuk localization (SLAM)
+   - Drone: gyroscope + accelerometer fusion untuk stable attitude estimation
+   - CNC machine: position sensor voting untuk safety-critical application
+
+5. RINGKASAN
+   - Sensor bisa error, filtering & fusion essential
+   - Trade-off filter delay vs noise reduction, tune sesuai requirement
+   - Kalman filter powerful tapi kompleks, start dengan simple filter dulu
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 4)
+   Point yang HARUS dijelaskan:
+   - Sensor noise: dari mana? (EMI, thermal, ADC quantization)
+   - Filtering: moving average vs low-pass filter (trade-off)
+   - Demo: sensor reading raw vs filtered (oscilloscope atau plot)
+   - Complementary filter: why combine encoder + accel?
+   - Kalman filter: basic concept (predict-observe-update)
+   - Sensor fusion: multiple sensor voting
+   - Trade-off: filter delay vs responsiveness (demo dengan Kp gain test)
+   - Troubleshooting: filter parameter tuning, sensor not responding
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 4):
+
+1. TUJUAN PRAKTIKUM
+   - Analisis sensor noise (frequency domain & time domain)
+   - Implementasi filter (moving average, low-pass digital)
+   - Implementasi complementary filter (encoder + accel)
+   - Kalman filter basic untuk 1D motion
+   - Sensor redundancy voting logic
+   - Performance measurement vs theory
+
+2. ALAT & BAHAN
+   - Robot dengan encoder + accelerometer (IMU 3-axis)
+   - Oscilloscope (untuk measure analog signal)
+   - ESP32 atau Arduino Mega dengan ADC (10-bit atau 12-bit)
+   - Python environment untuk signal processing (scipy, numpy, matplotlib)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: SENSOR NOISE ANALYSIS
+   Tujuan: Understand noise characteristic, identify noise frequency
+   
+   Langkah:
+   a. Collect raw sensor data (encoder tick, accelerometer value) selama 10 detik
+   b. Save ke CSV file, plot time-domain waveform (Excel atau Matplotlib)
+   c. Calculate FFT (Fast Fourier Transform) → frequency spectrum
+   d. Identify noise frequency peak
+   e. Estimate noise amplitude (peak-to-peak atau RMS)
+   
+   Data Pengamatan:
+   | Sensor | Noise Type | Peak-to-Peak (unit) | Frequency (Hz) | RMS |
+   |--------|-----------|---------------------|-----------------|-----|
+   | Encoder | White? | ___ | ___ | ___ |
+   | Accel | Burst? | ___ | ___ | ___ |
+   
+   Deliverable: Time-domain plot, FFT spectrum image, noise analysis summary
+   
+   ---
+   
+   PERCOBAAN 2: MOVING AVERAGE FILTER
+   Tujuan: Simple filter, understand trade-off delay vs smoothing
+   
+   Langkah:
+   a. Implement moving average filter (window size: 3, 5, 10, 20)
+   b. Apply filter ke sensor data dari Percobaan 1
+   c. Plot: raw vs filtered (window=3, 5, 10, 20 overlay)
+   d. Measure: noise reduction (RMS before/after), latency (delay samples)
+   e. Trade-off analysis: larger window = better smoothing, but higher delay
+   
+   Code snippet (Arduino):
+   ```cpp
+   float sensor_buffer[WINDOW_SIZE];
+   int buffer_idx = 0;
+   
+   float moving_average(float new_value) {
+     sensor_buffer[buffer_idx] = new_value;
+     buffer_idx = (buffer_idx + 1) % WINDOW_SIZE;
+     
+     float sum = 0;
+     for (int i = 0; i < WINDOW_SIZE; i++) {
+       sum += sensor_buffer[i];
+     }
+     return sum / WINDOW_SIZE;
+   }
+   ```
+   
+   Data Pengamatan:
+   | Window Size | Noise Reduction (%) | Latency (ms) | RMS Error |
+   |-----------|----------------------|--------------|-----------|
+   | 3 | ___ | ___ | ___ |
+   | 5 | ___ | ___ | ___ |
+   | 10 | ___ | ___ | ___ |
+   | 20 | ___ | ___ | ___ |
+   
+   Deliverable: Code, plot comparing window size, analysis trade-off
+   
+   ---
+   
+   PERCOBAAN 3: LOW-PASS DIGITAL FILTER
+   Tujuan: Exponential moving average, equivalent RC filter
+   
+   Langkah:
+   a. Design digital low-pass filter: y[n] = α × x[n] + (1-α) × y[n-1]
+   b. Calculate α from cutoff frequency: α ≈ 2πfc × dt / (2πfc × dt + 1)
+   c. Implement di firmware, test dengan 3 cutoff frequency (1Hz, 5Hz, 10Hz)
+   d. Compare delay vs moving average
+   
+   Code:
+   ```cpp
+   float filtered_value = 0;
+   const float ALPHA = 0.1; // Tunable parameter
+   
+   float low_pass_filter(float raw_value) {
+     filtered_value = ALPHA * raw_value + (1 - ALPHA) * filtered_value;
+     return filtered_value;
+   }
+   ```
+   
+   Data Pengamatan:
+   | Cutoff (Hz) | α Value | Delay vs window=5 | Smoothness |
+   |-----------|---------|-------------------|-----------|
+   | 1 | ___ | ___ | ___ |
+   | 5 | ___ | ___ | ___ |
+   | 10 | ___ | ___ | ___ |
+   
+   Deliverable: Code, plot, filter parameter explanation
+   
+   ---
+   
+   PERCOBAAN 4: COMPLEMENTARY FILTER
+   Tujuan: Fusion encoder (precise, drift) + accelerometer (noisy, no drift)
+   
+   Langkah:
+   a. Collect encoder position + accelerometer acceleration
+   b. Integrate accel → velocity → position (numerical integration)
+   c. Encoder position = low-pass path (stable, slow)
+   d. Accel integration = high-pass path (responsive, drift)
+   e. Complementary filter: final_pos = w_accel × accel_pos + w_enc × enc_pos
+   f. Tune weight (w_accel, w_enc) untuk optimal result
+   
+   Block diagram:
+   [Encoder] --low-pass filter-→ [×w1] --
+                                        ├→[+] → final_position
+   [Accel] --integrate--high-pass filter→[×w2] --
+   
+   Code:
+   ```cpp
+   const float W_ACCEL = 0.3;
+   const float W_ENC = 0.7;
+   
+   float position_fused = W_ACCEL * pos_from_accel + W_ENC * encoder_position;
+   ```
+   
+   Data Pengamatan:
+   | W_Accel | W_Enc | Drift (mm over 10s) | Noise RMS | Response Time (ms) |
+   |---------|-------|---------------------|-----------|-------------------|
+   | 0.1 | 0.9 | ___ | ___ | ___ |
+   | 0.3 | 0.7 | ___ | ___ | ___ |
+   | 0.5 | 0.5 | ___ | ___ | ___ |
+   
+   Deliverable: Code, position estimate plot (encoder vs accel vs fused), analysis
+   
+   ---
+   
+   PERCOBAAN 5: KALMAN FILTER BASIC
+   Tujuan: Optimal filter untuk 1D motion (position tracking)
+   
+   Langkah:
+   a. Setup Kalman filter untuk 1D: state = [position, velocity]
+   b. Motion model: x[k+1] = A × x[k] + w_noise (where A = [[1, dt], [0, 1]])
+   c. Measurement model: z[k] = H × x[k] + v_noise (where H = [1, 0])
+   d. Tuning: process noise (Q), measurement noise (R)
+   e. Implement state transition (predict) & measurement update
+   
+   Predict step:
+   x_pred = A × x_prev
+   P_pred = A × P_prev × A^T + Q
+   
+   Update step:
+   K = P_pred × H^T / (H × P_pred × H^T + R)  // Kalman gain
+   x_new = x_pred + K × (z - H × x_pred)
+   P_new = (I - K × H) × P_pred
+   
+   Data Pengamatan:
+   | Q Value | R Value | Position Error (mm RMS) | Convergence Time (s) |
+   |---------|---------|------------------------|-----------------------|
+   | 0.001 | 10 | ___ | ___ |
+   | 0.01 | 10 | ___ | ___ |
+   | 0.001 | 1 | ___ | ___ |
+   
+   Deliverable: Code, Kalman gain plot, estimate error analysis
+   
+   ---
+   
+   PERCOBAAN 6: SENSOR REDUNDANCY VOTING
+   Tujuan: Fault tolerance melalui multiple sensor
+   
+   Langkah:
+   a. Simulate 3 sensor: encoder, IMU, external reference
+   b. Inject sensor fault (nilai outlier ke 1 sensor)
+   c. Implement 2-out-of-3 voting: jika 2 sensor agree, use value; else flag error
+   d. Measure: fault detection rate, false positive rate
+   
+   Code:
+   ```cpp
+   float voting_3sensor(float s1, float s2, float s3, float tolerance) {
+     float values[] = {s1, s2, s3};
+     // Check which 2 sensor agree (within tolerance)
+     // Return agreed value, or error if none agree
+   }
+   ```
+   
+   Test scenario:
+   | Sensor Fault | Detection Latency (ms) | False Positive Rate |
+   |-------------|------------------------|-------------------|
+   | s1 offset 10mm | ___ | ___ |
+   | s2 sudden spike | ___ | ___ |
+   | s3 timeout | ___ | ___ |
+   
+   Deliverable: Code, test result table, fault detection analysis
+
+4. DATA PENGAMATAN
+   - Raw sensor FFT spectrum image
+   - Filtered vs raw signal plot (multiple filter method)
+   - Filter parameter table (window size, α, delay, smoothness)
+   - Complementary filter weight optimization result
+   - Kalman filter Q/R tuning sensitivity
+   - Sensor voting fault detection accuracy
+
+5. ANALISIS
+   PERTANYAAN:
+   - Mana filter yang paling sesuai untuk sistem ini? Moving average, low-pass, atau complementary?
+   - Trade-off apa yang terjadi saat increase filter window size?
+   - Complementary filter weight optimal berapa? Mengapa?
+   - Kalman filter vs complementary filter: kapan gunakan yang mana?
+   - Sensor voting effectiveness untuk fault tolerance?
+   - Recommendation: parameter final untuk production?
+
+6. KESIMPULAN
+   - Filter design critical untuk system stability
+   - Kalman filter powerful tapi kompleks, complementary filter simple but effective
+   - Redundancy important untuk safety-critical application
+
+---
+
+PANDUAN PROJECT.MD (MODUL 4):
+
+JUDUL: "SENSOR FUSION SYSTEM DESIGN FOR ROBUST LOCALIZATION"
+
+SPESIFIKASI:
+- Design sensor fusion system untuk AGV/robot arm localization
+- Implement multiple filter (moving avg, low-pass, complementary, Kalman)
+- Analyze performance: accuracy, latency, robustness terhadap noise
+- Design sensor redundancy voting untuk fault tolerance
+- Provide recommendation parameter untuk production
+
+DELIVERABLE:
+1. Sensor noise analysis (FFT, RMS, frequency characteristic)
+2. Filter comparison document (theory + measurement result)
+3. Complementary filter design (weight optimization, final parameter)
+4. Kalman filter implementation (state model, Q/R tuning)
+5. Sensor voting logic (fault scenario test)
+6. Performance report (accuracy vs latency, trade-off analysis)
+7. Production parameter recommendation
+8. Code organized di GitHub
+9. Video demo (sensor noise → filter effect → fusion result)
+
+BONUS:
+- Extended Kalman Filter (EKF) untuk nonlinear system
+- Advanced voting (weighted voting, confidence score)
+- Real-time visualization (RViz atau Matplotlib streaming)
+
+==============================================================================
+MODUL 5: MOTOR & DRIVE SYSTEM (INDUSTRIAL-STYLE)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Memilih motor sesuai requirement
+- Implement motor control (PWM, direction, current limiting)
+- Characterize motor (torque-speed curve, efficiency)
+- Compare control strategy (open-loop vs closed-loop)
+
+KONSEP UTAMA:
+1. Motor type: DC (simple, brushed), BLDC (brushless, efficient), Stepper (precise), Servo (feedback)
+2. Motor parameter: rated voltage, rated current, rated torque, max RPM, efficiency
+3. Driver: H-bridge (DC), ESC (BLDC), stepper driver, servo drive
+4. PWM control: frequency (kHz), duty cycle (%), resolution (bit)
+5. Direction control: dual-pin (forward/backward), single-pin (logic level)
+6. Current limiting: sense resistor + op-amp, smart driver (integrated)
+7. Open-loop: direct PWM → velocity, tidak stable terhadap beban
+8. Closed-loop: encoder feedback → PID → PWM, stable terhadap beban
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Motor selection & analysis
+- Driver circuit design & PCB
+- PWM frequency & resolution optimization
+- Motor characterization (torque-speed test)
+- Speed control (open-loop vs closed-loop)
+- Current limiting implementation
+- Load impact analysis
+- Efficiency measurement
+
+PANDUAN MATERI.MD (MODUL 5):
+
+1. DEFINISI
+   - Actuator: device yang convert electrical signal menjadi mechanical motion
+   - Motor: rotating actuator (linear actuator alternative)
+   - Drive: circuit yang amplify control signal untuk power motor
+
+2. KONSEP INTI
+   - DC motor: simple, V_in → RPM (roughly linear), aber perlu brushing
+   - BLDC: efficient, brushless, perlu commutation (driver kompleks)
+   - Stepper: precise positioning, holding torque, low speed
+   - Servo: built-in feedback + control, high precision, expensive
+   - Motor constant: Kt (torque constant), Ke (back-EMF constant)
+   - Power: P = T × ω = V × I
+   - Efficiency: output power / input power (η = T × ω / V × I)
+   - Thermal limitation: motor heat dissipation capacity
+   - Mechanical constraint: gear ratio, friction, inertia
+
+3. DIAGRAM & ILUSTRASI
+   - Motor type comparison table (speed, torque, complexity, cost)
+   - Motor equivalent circuit (R, L, back-EMF)
+   - H-bridge circuit untuk DC motor
+   - BLDC commutation sequence (6-step atau FOC)
+   - Stepper motor coil sequence (full-step, half-step)
+   - Torque-speed curve (rated vs peak torque)
+   - Driver selection diagram (flowchart: motor type → driver type)
+   - Current-time saat motor start (inrush current)
+
+4. CONTOH KASUS INDUSTRI
+   - Robot arm joint: servo motor untuk precision, atau BLDC dengan encoder & PID
+   - AGV drive: 2× BLDC motor untuk traction, ESC untuk control
+   - CNC spindle: 3-phase AC atau DC motor untuk high speed
+   - Conveyor: DC motor atau 3-phase untuk continuous operation
+
+5. RINGKASAN
+   - Motor selection tergantung requirement: speed, torque, precision, cost
+   - Driver design critical untuk reliable operation
+   - Feedback essential untuk stable closed-loop control
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 5)
+   Point yang HARUS dijelaskan:
+   - Motor type comparison (DC vs BLDC vs Stepper vs Servo)
+   - Motor specification: rated voltage, current, torque, RPM
+   - Driver selection: matching motor type & power requirement
+   - PWM control: frequency, duty cycle, resolution (resolution test)
+   - Direction control: H-bridge logic, dual-pin
+   - Current limiting: why important? implementation method
+   - Closed-loop control: encoder feedback, speed stability terhadap beban
+   - Characterization: motor torque-speed curve measurement
+   - Troubleshooting: motor not running, direction wrong, stall current high
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 5):
+
+1. TUJUAN PRAKTIKUM
+   - Select motor sesuai requirement
+   - Design & implement motor driver
+   - Characterize motor (speed, torque, efficiency)
+   - Test open-loop vs closed-loop control
+   - Analyze load impact
+   - Measure current & implement current limiting
+
+2. ALAT & BAHAN
+   - Motor DC dengan encoder (untuk closed-loop test)
+   - Driver: L298N (H-bridge) atau sejenisnya
+   - Power supply (voltage & current rating match motor)
+   - Load: friction brake, atau hanging mass (untuk torque test)
+   - Oscilloscope (untuk PWM & current measurement)
+   - Tachometer (untuk RPM measurement, alternative: encoder)
+   - Python untuk data analysis & plotting
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: MOTOR SELECTION & SPECIFICATION
+   Tujuan: Understand motor parameter, select motor sesuai requirement
+   
+   Langkah:
+   a. Define requirement: voltage, power, speed, torque, control type
+   b. Research 3 motor candidate: DC, BLDC, Stepper
+   c. Compare specification: cost, availability, control complexity
+   d. Score matrix: requirement weight × score → total score
+   e. Recommend 1 motor, justifikasi selection
+   
+   Deliverable: Comparison table, selection matrix, recommendation letter
+   
+   ---
+   
+   PERCOBAAN 2: MOTOR DRIVER DESIGN & PCB
+   Tujuan: Design H-bridge untuk motor PWM control
+   
+   Langkah:
+   a. Analyze motor electrical parameter dari datasheet
+   b. Calculate driver requirement: voltage rating, current rating, heat dissipation
+   c. Select driver IC: L298N, DRV8833, atau custom H-bridge dengan MOSFET
+   d. Design schematic (EasyEDA): motor connection, PWM input, direction input
+   e. Add protection: flyback diode untuk motor back-EMF, decoupling capacitor
+   f. Design PCB layout: power trace width, thermal via untuk driver
+   g. Check thermal: power dissipation, heat sink sizing
+   
+   Deliverable: Schematic image, PCB layout image, thermal analysis, BOM
+   
+   ---
+   
+   PERCOBAAN 3: PWM FREQUENCY & RESOLUTION TEST
+   Tujuan: Optimize PWM parameter untuk smooth motor control
+   
+   Langkah:
+   a. Test PWM frequency: 1kHz, 5kHz, 10kHz, 20kHz (ESP32 default)
+   b. Observation: motor noise, smoothness (low freq = humming, high freq = smooth)
+   c. Test PWM resolution: 8-bit (0-255), 10-bit (0-1023), 12-bit (0-4095)
+   d. Measurement: speed precision saat duty cycle change 1 step
+   e. Recommendation: frequency & resolution untuk smooth, quiet operation
+   
+   Code test:
+   ```cpp
+   analogWriteFrequency(PWM_PIN, 5000); // 5kHz
+   analogWriteResolution(10);            // 10-bit (0-1023)
+   ```
+   
+   Data Pengamatan:
+   | PWM Freq (kHz) | Motor Noise | Smoothness | Speed Precision |
+   |-----------------|-------------|-----------|-----------------|
+   | 1 | Humming | Poor | ___ |
+   | 5 | Quiet | Good | ___ |
+   | 10 | Quiet | Excellent | ___ |
+   
+   Deliverable: Observation note, audio recording (if possible), recommendation
+   
+   ---
+   
+   PERCOBAAN 4: MOTOR CHARACTERIZATION
+   Tujuan: Measure torque-speed curve, efficiency
+   
+   Langkah:
+   a. Setup: motor + load (hanging mass atau friction brake)
+   b. Vary PWM duty cycle: 20%, 40%, 60%, 80%, 100%
+   c. Measure: motor speed (RPM, encoder atau tachometer)
+   d. Measure: motor current (ammeter atau current sensor)
+   e. Measure: load torque (massa × g × radius, atau strain gauge)
+   f. Calculate: output power = torque × angular velocity
+   g. Calculate: efficiency = output power / input power
+   h. Plot: torque vs speed, efficiency vs power
+   
+   Data Pengamatan:
+   | Duty Cycle (%) | Voltage (V) | Speed (RPM) | Current (A) | Torque (Nm) | Efficiency (%) |
+   |---|---|---|---|---|---|
+   | 20 | ___ | ___ | ___ | ___ | ___ |
+   | 40 | ___ | ___ | ___ | ___ | ___ |
+   | 60 | ___ | ___ | ___ | ___ | ___ |
+   | 80 | ___ | ___ | ___ | ___ | ___ |
+   | 100 | ___ | ___ | ___ | ___ | ___ |
+   
+   Deliverable: Torque-speed curve plot, efficiency curve, motor characterization report
+   
+   ---
+   
+   PERCOBAAN 5: OPEN-LOOP VS CLOSED-LOOP CONTROL
+   Tujuan: Compare stability terhadap load change
+   
+   Langkah:
+   a. Open-loop: set PWM = 50% → measure speed vs time (step input)
+   b. Add load (hanging mass) → observe speed drop
+   c. Closed-loop (PID): set speed setpoint = 500 RPM → apply same load
+   d. Observe: speed change smaller (PID adjust PWM automatically)
+   e. Measure: steady-state error, rise time, settling time
+   f. Compare: open-loop speed change vs closed-loop
+   
+   Test scenario:
+   ```
+   t=0s: Motor off
+   t=1s: PWM on (open-loop) or setpoint command (closed-loop)
+   t=5s: Add load (sudden disturbance)
+   t=10s: Remove load
+   t=15s: Stop
+   ```
+   
+   Data Pengamatan:
+   | Control Type | Speed at t=1s (RPM) | Speed drop after load (%) | Recovery time (s) |
+   |--|--|--|--|
+   | Open-loop | ___ | ___ | N/A |
+   | Closed-loop | ___ | ___ | ___ |
+   
+   Deliverable: Speed vs time plot (before/after load), comparison analysis
+   
+   ---
+   
+   PERCOBAAN 6: CURRENT LIMITING
+   Tujuan: Protect motor dari over-current (stall current)
+   
+   Langkah:
+   a. Measure stall current (motor locked, PWM = 100%)
+   b. Set current limit: 80% dari stall current
+   c. Implement current limiting: sense → compare dengan threshold → PWM adjust
+   d. Test: motor start, load increase gradually, observe current plateau
+   e. Verify: motor tidak overheat, torque still available
+   
+   Code:
+   ```cpp
+   float current_sensor_value = analogRead(CURRENT_PIN) * SCALE;
+   if (current_sensor_value > CURRENT_LIMIT) {
+     pwm_value = pwm_value - 5;  // Reduce PWM to limit current
+   }
+   ```
+   
+   Data Pengamatan:
+   | Condition | Current (A) | PWM (%) | Motor Temperature (°C) |
+   |--|--|--|--|
+   | No load | ___ | 100 | ___ |
+   | Light load | ___ | 100 | ___ |
+   | Heavy load (current limited) | ___ | ___ | ___ |
+   | Stall (no current limiting) | ___ | 100 | ___ |
+   
+   Deliverable: Current vs time plot, temperature measurement, current limiting effectiveness
+
+4. DATA PENGAMATAN
+   - Motor specification table (compare motor candidate)
+   - Characterization data (torque, speed, current, efficiency)
+   - Open-loop vs closed-loop response (plot)
+   - PWM parameter optimization result
+   - Current limit test (current vs PWM response)
+
+5. ANALISIS
+   PERTANYAAN:
+   - Motor mana yang dipilih? Mengapa cocok untuk aplikasi ini?
+   - PWM frequency & resolution yang optimal? Alasan teknis?
+   - Efficiency di rated load? Trade-off antara speed & torque?
+   - Closed-loop control improvement vs open-loop (quantify)?
+   - Current limit berapa yang aman? (thermal consideration)
+   - Torque margin tersedia untuk load variation?
+
+6. KESIMPULAN
+   - Motor selection penting untuk system performance & reliability
+   - Driver design mempertimbangkan thermal & safety
+   - Closed-loop control essential untuk load robustness
+
+---
+
+PANDUAN PROJECT.MD (MODUL 5):
+
+JUDUL: "MOTOR DRIVE SYSTEM DESIGN & OPTIMIZATION"
+
+SPESIFIKASI:
+- Select motor sesuai application requirement
+- Design motor driver circuit dengan protection
+- Characterize motor (torque-speed, efficiency)
+- Optimize PWM parameter (frequency, resolution)
+- Implement current limiting & thermal protection
+- Compare open-loop vs closed-loop performance
+- Create motor selection guide untuk similar application
+
+DELIVERABLE:
+1. Motor selection analysis (requirement → candidate → scoring → recommendation)
+2. Driver schematic & PCB design (EasyEDA)
+3. Motor characterization data (torque, speed, efficiency curve)
+4. PWM optimization report (frequency & resolution test)
+5. Current limiting implementation & test
+6. Control comparison (open-loop vs closed-loop) dengan plot
+7. Thermal analysis (motor temperature, heat dissipation)
+8. Motor selection guide document (for other student)
+9. Code (motor test firmware organized di GitHub)
+10. Video demo (motor start, load test, current limiting, temperature)
+
+BONUS:
+- Motor encoder integration (for odometry)
+- Gearbox design & ratio optimization
+- Efficiency optimization (supply voltage tuning)
+- Multi-motor synchronization
+
+==============================================================================
+MODUL 6: MOTION CONTROL DI ESP32 (CLOSED-LOOP PID)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Implement PID controller dari zero
+- Tuning PID (Ziegler-Nichols, manual, auto-tuning)
+- Anti-windup & derivative filtering
+- Feedforward control
+- Real-time performance measurement
+
+KONSEP UTAMA:
+1. PID controller: Proportional (gain), Integral (eliminate steady-state error), Derivative (damp overshoot)
+2. Transfer function: C(s) = Kp + Ki/s + Kd×s
+3. Tuning method: manual (trial & error), Ziegler-Nichols (systematical), auto-tuning (adaptive)
+4. Anti-windup: limit integral term saat output saturate, prevent wind-up
+5. Derivative filter: low-pass filter pada derivative term, reduce noise amplification
+6. Feedforward: additional term untuk compensate known disturbance (e.g., gravity)
+7. Performance metric: rise time, overshoot, settling time, steady-state error
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- PID implementation dari scratch
+- Tuning PID dengan Ziegler-Nichols
+- Manual tuning (understand Kp, Ki, Kd effect)
+- Anti-windup test
+- Derivative filter tuning
+- Feedforward compensation
+- Step response measurement & analysis
+- Performance vs requirement comparison
+- Robustness test (load change, disturbance)
+
+PANDUAN MATERI.MD (MODUL 6):
+
+1. DEFINISI
+   - Control loop: measure error (setpoint - feedback) → compute output via PID
+   - Stability: oscillation damped, not unstable diverge
+   - Performance: rise time (fast), overshoot (small), settling time (short), accuracy (steady-state error = 0)
+
+2. KONSEP INTI
+   - Proportional (P): error × Kp → output, fast response but overshoot & steady-state error
+   - Integral (I): ∫error dt × Ki → output, eliminate steady-state error but slow down system
+   - Derivative (D): d(error)/dt × Kd → output, damp overshoot & improve stability
+   - Combined PID: output = Kp×error + Ki×∫error + Kd×d(error)/dt
+   - Tuning: increase Kp → faster, decrease lag, increase overshoot
+   - Increase Ki → eliminate steady-state error, but risk oscillation
+   - Increase Kd → reduce overshoot, improve stability, but amplify noise
+   - Anti-windup: clamp integral term when saturate, prevent integrator wind-up
+   - Feedforward: add known compensation (e.g., gravity for vertical axis)
+   - Bode plot: show frequency response, stability margin (phase margin > 30°)
+
+3. DIAGRAM & ILUSTRASI
+   - Block diagram PID control loop
+   - Step response: ideal vs overdamped vs underdamped vs oscillatory
+   - Bode plot: magnitude & phase vs frequency (showing stability margin)
+   - Kp effect: increase Kp → lower peak, faster rise, higher overshoot
+   - Ki effect: increase Ki → eliminate steady-state error, slower response
+   - Kd effect: increase Kd → reduce overshoot, faster settling
+   - Anti-windup illustration: integral term clamped at output limit
+   - Feedforward compensation diagram: reference + error × PID + feedforward
+
+4. CONTOH KASUS INDUSTRI
+   - Robot arm joint position control: PID untuk trajectory tracking
+   - Motor speed regulation: PID to maintain constant RPM despite load
+   - Temperature control: PID untuk heater on/off
+   - Quadrotor altitude control: cascaded PID (outer position, inner velocity)
+
+5. RINGKASAN
+   - PID adalah fundamental control algorithm, widely used industri
+   - Tuning challenge: balance antara speed, accuracy, stability
+   - Anti-windup & derivative filter essential untuk robust real-world implementation
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 6)
+   Point yang HARUS dijelaskan:
+   - PID loop: feedback → error → P/I/D term → output
+   - Kp effect: demo ubah Kp (0.5 → 1.0 → 2.0) → lihat overshoot increase
+   - Ki effect: demo ubah Ki (0 → 0.1 → 0.5) → steady-state error berkurang
+   - Kd effect: demo ubah Kd (0 → 0.5 → 2.0) → overshoot berkurang
+   - Ziegler-Nichols method: measure critical gain Kc & period Pc
+   - Anti-windup: demonstrate integral wind-up problem, then show fix
+   - Derivative filter: noise amplification at raw derivative, then filter implementation
+   - Feedforward: add gravity compensation untuk vertical motion
+   - Step response measurement: rise time, overshoot, settling time vs target
+   - Robustness test: step response dengan load change (before/after add mass)
+   - Troubleshooting: tuning tips, oscillation cause, instability issue
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 6):
+
+1. TUJUAN PRAKTIKUM
+   - Implement PID controller di ESP32
+   - Tuning PID via Ziegler-Nichols method
+   - Understand & improve anti-windup
+   - Implement derivative filter
+   - Feedforward compensation (if applicable)
+   - Measure step response performance
+   - Test robustness (load variation, disturbance)
+
+2. ALAT & BAHAN
+   - Motor dengan encoder (dari Modul 5)
+   - Load variable (hanging mass, friction brake)
+   - ESP32 atau Arduino dengan ADC & PWM
+   - Oscilloscope atau Python for data logging
+   - Git untuk version control
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: BASIC PID IMPLEMENTATION
+   Tujuan: Implement simple PID, test P/I/D effect independently
+   
+   Langkah:
+   a. Code structure:
+      - Read feedback (encoder)
+      - Compute error = setpoint - feedback
+      - PID computation (separate P, I, D term)
+      - Output (PWM to motor)
+   
+   b. Implement P-only control: output = Kp × error, test step response
+   c. Implement PI control: add integral term, test steady-state error
+   d. Implement PID control: add derivative term, test overshoot damping
+   
+   Code skeleton:
+   ```cpp
+   struct PID {
+     float Kp, Ki, Kd;
+     float error_prev = 0;
+     float integral = 0;
+     
+     float compute(float setpoint, float feedback, float dt) {
+       float error = setpoint - feedback;
+       float p_term = Kp * error;
+       integral += error * dt;
+       float i_term = Ki * integral;
+       float d_term = Kd * (error - error_prev) / dt;
+       error_prev = error;
+       return p_term + i_term + d_term;
+     }
+   };
+   ```
+   
+   Data Pengamatan (P-only):
+   | Kp Value | Rise Time (s) | Overshoot (%) | Steady-State Error (%) |
+   |---|---|---|---|
+   | 0.5 | ___ | ___ | ___ |
+   | 1.0 | ___ | ___ | ___ |
+   | 2.0 | ___ | ___ | ___ |
+   
+   Deliverable: Code, step response plot (multiple Kp), analysis
+   
+   ---
+   
+   PERCOBAAN 2: ZIEGLER-NICHOLS TUNING
+   Tujuan: Systematic tuning method untuk start point
+   
+   Langkah:
+   a. Set Ki = 0, Kd = 0 (P-only)
+   b. Increase Kp gradually until oscillation starts (critical Kp = Kc)
+   c. Measure oscillation period (Pc)
+   d. Apply Ziegler-Nichols formula:
+      - P controller: Kp = 0.5 × Kc
+      - PI controller: Kp = 0.45 × Kc, Ki = 1.2 × Kp / Pc
+      - PID controller: Kp = 0.6 × Kc, Ki = 2 × Kp / Pc, Kd = Kp × Pc / 8
+   
+   e. Test tuned parameter, observe performance
+   
+   Process:
+   ```
+   Increase Kp: 0.5 → 1.0 → 1.5 → 2.0 → 2.5 → oscillate
+   Kc = 2.5, Pc = 2.0s (measured oscillation period)
+   
+   PID parameter:
+   Kp = 0.6 × 2.5 = 1.5
+   Ki = 2 × 1.5 / 2.0 = 1.5
+   Kd = 1.5 × 2.0 / 8 = 0.375
+   ```
+   
+   Data Pengamatan:
+   | Control Type | Kp | Ki | Kd | Rise Time | Overshoot | Settling Time |
+   |--|--|--|--|--|--|--|
+   | P-only critical | Kc | 0 | 0 | ___ | ___ (oscillate) | ___ |
+   | PID (Z-N) | 1.5 | 1.5 | 0.375 | ___ | ___ | ___ |
+   
+   Deliverable: Ziegler-Nichols tuning calculation, step response comparison plot
+   
+   ---
+   
+   PERCOBAAN 3: MANUAL TUNING
+   Tujuan: Refine Z-N parameter untuk meet requirement
+   
+   Langkah:
+   a. Start dengan Z-N parameter dari Percobaan 2
+   b. Adjust Kp: if overshoot large → decrease Kp, if slow response → increase Kp
+   c. Adjust Ki: if steady-state error remain → increase Ki, if oscillate → decrease Ki
+   d. Adjust Kd: if overshoot large → increase Kd, if oscillate → decrease Kd
+   e. Iterate until meet performance target
+   
+   Tuning sequence: Kp first (set response speed) → Ki (remove steady-state error) → Kd (damping)
+   
+   Data Pengamatan:
+   | Iteration | Kp | Ki | Kd | Overshoot (%) | Settling Time (s) | Notes |
+   |--|--|--|--|--|--|--|
+   | Z-N start | 1.5 | 1.5 | 0.375 | ___ | ___ | Baseline |
+   | #1 | 1.3 | 1.5 | 0.375 | ___ | ___ | Reduce overshoot |
+   | #2 | 1.3 | 1.0 | 0.5 | ___ | ___ | Increase damping |
+   | ... | ... | ... | ... | ... | ... | ... |
+   
+   Target: overshoot < 10%, settling time < 2s, steady-state error < 1%
+   
+   Deliverable: Tuning log, final parameter, step response plot, comparison initial vs final
+   
+   ---
+   
+   PERCOBAAN 4: ANTI-WINDUP IMPLEMENTATION
+   Tujuan: Prevent integrator wind-up saat output saturate
+   
+   Langkah:
+   a. Test PI control (from Percobaan 1) dengan output saturation at 255 (PWM limit)
+   b. Observe: motor accelerate, integral term keep accumulate beyond saturation
+   c. When error flip sign, integral need time to wind-down (slow response)
+   d. Implement anti-windup: clamp integral term
+   
+   Code:
+   ```cpp
+   const float INTEGRAL_MAX = 255 / Ki;  // Prevent wind-up
+   
+   integral += error * dt;
+   integral = constrain(integral, -INTEGRAL_MAX, INTEGRAL_MAX);
+   ```
+   
+   Test:
+   - Without anti-windup: large overshoot, long settling
+   - With anti-windup: reduced overshoot, faster settling
+   
+   Data Pengamatan:
+   | Anti-windup | Overshoot (%) | Settling Time (s) | Integral Max Value |
+   |--|--|--|--|
+   | Off (unlimited) | ___ | ___ | ___ |
+   | On (clamped) | ___ | ___ | ___ |
+   
+   Deliverable: Code, step response plot comparison, wind-up analysis
+   
+   ---
+   
+   PERCOBAAN 5: DERIVATIVE FILTER
+   Tujuan: Reduce noise amplification dari derivative term
+   
+   Langkah:
+   a. Apply sensor noise → see raw derivative amplify noise
+   b. Implement low-pass filter pada derivative: d_term = Kd × (filtered_error - filtered_error_prev) / dt
+   c. Or use filtered derivative: d_filtered = α × (error - error_prev) + (1-α) × d_filtered
+   d. Compare: raw derivative vs filtered derivative
+   
+   Code:
+   ```cpp
+   const float D_FILTER_ALPHA = 0.3;
+   float d_filtered = 0;
+   
+   // In PID compute:
+   float d_raw = (error - error_prev) / dt;
+   d_filtered = D_FILTER_ALPHA * d_raw + (1 - D_FILTER_ALPHA) * d_filtered;
+   float d_term = Kd * d_filtered;
+   ```
+   
+   Data Pengamatan:
+   | D Filter | Motor Noise | Control Stability | Smoothness |
+   |--|--|--|--|
+   | None (raw) | High | Oscillate? | Jerky |
+   | α=0.1 | Medium | Good | Smooth |
+   | α=0.5 | Low | Good | Smooth |
+   
+   Deliverable: Code, noise amplification analysis, derivative filter comparison plot
+   
+   ---
+   
+   PERCOBAAN 6: FEEDFORWARD CONTROL
+   Tujuan: Add known compensation untuk improve response (optional, if applicable)
+   
+   Langkah:
+   a. For vertical axis: gravity cause constant torque (downward)
+   b. Add feedforward term: output = PID_output + feedforward
+   c. Feedforward = gravity_constant × mass × g (or estimate empirically)
+   d. Compare: PID only vs PID + feedforward
+   
+   Example (vertical robot arm):
+   ```cpp
+   float gravity_feedforward = GRAVITY_CONSTANT;
+   float output = pid.compute(...) + gravity_feedforward;
+   ```
+   
+   Data Pengamatan:
+   | Control | Steady-State Error (mm) | Settling Time (s) |
+   |--|--|--|
+   | PID only | ___ | ___ |
+   | PID + Feedforward | ___ | ___ |
+   
+   Deliverable: Feedforward estimation method, before/after plot
+   
+   ---
+   
+   PERCOBAAN 7: STEP RESPONSE MEASUREMENT & ANALYSIS
+   Tujuan: Full characterization PID performance
+   
+   Langkah:
+   a. Tuned PID parameter (dari Percobaan 3)
+   b. Apply step input: setpoint = 0 → 500 (RPM) at t=0
+   c. Record: time, setpoint, feedback, error, output
+   d. Calculate:
+      - Rise time: time untuk reach 90% setpoint
+      - Overshoot: (max - setpoint) / setpoint × 100%
+      - Settling time: time untuk error < 2% setpoint (and not oscillate)
+      - Steady-state error: final error
+   e. Compare dengan requirement
+   
+   Data Pengamatan:
+   | Metric | Value | Target | Status |
+   |--|--|--|--|
+   | Rise Time (s) | ___ | < 2.0 | ✓/✗ |
+   | Overshoot (%) | ___ | < 10 | ✓/✗ |
+   | Settling Time (s) | ___ | < 3.0 | ✓/✗ |
+   | Steady-State Error (%) | ___ | < 1 | ✓/✗ |
+   
+   Deliverable: Step response plot, performance metric table, analysis report
+   
+   ---
+   
+   PERCOBAAN 8: ROBUSTNESS TEST
+   Tujuan: PID performance dengan disturbance (load change)
+   
+   Langkah:
+   a. Record step response without disturbance
+   b. At t=5s: add load (sudden disturbance): speed setpoint = 500 RPM
+   c. At t=10s: remove load
+   d. Observe: PID adjust to maintain speed despite disturbance
+   e. Measure: disturbance rejection time, speed dip, overshoot recovery
+   
+   Test scenario:
+   ```
+   t=0-1s: acceleration to 500 RPM
+   t=1-5s: steady at 500 RPM (no load)
+   t=5s: add load (sudden 50% increase)
+   t=5-10s: PID compensate (speed dip then recover)
+   t=10s: remove load (sudden 50% decrease)
+   t=10-15s: PID compensate (speed spike then settle)
+   ```
+   
+   Data Pengamatan:
+   | Event | Speed Before (RPM) | Speed Dip/Spike (%) | Recovery Time (s) |
+   |--|--|--|--|
+   | Add load at t=5s | 500 | ___ | ___ |
+   | Remove load at t=10s | 500 | ___ | ___ |
+   
+   Deliverable: Speed vs time plot (with disturbance), disturbance rejection analysis
+
+4. DATA PENGAMATAN
+   - Step response plot (multiple iteration dari tuning)
+   - Performance metric (rise time, overshoot, settling, error) table
+   - Comparison: P-only vs PI vs PID vs PID+anti-windup vs PID+filter
+   - Ziegler-Nichols calculation & result
+   - Anti-windup effect plot
+   - Derivative filter noise reduction data
+   - Robustness test (load variation response)
+
+5. ANALISIS
+   PERTANYAAN:
+   - Ziegler-Nichols parameter vs final tuned parameter: mana better?
+   - Setiap gain (Kp, Ki, Kd) effect apa? Trade-off?
+   - Anti-windup effectiveness: improvement apa yang terlihat?
+   - Derivative filter impact pada noise vs response?
+   - Feedforward compensation accuracy (if implemented)?
+   - Robustness: PID performance under load change?
+   - Final parameter production-ready? Alasan?
+
+6. KESIMPULAN
+   - PID tuning adalah iterative process, require understanding gain effect
+   - Anti-windup & derivative filter essential untuk real-world robustness
+   - Performance meet target? Limitation? Recommendation?
+
+---
+
+PANDUAN PROJECT.MD (MODUL 6):
+
+JUDUL: "ADAPTIVE PID TUNING FOR MULTI-CONDITION OPERATION"
+
+SPESIFIKASI:
+- Design PID controller untuk motor speed control (atau position)
+- Implement 3 tuning method: manual, Ziegler-Nichols, auto-tuning (relay method atau other)
+- Test in multiple condition: no load, half load, full load
+- Implement anti-windup & derivative filter
+- Create tuning guide document
+- Performance comparison & recommendation
+
+DELIVERABLE:
+1. PID implementation code (modular, configurable parameter)
+2. Ziegler-Nichols tuning calculation & result
+3. Manual tuning log & optimization process
+4. Step response measurement (no load vs full load)
+5. Multi-condition performance report
+6. Anti-windup analysis & implementation
+7. Derivative filter design & tuning
+8. Performance metric vs requirement comparison
+9. PID tuning guide document (for future use)
+10. Code organized di GitHub (with README)
+11. Video demo (tuning process, parameter comparison, load test)
+
+BONUS:
+- Auto-tuning implementation (relay method atau Tiegs-Luyben)
+- Fuzzy logic tuning (for nonlinear system)
+- Cascaded PID (inner loop motor speed, outer loop position)
+- Predictive control (model-based improvement)
+
+==============================================================================
+TOOLS & PLATFORM (BATCH 2)
+==============================================================================
+
+EMBEDDED DEVELOPMENT:
+- PlatformIO (VS Code extension)
+- Target boards: Arduino Mega 2560, ESP32
+- Libraries: PID library (optional, or implement from scratch)
+
+SIGNAL PROCESSING & DATA ANALYSIS:
+- Python (scipy, numpy, matplotlib)
+- Jupyter Notebook (optional, for analysis)
+- Oscilloscope (for analog signal measurement)
+
+PCB DESIGN:
+- EasyEDA (motor driver circuit, sensor circuit)
+
+VERSION CONTROL:
+- Git & GitHub
+
+==============================================================================
+PANDUAN UMUM KONTEN (BATCH 2)
+==============================================================================
+
+Same as BATCH 1 (refer ke BATCH 1 untuk detail):
+- PANDUAN MATERI.MD
+- PANDUAN JOBSHEET.MD
+- PANDUAN PROJECT.MD
+- PANDUAN CODING
+- RUBRIK PENILAIAN
+- REFERENSI BUKU
+
+==============================================================================
+REFERENSI BUKU (BATCH 2)
+==============================================================================
+
+KONTROL SISTEM & PID:
+1. Norman S. Nise — Control Systems Engineering (8th ed.) — Wiley
+   Coverage: PID, transfer function, bode plot, stability
+   Relevant untuk Modul 6
+
+2. Karl J. Åström, Richard M. Murray — Feedback Systems: An Introduction for Scientists and Engineers
+   Publisher: Princeton University Press
+   Available free: https://fbswiki.org/
+   Coverage: feedback control, PID tuning
+   Relevant untuk Modul 6
+
+3. Kiam Heong Ang, G. Chong, Yun Li — "PID Control System Analysis, Design, and Technology"
+   Journal: IEEE Transactions on Control Systems Technology, 2005
+   Coverage: PID tuning methods, industrial application
+   Relevant untuk Modul 6
+
+SENSOR & SIGNAL PROCESSING:
+1. David G. Alciatore, Michael B. Histand — Introduction to Mechatronics and Measurement Systems (5th ed.)
+   Publisher: McGraw-Hill
+   Coverage: sensor conditioning, filtering, ADC
+   Relevant untuk Modul 4
+
+2. Steven W. Smith — Digital Signal Processing: A Practical Guide for Engineers and Scientists
+   Publisher: Newnes/Elsevier
+   Coverage: filtering, FFT, frequency analysis
+   Relevant untuk Modul 4
+
+MOTOR & DRIVE:
+1. W. Bolton — Mechatronics: Electronic Control Systems in Mechanical and Electrical Engineering (7th ed.)
+   Publisher: Pearson
+   Coverage: DC motor, BLDC, servo motor, driver circuit
+   Relevant untuk Modul 5
+
+2. Developing IoT Projects with ESP32 (2nd ed., 2023) — Packt
+   Coverage: motor control with ESP32, PWM, sensor integration
+   Relevant untuk Modul 5-6
+
+ONLINE RESOURCES:
+- Espressif ESP32 documentation: https://docs.espressif.com/
+- Arduino PWM reference: https://www.arduino.cc/en/Reference/AnalogWrite
+- Control tutorials online: https://ctms.engin.umich.edu/ (MATLAB-based, good for learning)
+- PID tuning calculator: https://www.pidtuner.com/ (untuk referensi Z-N)
+
+==============================================================================
+CONTACT & SUPPORT (BATCH 2)
+==============================================================================
+
+INSTRUKTUR BATCH 2:
+- Responsible untuk Modul 4, 5, 6
+- Specialized knowledge: sensor fusion, motor control, PID tuning
+- Contact: [instruktur email]
+- Office hour: [time]
+
+REPOSITORY:
+- GitHub classroom: [repo link untuk Batch 2]
+- Template code: [reference implementation link]
+- Documentation: [wiki atau shared doc]
+
+TIMELINE:
+- Modul 4: Minggu 1-2 (sensor fusion)
+- Modul 5: Minggu 2-3 (motor & drive)
+- Modul 6: Minggu 3-4 (PID control)
+- Lab session: Weekly 3 jam × 3 minggu
+
+RESOURCES PROVIDED:
+- Robot platform (dari Batch 1 output)
+- Motor + sensor library (PID code template)
+- Example code (reference implementation)
+- Measurement tools (oscilloscope, ammeter access)
+
+==============================================================================
+INTEGRATION WITH BATCH 1 & 3
+==============================================================================
+
+BATCH 1 → BATCH 2:
+- Hardware & safety system dari Batch 1 used as-is
+- Power distribution & EMC design apply untuk motor control noise
+
+BATCH 2 → BATCH 3:
+- Firmware dengan sensor fusion & motor control provide ke Batch 3
+- Encoder & IMU sensor data stream → Batch 3 implement ROS2 bridge
+- Motor command from ROS2 → Batch 2 firmware execute & feedback
+
+---
+
+TESTING & VALIDATION:
+- Batch 2 responsible untuk validate: sensor reading accuracy, motor control stability
+- Batch 3 responsible untuk ROS2 integration & communication reliability
+- Final capstone integration: all batch work together
+
+==============================================================================
+CATATAN PENTING
+==============================================================================
+
+1. SENSOR FUSION COMPLEXITY:
+   - Modul 4 provide foundation untuk Batch 3 ROS2 implementation
+   - Kalman filter bisa advance (Extended, Unscented), but basic Kalman sufficient untuk modul ini
+
+2. MOTOR CONTROL ROBUSTNESS:
+   - Current limiting important untuk safety (prevent motor burnout)
+   - Thermal management consideration (heat dissipation, temperature sensor)
+   - Mechanical safety (never free-spin under power, always have brake/stopper)
+
+3. PID TUNING CHALLENGE:
+   - Manual tuning tedious, encourage systematic approach (Z-N atau relay method)
+   - Plant parameter variation (load, temperature) require re-tuning
+   - Feedforward help untuk known disturbance (but not all disturbance)
+   - Advanced: adaptive PID (tuning parameter change based on operating condition)
+
+4. TESTING BEST PRACTICE:
+   - Always test unloaded first (motor free-spin), then loaded gradually
+   - Monitor current & temperature (prevent damage)
+   - Version control code (commit frequently, meaningful message)
+   - Document tuning process (help future tuning)
+   - Safety first: E-Stop always accessible, never leave running motor unattended
+
+==============================================================================
+GOOD LUCK! 🚀🤖
+==============================================================================

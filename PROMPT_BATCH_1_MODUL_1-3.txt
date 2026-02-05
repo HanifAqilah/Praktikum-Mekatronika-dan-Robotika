@@ -1,0 +1,1185 @@
+PROMPT PRAKTIKUM MEKATRONIKA DAN ROBOTIKA - BATCH 1 (MODUL 1-3)
+ARSITEKTUR SISTEM, SAFETY & COMMISSIONING, POWER & EMC
+
+==============================================================================
+KONTEKS UMUM PROGRAM
+==============================================================================
+
+Program praktikum ini dirancang untuk mengajarkan sistem mekatronika dan robotika
+secara END-TO-END, dari desain mekanik, elektronik, embedded control, hingga IoT
+monitoring.
+
+ARSITEKTUR SISTEM 5-LAYER:
+- Layer A: Plant/Robot (Mekanik + Elektronik)
+- Layer B: Real-time Control (ESP32 embedded)
+- Layer C: Edge Compute (ROS2 Ubuntu)
+- Layer D: Otomasi Industri (PLC + SCADA) - optional
+- Layer E: Webserver IoT (Monitoring jarak jauh)
+
+DURASI PROGRAM: 14 modul + 2-4 minggu capstone project (total ~16-18 minggu)
+
+==============================================================================
+BATCH 1: MODUL 1-3 (FUNDAMENTALS)
+==============================================================================
+
+MODUL 1: ARSITEKTUR SISTEM MEKATRONIKA & ROBOTIKA
+MODUL 2: SAFETY & COMMISSIONING SISTEM
+MODUL 3: POWER & EMC PRAKTIS UNTUK ROBOT/IIoT
+
+==============================================================================
+DELIVERABLE FORMAT (SETIAP MODUL)
+==============================================================================
+
+Modul-XX_NamaModul/
+├── Materi.md                    # Materi pembelajaran teori
+├── Jobsheet.md                  # Panduan percobaan praktis
+├── Project.md                   # Proyek aplikatif (open-ended)
+├── Referensi.md                 # Daftar pustaka
+├── Rubrik_Penilaian_Project.md  # Rubrik scoring project
+├── Rubrik_Penilaian_Video.md    # Rubrik scoring video
+│
+├── Praktikum/
+│   ├── Desain_CAD/              # File Fusion 360, STL, STEP
+│   ├── Desain_PCB/              # File EasyEDA, Gerber
+│   ├── Code_Embedded/           # PlatformIO project
+│   │   ├── arduino_mega/
+│   │   ├── esp32/
+│   │   └── stm32/
+│   ├── Code_PC/                 # ROS2, Python, Node.js
+│   │   ├── ros2_ws/
+│   │   ├── python_scripts/
+│   │   └── webserver_iot/
+│   ├── output/                  # Hasil test, plot, data, video
+│   └── README.md                # Cara menjalankan semua program
+│
+├── Data/
+│   ├── images/                  # Foto komponen, hasil percobaan
+│   ├── videos/                  # Demo sistem, tutorial
+│   ├── sensor_data/             # Log sensor (CSV, JSON)
+│   └── test_results/            # Grafik, analisis
+│
+├── requirements.txt             # Python packages
+├── platformio.ini               # Embedded config
+└── package.json                 # Node.js dependencies
+
+==============================================================================
+MODUL 1: ARSITEKTUR SISTEM MEKATRONIKA & ROBOTIKA
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Memahami arsitektur sistem robotika secara keseluruhan
+- Identifikasi komponen hardware & software layer
+- Desain blok diagram sistem
+- Mapping sinyal & komunikasi antar subsystem
+- Failure mode analysis
+
+KONSEP UTAMA:
+1. Sensor → Controller → Actuator → Feedback loop
+2. Centralized vs Distributed Control
+3. Real-time vs non-real-time system
+4. Safety layer (E-Stop, interlock, fault handling)
+5. Communication protocol (MQTT, Modbus, CAN)
+6. System integration & testing
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Blok diagram sistem robot
+- Pin mapping & signal routing
+- Protocol selection analysis
+- System failure analysis (FMEA basic)
+- Integration architecture diagram
+
+PANDUAN MATERI.MD (MODUL 1):
+
+1. DEFINISI & KONSEP UTAMA
+   - Apa itu mekatronika? (mechanical + electronic + software integration)
+   - Sistem robotika modern: karakteristik, requirement
+   - Real-time system: determinism, latency, jitter
+   - Distributed system: advantage, challenge
+
+2. KONSEP INTI
+   - Sensor-Controller-Actuator loop (dengan diagram)
+   - Information flow vs Control flow
+   - Synchronous vs Asynchronous communication
+   - Centralized (single controller) vs Distributed (multiple controller)
+   - Comparison tabel kelebihan-kekurangan setiap approach
+   - Trade-off: complexity vs reliability, cost vs performance
+
+3. DIAGRAM & ILUSTRASI
+   - Block diagram sistem robot dengan layer terintegrasi
+   - Signal flow diagram (sensor → processing → actuator)
+   - Architecture comparison: centralized vs distributed
+   - Communication protocol overview (timing diagram)
+   - Failure mode examples (motor stuck, sensor loss, communication timeout)
+   - Screenshot example dari robot nyata industry
+
+4. CONTOH KASUS INDUSTRI
+   - AGV warehouse: sensor (LiDAR, encoder), controller (ROS2), motor, web monitoring
+   - Robot arm manufacturing: joint control (PID), kinematics solver, safety zones
+   - Smart building: sensor (temperature, motion), PLC controller, SCADA display
+   - Otomotif: ECU (Engine Control Unit), sensor fusion, distributed control
+
+5. RINGKASAN
+   - Poin-poin kunci (5-7 bullet points)
+   - Take-away message: "sistem robotika modern adalah integrasi mekanik, elektronik, dan software"
+   - Hubungan dengan modul berikutnya: "Modul 2 akan fokus ke safety, Modul 3 ke power distribution"
+
+6. DESKRIPSI TUGAS VIDEO
+   Point-point yang HARUS dijelaskan mahasiswa dalam video:
+   
+   A. PEMBUKAAN (1-2 menit)
+      - Perkenalan diri & kelompok
+      - Judul: "Arsitektur Sistem Mekatronika dan Robotika"
+      - Tujuan: "Memahami bagaimana sensor, controller, actuator terintegrasi dalam 1 sistem"
+      - Outline: "Akan dijelaskan 5-layer architecture, blok diagram, contoh nyata, failure analysis"
+   
+   B. PENJELASAN TEORI (4-5 menit)
+      - Sensor-Controller-Actuator loop (dengan whiteboard atau slide)
+      - 5-layer architecture (plant, embedded, edge, industrial, IoT)
+      - Centralized vs Distributed: kapan pakai yang mana?
+      - Communication protocol: MQTT vs Modbus vs CAN (perbandingan)
+      - Real-time system: kenapa penting?
+      - Contoh nyata: AGV, robot arm, smart building
+      - Formula/metrik: latency (ms), throughput (msg/sec), reliability (%)
+   
+   C. SETUP & HARDWARE (2-3 menit)
+      - Tunjukkan komponen sistem robot (motor, sensor, PCB, mikrokontroler, Ubuntu PC)
+      - Tunjukkan koneksi: motor ↔ driver ↔ ESP32 ↔ (via WiFi) ↔ Ubuntu ↔ Web
+      - Jelaskan software stack: PlatformIO (embedded), ROS2 (Ubuntu), Node.js (web)
+      - Show block diagram di slide/whiteboard
+   
+   D. DEMO PRAKTIKUM (5-7 menit)
+      - Show Fusion 360: design robot arm atau AGV (3D model)
+      - Show EasyEDA: schematic koneksi motor-sensor-ESP32
+      - Show code structure: modular (sensor.h, motor.h, control.h)
+      - Demo command flow: user command via web → ROS2 → ESP32 → motor bergerak
+      - Jelaskan signal routing: digital signal, PWM, analog, serial communication
+      - Analisis: "data flow dari user command sampai motor response, berapa latency-nya?"
+   
+   E. FAILURE ANALYSIS (2-3 menit)
+      - Tunjukkan FMEA table (failure mode, effect, cause, mitigation)
+      - Contoh: motor tidak bergerak → penyebab: kabel putus, driver fail, firmware crash
+      - Demonstrasikan mitigation: watchdog, timeout detection, fallback mode
+      - Safety perspective: "jika motor gagal, system harus safe stop, bukan continue"
+   
+   F. TROUBLESHOOTING & INSIGHT (2-3 menit)
+      - Masalah saat praktikum (e.g., "awalnya motor tidak jalan")
+      - Debugging: check power → check kabel → check firmware
+      - Lesson learned: "penting verifikasi setiap layer independent dulu sebelum integrate"
+      - Tips: "dokumentasikan pin mapping, jangan hardcode, gunakan config file"
+   
+   G. PENUTUP (1 menit)
+      - Kesimpulan: "sistem robotika modern adalah integrasi multiple layer"
+      - Modul berikutnya: "Modul 2 fokus ke safety, bagaimana prevent sistem jadi unsafe"
+      - Closing statement profesional
+
+   TOTAL DURASI VIDEO: 15-20 menit
+   CATATAN: Wajib show hardware (robot nyata atau prototype), wajib screen recording code
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 1):
+
+1. TUJUAN PRAKTIKUM
+   - Tujuan umum: Mahasiswa dapat merancang arsitektur sistem robotika terintegrasi
+   - Sub-tujuan:
+     a. Desain blok diagram sistem (mechanical, electrical, software layer)
+     b. Mapping signal & pin (sensor → controller → actuator)
+     c. Analisis komunikasi protocol (MQTT, Modbus, CAN)
+     d. FMEA basic untuk system failure
+
+2. ALAT & BAHAN
+   HARDWARE:
+   - Mini robot atau chassis (AGV / arm 3-DOF / conveyor mini)
+   - Motor DC + encoder (2-3 unit)
+   - Sensor: limit switch, IR, distance sensor (minimal 3 jenis)
+   - Mikrokontroler: Arduino Mega atau ESP32
+   - Driver motor: L298N atau sejenisnya
+   - Power supply 24V, 12V, 5V
+   - Kabel, breadboard, jumper wire
+   - Ubuntu PC (untuk ROS2 edge compute)
+   
+   SOFTWARE:
+   - Fusion 360 (for CAD design)
+   - EasyEDA (for schematic)
+   - PlatformIO (VS Code extension)
+   - ROS2 Humble
+   - Python 3.10+
+   - Git
+   
+   TOOLS:
+   - Multimeter
+   - Oscilloscope (optional, untuk verify signal)
+   - USB adapter (untuk board programming)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: DESAIN BLOK DIAGRAM SISTEM
+   Tujuan: Understand system architecture dengan membuat block diagram
+   
+   Langkah:
+   a. Definisikan requirement sistem:
+      - Input: user command (via web atau joystick)
+      - Process: path planning, motion control, sensor fusion
+      - Output: motor movement, telemetry data
+   
+   b. Identifikasi setiap komponen:
+      - Mechanical: motor type, transmission, load
+      - Electrical: power supply, driver, protection device
+      - Software: embedded firmware, ROS2 node, web server
+   
+   c. Buat block diagram di tool (Visio, draw.io, atau Fusion 360):
+      [User Command] → [Web Server] → [ROS2 Node] → [ESP32] → [Motor Driver] → [Motor]
+      [Motor Encoder] → [ESP32] → [ROS2 Node] → [Web Dashboard]
+   
+   d. Anotasi: interface antara blok (protocol, signal type, frequency)
+   
+   e. Deliverable: Block diagram image (PNG/PDF), description text
+   
+   Data Pengamatan:
+   | Komponen | Tipe | Fungsi | Interface | Pin/Protocol |
+   |----------|------|--------|-----------|--------------|
+   | Motor | DC | Actuator | PWM + DIR | GPIO 25, 26 |
+   | Encoder | Incremental | Feedback | Digital | GPIO 27, 28 |
+   | ...  | ... | ... | ... | ... |
+   
+   ---
+   
+   PERCOBAAN 2: PIN MAPPING & SIGNAL ROUTING
+   Tujuan: Detailed mapping semua signal dari sensor ke controller ke actuator
+   
+   Langkah:
+   a. Ambil hardware yang ada (motor, sensor, PCB)
+   b. Identify setiap pin di mikrokontroler yang akan digunakan
+   c. Create wiring diagram:
+      - Gambar di EasyEDA atau draw manually dengan label lengkap
+      - List semua koneksi: dari pin X ke komponen Y
+   
+   d. Create pin mapping table:
+      | Signal | Component | Mikrokontroler Pin | Type | Purpose |
+      |--------|-----------|-------------------|------|---------|
+      | PWM_Motor | Motor Driver | GPIO 25 | PWM Output | Speed control |
+      | DIR_Motor | Motor Driver | GPIO 26 | Digital Output | Direction |
+      | ENC_A | Encoder | GPIO 27 | Digital Input | Speed feedback |
+      | ...  | ... | ... | ... | ... |
+   
+   e. Deliverable: Wiring diagram + pin mapping table (dalam spreadsheet atau table format)
+   
+   Data Pengamatan:
+   - Total digital pin used: __
+   - Total analog pin used: __
+   - Total PWM pin used: __
+   - Spare pin available: __
+   - Potential conflict: (e.g., I2C on same pin dengan SPI) __
+   
+   ---
+   
+   PERCOBAAN 3: COMMUNICATION PROTOCOL ANALYSIS
+   Tujuan: Understand dan pilih protocol komunikasi yang sesuai untuk sistem
+   
+   Langkah:
+   a. Research 3 protocol: MQTT, Modbus RTU, CAN Bus
+   b. Untuk setiap protocol, isi table:
+      | Parameter | MQTT | Modbus RTU | CAN Bus |
+      |-----------|------|-----------|---------|
+      | Topology | Publish-Subscribe | Master-Slave | Multi-master |
+      | Latency | 50-200 ms | 10-100 ms | 1-10 ms |
+      | Reliability | QoS adjustable | Checksum | CRC |
+      | Bandwidth | Efficient | Low | High |
+      | Complexity | Medium | Low | High |
+      | Typical Use | IoT, Cloud | Industrial, PLC | Real-time control |
+   
+   c. Analisis requirement sistem:
+      - Latency requirement: ____ ms
+      - Real-time critical? Yes/No
+      - Number of device: ____
+      - Bandwidth need: ____ kbps
+   
+   d. Recommendation: Pilih 1 protocol yang paling sesuai, jelaskan alasan
+   
+   e. Deliverable: Comparison table + recommendation + justification
+   
+   ---
+   
+   PERCOBAAN 4: FMEA BASIC (FAILURE MODE & EFFECTS ANALYSIS)
+   Tujuan: Identify potential failure dan mitigation strategy
+   
+   Langkah:
+   a. Identifikasi potential failure point di sistem:
+      - Mechanical: bearing fail, belt slip, gear tooth break
+      - Electrical: power loss, wire break, short circuit
+      - Software: firmware crash, communication loss, sensor timeout
+   
+   b. Untuk setiap failure, isi FMEA table:
+      | Failure Mode | Component | Effect | Cause | Detection | Mitigation | Severity |
+      |--------------|-----------|--------|-------|-----------|-----------|----------|
+      | Motor not moving | Motor + Driver | Robot stuck | Power loss, firmware crash, driver damaged | Watchdog timer, current sensor | E-Stop, safe stop, fallback to manual | High |
+      | Sensor loss | Encoder | Wrong position estimate | Cable disconnect, sensor damaged | Timeout + LED indicator | Use previous position, reduce speed | Medium |
+      | ... | ... | ... | ... | ... | ... | ... |
+   
+   c. Severity rating: Low (1-3), Medium (4-6), High (7-9)
+   
+   d. Deliverable: FMEA table (Excel atau table format)
+
+4. DATA PENGAMATAN
+   - Block diagram image (dengan annotation)
+   - Pin mapping table
+   - Protocol comparison table
+   - FMEA table dengan minimal 10 failure mode
+   - Design reasoning document
+
+5. ANALISIS
+   PERTANYAAN ANALISIS:
+   - Apa advantage & disadvantage dari centralized control vs distributed?
+   - Protocol mana yang dipilih untuk sistem ini? Mengapa?
+   - Apa failure mode paling critical? Bagaimana mitigasi?
+   - Apakah current design memenuhi requirement? Jika tidak, apa yang perlu diubah?
+   - Apakah ada trade-off dalam design? (e.g., complexity vs reliability)
+
+6. KESIMPULAN
+   - Rangkum desain arsitektur sistem
+   - Apakah tujuan praktikum tercapai?
+   - Apa yang learned dari praktikum?
+   - Suggestion untuk improvement
+
+---
+
+PANDUAN PROJECT.MD (MODUL 1):
+
+JUDUL PROJECT: "DESIGN & ANALYZE END-TO-END ROBOTICS SYSTEM"
+
+LATAR BELAKANG:
+Industri manufaktur modern membutuhkan sistem robotika yang terintegrasi sempurna,
+dari mekanik, elektronik, kontrol, hingga monitoring. Desain yang tidak tepat akan
+menyebabkan system failure, safety issue, atau performance suboptimal.
+
+TUJUAN PROJECT:
+- Design arsitektur sistem robotika lengkap (mechanical, electrical, software)
+- Create detailed blok diagram, wiring diagram, signal flow
+- Perform FMEA untuk identify & mitigate failure risk
+- Create implementation plan (BOM, timeline, responsibility matrix)
+
+SPESIFIKASI SISTEM (PILIH SALAH SATU):
+A. AGV Mini untuk warehouse automation
+   - Requirement: Navigate antar station, obstacle avoidance, docking di charging
+   - Sensor: LiDAR (navigation), encoder (odometry), bumper (safety)
+   - Actuator: 2 motor DC + gearbox, linear actuator untuk gripper (optional)
+   - Control: Real-time navigation ROS2, local path planning
+   - Monitoring: Web dashboard showing robot status & location
+   
+B. Robot Arm 3-DOF untuk pick & place
+   - Requirement: Reach target position, gripper control, accuracy ±1cm
+   - Actuator: 3 stepper/servo motor untuk joint, gripper servo
+   - Control: Kinematics solver (FK/IK), trajectory planning
+   - Feedback: Encoder setiap joint
+   - Monitoring: Web showing actual vs target position
+   
+C. Conveyor + Sorting System
+   - Requirement: Sensor detection, sort by color, divert reject part
+   - Actuator: DC motor conveyor, pneumatic solenoid untuk diverter
+   - Control: Sequencing (PLC-like), part counting, timing
+   - Monitoring: Production count, error log, alarm system
+
+HARDWARE YANG DIGUNAKAN:
+- Mini robot chassis (atau custom design Fusion 360)
+- Motor + driver (DC, stepper, atau servo sesuai pilihan)
+- Sensor sesuai requirement
+- Mikrokontroler: Arduino Mega atau ESP32
+- Power supply, kabel, PCB/breadboard
+- Ubuntu PC untuk edge compute (optional, untuk full integration)
+
+SOFTWARE YANG DIGUNAKAN:
+- Fusion 360 untuk mechanical design
+- EasyEDA untuk electrical schematic
+- PlatformIO untuk embedded firmware
+- ROS2 untuk high-level control (optional)
+- Python/Node.js untuk analysis tools (optional)
+
+INSTRUKSI IMPLEMENTASI:
+
+FASE 1: REQUIREMENT & ANALYSIS (Minggu 1)
+- Define detailed requirement: input/output, sensor resolution, actuator power
+- Create system requirement specification (SRS) document
+- Identify constraint & assumption
+- Define success criteria (measurable)
+
+FASE 2: DESIGN (Minggu 2)
+- Design blok diagram (functional architecture)
+- Design electrical architecture (power tree, signal routing)
+- Design mechanical layout (Fusion 360 atau CAD tool)
+- Create wiring diagram (EasyEDA atau manual)
+- Pin mapping & configuration
+
+FASE 3: FAILURE ANALYSIS (Minggu 2)
+- FMEA: identify semua potential failure
+- Severity assessment (high/medium/low)
+- Mitigation strategy untuk failure critical
+- Create contingency plan
+
+FASE 4: IMPLEMENTATION PLAN (Minggu 3)
+- Create BOM (Bill of Materials) dengan part number & cost
+- Create timeline (Gantt chart)
+- Define responsibility matrix (siapa tanggung jawab apa)
+- Risk assessment (supply chain, technical risk, timeline risk)
+
+FASE 5: PROTOTYPE & TEST (Minggu 3-4)
+- Build prototype (mechanical assembly, electrical wiring)
+- Test individual subsystem (motor test, sensor test, communication test)
+- Integration test (all subsystem together)
+- Performance measurement vs specification
+
+FASE 6: DOCUMENTATION & PRESENTATION (Minggu 4)
+- Create final technical report
+- Create design documentation (CAD, schematic, code)
+- Video demo (5-10 menit)
+- Presentation slide
+
+DELIVERABLE:
+1. System Requirement Specification (SRS) document
+2. Technical design document (CAD, schematic, architecture diagram)
+3. FMEA report dengan mitigation strategy
+4. Implementation plan (BOM, timeline, responsibility matrix)
+5. Source code (organized di GitHub, dengan README)
+6. Test report dengan performance measurement
+7. Video demo (min 5 menit, show system & architecture)
+8. Presentation slide
+9. Lessons learned & recommendation untuk next iteration
+
+KRITERIA PENILAIAN:
+- Requirement clarity & completeness (15%)
+- Design quality (15%)
+- FMEA comprehensiveness (20%)
+- Implementation realism (15%)
+- Documentation quality (20%)
+- Demo & presentation (15%)
+
+BONUS (+10%):
+- Innovative design atau feature
+- Advanced analysis (e.g., cost-benefit analysis, monte carlo simulation)
+- Integration dengan real hardware
+- Prototype working demo
+
+==============================================================================
+MODUL 2: SAFETY & COMMISSIONING SISTEM
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Implementasi safety system yang reliable
+- Commissioning prosedur & testing
+- Fault handling & recovery
+
+KONSEP UTAMA:
+1. E-Stop system (hardware + software)
+2. Limit switch & homing
+3. Interlock logic & state machine
+4. Watchdog & timeout detection
+5. Fault diagnostics & logging
+6. Recovery procedure & SOP
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- E-Stop circuit & implementation
+- Limit switch integration
+- Homing procedure
+- Interlock state machine
+- Watchdog & timeout logic
+- Fault diagnostics code
+
+PANDUAN MATERI.MD (MODUL 2):
+
+1. DEFINISI
+   - Safety dalam robotika: mencegah injury ke human atau damage ke equipment
+   - Standards: ISO/IEC 62061 (safety robot), IEC 61508 (safety system general)
+   - E-Stop: emergency stop untuk human safety
+   - Commissioning: proses verifikasi & validation sebelum production
+
+2. KONSEP INTI
+   - E-Stop circuit: hardwired E-Stop yang independent dari main control
+   - Limit switch: prevent over-travel, mechanical protection
+   - Interlock: prevent unsafe state (e.g., gripper not closed saat move)
+   - Watchdog timer: detect firmware hang atau stuck loop
+   - Timeout: detect communication loss atau sensor not responding
+   - Safety layer vs Control layer: separation of concern
+   - Safe state: apa state terendah yang aman saat fault (usually: stop all motor)
+   - Diagnostics: identify root cause failure
+
+3. DIAGRAM & ILUSTRASI
+   - E-Stop circuit diagram (hardwired vs software triggered)
+   - State machine diagram (idle → ready → running → fault → recovery)
+   - Timing diagram: E-Stop press → motor stop (dalam berapa ms?)
+   - Fault tree analysis (apa causes robot jadi unsafe)
+   - Communication timeout example (sensor stop reporting → timeout → safe stop)
+   - Limit switch position diagram (home position, joint limit, workspace boundary)
+
+4. CONTOH KASUS INDUSTRI
+   - ABB robot factory: E-Stop zones, safety fence, motion monitoring
+   - Warehouse AGV: obstacle detection, emergency stop, safe docking
+   - Medical robot: redundant safety system, sterilization procedures
+   - Automotive manufacturing: interlock safety gates, dual-channel monitoring
+
+5. RINGKASAN
+   - Safety adalah responsibility bersama (mechanical, electrical, software)
+   - Commissioning adalah mandatory sebelum operate, jangan skip
+   - Fault handling harus graceful, jangan crash tanpa warning
+   - Log & diagnostics penting untuk root cause analysis
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 2)
+   Point yang HARUS dijelaskan:
+   - E-Stop circuit: how it's hardwired independent from CPU
+   - State machine: idle → running → fault → recovery
+   - Limit switch: mechanical backup untuk software limit
+   - Watchdog: how it detects firmware hang
+   - Demo: press E-Stop → observe immediate motor stop (< 100ms)
+   - Demo: trigger fault scenario → observe safe stop
+   - Troubleshooting: common safety issue & solution
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 2):
+
+1. TUJUAN PRAKTIKUM
+   - Implementasi E-Stop system yang reliable
+   - Test limit switch & homing procedure
+   - Interlock logic implementation & verification
+   - Watchdog & timeout detection
+   - Fault state management & logging
+
+2. ALAT & BAHAN
+   - Robot yang sudah disiapkan dari Modul 1
+   - E-Stop button (hardwired type)
+   - Limit switch (min 2 unit)
+   - Relay module (untuk E-Stop circuit)
+   - Current sensor atau ammeter
+   - Oscilloscope (untuk measure response time)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: E-STOP IMPLEMENTATION
+   - Wire E-Stop button ke safety relay
+   - Program microcontroller untuk detect E-Stop signal
+   - Verify E-Stop work immediately (< 100ms response time)
+   - Test multiple E-Stop activation (reliability test)
+   
+   Deliverable: Schematic, code, test result (response time measurement)
+   
+   PERCOBAAN 2: LIMIT SWITCH INTEGRATION
+   - Install limit switch di joint limit position
+   - Program software limit (tidak bergerak beyond limit)
+   - Test mechanical limit & software limit together
+   - Homing procedure: gerak ke home position, detect limit switch
+   
+   Deliverable: Position diagram, code, homing procedure SOP
+   
+   PERCOBAAN 3: STATE MACHINE IMPLEMENTATION
+   - Design state: idle, ready, running, fault, recovery
+   - Implement state transition logic
+   - Test state change (manual command, timeout, E-Stop trigger)
+   - Verify interlock (e.g., tidak bisa run jika gripper tidak closed)
+   
+   Deliverable: State diagram, code, state transition test log
+   
+   PERCOBAAN 4: WATCHDOG & TIMEOUT
+   - Enable watchdog timer di microcontroller
+   - Implement communication timeout (detect sensor loss > 100ms)
+   - Test watchdog trigger (observe safe stop)
+   - Test sensor loss (unplug encoder, observe timeout → safe stop)
+   
+   Deliverable: Code, timeout test result, watchdog configuration
+   
+   PERCOBAAN 5: FAULT DIAGNOSTICS
+   - Program fault logging (timestamp, fault type, sensor value)
+   - Implement fault recovery: attempt recovery, or goto safe state
+   - Test fault scenario: motor stall, sensor timeout, power dip
+   - Analyze fault log (root cause analysis)
+   
+   Deliverable: Fault log file (CSV or JSON), diagnostics code
+
+4. DATA PENGAMATAN
+   - E-Stop response time (ms)
+   - Limit switch detection accuracy
+   - State machine transition time
+   - Watchdog trigger count
+   - Fault recovery success rate
+   - Downtime per fault type
+
+5. ANALISIS
+   - E-Stop response time vs requirement (< 100ms standard)
+   - Fault detection reliability: true positive vs false positive
+   - Recovery effectiveness: how many fault dapat auto-recover?
+   - Recommendations untuk improvement
+
+6. KESIMPULAN
+   - Safety system yang reliable adalah critical untuk production
+   - Proper commissioning prevent many issues
+   - Log & monitoring essential untuk troubleshooting
+
+---
+
+PANDUAN PROJECT.MD (MODUL 2):
+
+JUDUL PROJECT: "COMPREHENSIVE SAFETY SYSTEM DESIGN & IMPLEMENTATION"
+
+SPESIFIKASI:
+- Design complete safety system untuk robot choice from Modul 1
+- Implement E-Stop dengan hardwired circuit
+- Implement limit switch at all joint/axis
+- Implement state machine dengan fault recovery
+- Create commissioning checklist & SOP
+- Perform safety audit & document finding
+
+DELIVERABLE:
+1. Safety architecture document (threat model, mitigation)
+2. Safety circuit diagram (E-Stop, limit switch, interloc)
+3. State machine diagram & code
+4. Fault diagnostics system with logging
+5. Commissioning checklist (10-15 item)
+6. Test report (safety verification)
+7. Safety SOP documentation
+8. Video demo (show E-Stop, fault recovery, etc)
+
+BONUS:
+- Dual-channel monitoring (redundancy)
+- Advanced diagnostics (machine learning based anomaly)
+- Integration dengan external monitoring system
+
+==============================================================================
+MODUL 3: POWER & EMC PRAKTIS UNTUK ROBOT/IIOT
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Desain power distribution system
+- EMC (Electromagnetic Compatibility) implementation
+- Noise filtering & signal integrity
+- Layout best practice
+
+KONSEP UTAMA:
+1. Power tree design (24V, 12V, 5V, 3.3V)
+2. Power regulation & stability
+3. Grounding & shielding
+4. Capacitive & inductive noise
+5. Filter design (RC, LC)
+6. PCB layout consideration
+7. Cable routing & management
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Power tree design & implementation
+- Noise measurement (before/after filter)
+- Filter design & tuning
+- PCB layout dengan EMC best practice
+- Stability test (load change, transient response)
+
+PANDUAN MATERI.MD (MODUL 3):
+
+1. DEFINISI
+   - Power distribution: supply tenaga ke setiap subsystem dengan stable voltage
+   - EMC: device tidak generate excessive noise & tidak susceptible terhadap external noise
+   - Noise: unwanted signal (electro-magnetic interference dari motor, switching circuit)
+
+2. KONSEP INTI
+   - Power tree: hierarchical power supply (24V input → 12V reg → 5V reg → 3.3V reg)
+   - Voltage drop: I × R loss, critical untuk long cable
+   - Transient response: saat motor on/off, power draw berubah drastis
+   - Capacitive decoupling: local capacitor dekat IC untuk smooth transient
+   - Grounding: return path untuk current, critical untuk noise immunity
+   - Star grounding: single point untuk low-frequency, plane untuk high-frequency
+   - Shielding: Faraday cage untuk block EMI
+   - Cable twist: 2 wire twist untuk cancel magnetic field
+
+3. DIAGRAM & ILUSTRASI
+   - Power tree block diagram (input → converter → output, dengan voltage ripple waveform)
+   - Decoupling capacitor placement (dekat setiap IC pin)
+   - Ground plane vs single wire ground (noise comparison)
+   - Filter design: RC low-pass filter, LC filter (frequency response graph)
+   - PCB layout: power plane, ground plane, signal routing
+   - Noise spectrum (before filter vs after filter)
+   - Cable routing: power cable vs signal cable separation
+
+4. CONTOH KASUS INDUSTRI
+   - Industrial servo drive: multi-stage power, careful grounding untuk analog signal
+   - Automotive ECU: ripple requirement < 100mV, noise susceptibility test
+   - Robot with high-speed motor: radio frequency noise dari switching, ferrite filter solution
+   - Data center power: PFC (Power Factor Correction), UPS integration
+
+5. RINGKASAN
+   - Power integrity adalah foundation untuk reliable control
+   - EMC design tidak bisa di-add setelah, harus dari design awal
+   - Measurement important untuk verify design
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 3)
+   Point yang HARUS dijelaskan:
+   - Power tree: kenapa multi-stage regulator?
+   - Noise source: motor switching, converter switching
+   - Decoupling capacitor: kenapa dekat IC?
+   - Ground plane vs ground wire: difference & why plane better?
+   - Filter design: RC vs LC, trade-off response time vs attenuation
+   - Demo: measure voltage ripple with/without filter (oscilloscope)
+   - Demo: motor on/off, observe power transient (before/after capacitor)
+   - PCB layout best practice
+   - Troubleshooting: common power/EMC issue (sensor noise, unstable voltage)
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 3):
+
+1. TUJUAN PRAKTIKUM
+   - Design & implement power distribution system
+   - Measure & analyze noise in system
+   - Design & implement filter
+   - Verify power integrity & EMC
+
+2. ALAT & BAHAN
+   - Power supply multi-output (24V, 12V, 5V)
+   - Voltage regulator: LM7805 (5V), LM7812 (12V), atau switching regulator
+   - Capacitor: electrolytic (bulk), ceramic (decoupling)
+   - Inductor (for LC filter)
+   - Resistor (for RC filter)
+   - Oscilloscope (untuk measure ripple & transient)
+   - Load: motor + resistor untuk simulate load change
+   - PCB (prototype PCB atau breadboard)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: POWER TREE DESIGN
+   - Analyze requirement (voltage, current per subsystem)
+   - Design regulator circuit: input → 24V → 12V → 5V → 3.3V
+   - Calculate capacitor value (bulk + decoupling)
+   - Build circuit on breadboard atau PCB
+   
+   Deliverable: Schematic, BOM, power tree diagram, assembled circuit
+   
+   PERCOBAAN 2: NOISE MEASUREMENT (BASELINE)
+   - Setup oscilloscope to measure voltage at each regulator output
+   - Measure voltage ripple (peak-to-peak, frequency)
+   - Measure response saat load on/off (transient response time)
+   - Record data: voltage vs time graph
+   
+   Deliverable: Oscilloscope screenshot, measurement data (CSV)
+   
+   PERCOBAAN 3: FILTER DESIGN
+   - Design RC low-pass filter untuk motor noise: fc = 10kHz
+   - Design LC filter untuk EMI suppression
+   - Calculate component value (R, C, L)
+   - Build filter circuit
+   
+   Deliverable: Filter schematic, component calculation, filter circuit built
+   
+   PERCOBAAN 4: NOISE MEASUREMENT (AFTER FILTER)
+   - Repeat measurement dengan filter installed
+   - Compare ripple amplitude
+   - Compare response time (faster atau slower?)
+   - Analyze trade-off
+   
+   Deliverable: Before/after graph, comparison table
+   
+   PERCOBAAN 5: STABILITY TEST
+   - Load test: apply different load (0% → 25% → 50% → 100%)
+   - Measure voltage regulation (voltage change at full load vs no load)
+   - Transient test: sudden load change, measure droop & recovery time
+   
+   Deliverable: Load regulation graph, transient response measurement
+
+4. DATA PENGAMATAN
+   - Voltage ripple (mV peak-to-peak, frequency)
+   - Transient response (droop amplitude, recovery time)
+   - Noise frequency spectrum (FFT analysis)
+   - Load regulation (ΔV at 100% load)
+   - Filter attenuation (dB)
+
+5. ANALISIS
+   - Power ripple memenuhi requirement? (typical < 100mV untuk analog, < 200mV untuk digital)
+   - Transient response acceptable? (rise time, overshoot)
+   - Filter effectiveness: berapa dB attenuation?
+   - Trade-off: filtering yang lebih baik vs response time lambat?
+   - Recommendation: upgrade ke switching regulator? Better grounding plane?
+
+6. KESIMPULAN
+   - Power integrity critical untuk noise-sensitive application
+   - Proper filtering improve system reliability
+   - Measurement verify design effectiveness
+
+---
+
+PANDUAN PROJECT.MD (MODUL 3):
+
+JUDUL PROJECT: "POWER DISTRIBUTION & EMC SYSTEM DESIGN FOR ROBOT"
+
+SPESIFIKASI:
+- Design complete power system untuk robot dari Modul 1
+- Analyze power requirement per subsystem
+- Design voltage regulator dengan multi-stage
+- Design EMC filtering (motor noise, conducted EMI)
+- Design PCB dengan best practice (ground plane, trace width, via placement)
+- Perform power integrity verification
+
+DELIVERABLE:
+1. Power requirement analysis (per subsystem)
+2. Power tree design schematic
+3. EMC filter design (RC, LC filter calculation)
+4. PCB layout design (Gerber format, design rule check pass)
+5. Measurement data: power ripple, transient response, noise spectrum
+6. Stability test report
+7. BOM with cost estimate
+8. Troubleshooting guide (common power/EMC issue)
+9. Video demo (oscilloscope measurement, load test)
+
+BONUS:
+- Switching regulator implementation (better efficiency)
+- Power factor correction (PFC)
+- Advanced EMI analysis (conducted vs radiated)
+- Thermal analysis (regulator temperature)
+
+==============================================================================
+TOOLS & PLATFORM (BATCH 1)
+==============================================================================
+
+MEKANIK:
+- Fusion 360 untuk desain 3D, simulasi mekanisme, analisis FEA sederhana
+
+ELEKTRONIK:
+- EasyEDA untuk desain schematic dan PCB
+
+PROGRAMMING EMBEDDED:
+- PlatformIO (VS Code extension)
+- Arduino IDE (alternative)
+- Target board: Arduino Mega 2560 atau ESP32
+
+PROGRAMMING PC:
+- Python 3.10+ untuk data analysis
+- Git untuk version control
+
+MEASUREMENT & TEST:
+- Oscilloscope (untuk analog signal measurement)
+- Multimeter (untuk voltage, current, resistance)
+- Serial monitor (untuk embedded output)
+
+==============================================================================
+PANDUAN UMUM KONTEN
+==============================================================================
+
+PANDUAN MATERI.MD (BERLAKU UNTUK SEMUA MODUL):
+
+1. DEFINISI
+   - Jelaskan konsep dengan bahasa sederhana & jelas
+   - Hubungkan dengan praktikum sebelumnya
+   - Tujuan pembelajaran di dunia nyata
+
+2. KONSEP UTAMA
+   - Breakdown menjadi poin-poin kunci
+   - Penjelasan teknis tapi mudah dipahami
+   - Formula/persamaan dengan contoh perhitungan
+   - Parameter-parameter penting & pengaruhnya
+
+3. DIAGRAM / ILUSTRASI
+   - Block diagram sistem
+   - Flowchart/state machine
+   - Wiring diagram
+   - Timing diagram
+   - Grafik karakteristik
+   - Screenshot hasil
+
+4. CONTOH KASUS INDUSTRI
+   - Aplikasi di industri manufaktur
+   - Aplikasi di robot service (AGV, drone, robot medis)
+   - Aplikasi di smart building / automation
+   - "Mengapa konsep ini penting" dengan contoh konkret
+
+5. RINGKASAN
+   - Poin-poin kunci (bullet points)
+   - Take-away message
+   - Hubungan dengan modul selanjutnya
+
+6. DESKRIPSI TUGAS VIDEO
+   Point-point yang harus dijelaskan mahasiswa:
+   
+   A. PEMBUKAAN (1-2 menit)
+      - Perkenalan diri & kelompok
+      - Judul materi
+      - Tujuan pembelajaran
+      - Outline
+   
+   B. PENJELASAN TEORI (3-5 menit)
+      - Konsep utama (dengan slide/whiteboard)
+      - Diagram/ilustrasi relevan
+      - Formula dengan contoh
+      - Aplikasi dunia nyata
+   
+   C. SETUP & HARDWARE (2-3 menit)
+      - Komponen yang digunakan
+      - Wiring/koneksi (show & explain)
+      - Software & konfigurasi
+   
+   D. DEMO PRAKTIKUM (5-8 menit)
+      - Screen recording: coding, compile, upload
+      - Output (serial monitor, plot, robot bergerak)
+      - Penjelasan code (line-by-line bagian penting)
+      - Parameter ubah → efek (min 2-3 variasi)
+      - Analisis: teori vs praktik
+   
+   E. TROUBLESHOOTING & INSIGHT (2-3 menit)
+      - Masalah yang dihadapi & cara mengatasi
+      - Lesson learned
+      - Tips untuk praktikum ini & modul berikutnya
+   
+   F. PENUTUP (1 menit)
+      - Kesimpulan
+      - Link ke modul selanjutnya
+      - Terima kasih
+   
+   TOTAL: 15-20 menit
+   CATATAN: Wajib screen recording & show hardware, audio jelas, 720p min
+
+---
+
+PANDUAN JOBSHEET.MD (BERLAKU UNTUK SEMUA MODUL):
+
+1. TUJUAN PRAKTIKUM
+   - Tujuan umum (dari materi utama)
+   - Breakdown ke sub-tujuan (tiap percobaan)
+   - Kompetensi yang diharapkan
+
+2. ALAT & BAHAN
+   HARDWARE: Mikrokontroler, sensor, aktuator, power supply, kabel, breadboard, PCB
+   SOFTWARE: PlatformIO, Fusion 360, EasyEDA, Python, ROS2, Git
+   TOOLS: Multimeter, oscilloscope, 3D printer, solder station
+
+3. LANGKAH KERJA
+   - Persiapan (install software, clone repo, hardware check)
+   - Setup hardware (wiring sesuai diagram, cek tegangan)
+   - Konfigurasi software (edit config.h, parameter)
+   - Percobaan 1, 2, 3, ... (breakdown per sub-materi)
+   - Troubleshooting umum (common issue & solusi)
+
+4. DATA PENGAMATAN
+   - Template tabel (untuk diisi mahasiswa)
+   - Grafik yang harus dibuat
+   - Parameter yang dihitung
+   - Penamaan file hasil (konsisten & rapi)
+
+5. ANALISIS
+   - Bandingkan result berbagai percobaan
+   - Sesuai teori? Jika tidak, mengapa?
+   - Faktor yang mempengaruhi result
+   - Pertanyaan kunci untuk dijawab
+
+6. KESIMPULAN
+   - Rangkum result percobaan
+   - Jawab tujuan praktikum
+   - Lesson learned
+   - Saran improvement
+
+---
+
+PANDUAN PROJECT.MD (BERLAKU UNTUK SEMUA MODUL):
+
+FORMAT PROJECT:
+- Judul menarik & aplikatif
+- Latar belakang (masalah dunia nyata)
+- Tujuan spesifik & measurable
+- Spesifikasi sistem (requirement functional & non-functional)
+- Diagram sistem (block, flowchart, state machine)
+- Hardware & software yang digunakan
+- Instruksi implementasi (step-by-step detail)
+- Kriteria penilaian (rubrik)
+- Deliverable (apa yang diserahkan)
+
+KARAKTERISTIK PROJECT YANG BAIK:
+✓ Lebih sulit dari percobaan (integrasi multiple concepts)
+✓ Penerapan nyata & mudah dipahami tujuannya
+✓ Bersifat open-ended (ruang kreativitas)
+✓ Membutuhkan foto/video hasil
+✓ Instruksi jelas tapi tidak spoon-feeding
+✓ Ada challenge (troubleshooting, optimization)
+✓ Penilaian multi-aspek (design, code, report, demo, video)
+
+==============================================================================
+PANDUAN CODING
+==============================================================================
+
+PRINSIP CODING:
+✓ Modular: pisahkan fungsi (sensor, motor, control, communication)
+✓ Readable: variable naming jelas, comment cukup
+✓ Testable: masing-masing fungsi bisa ditest independent
+✓ Portable: bisa jalan di Windows/Linux/Mac
+✓ Configurable: parameter di file config, jangan hardcode
+
+STRUKTUR CODE EMBEDDED (PlatformIO):
+project_name/
+├── src/
+│   ├── main.cpp (entry point)
+│   ├── config.h (all configuration, pin mapping, constants)
+│   ├── sensor.h / sensor.cpp
+│   ├── motor.h / motor.cpp
+│   ├── control.h / control.cpp
+│   └── utils.h / utils.cpp
+├── lib/ (external libraries)
+├── test/ (unit test)
+├── platformio.ini
+└── README.md
+
+VARIABEL YANG BISA DIUBAH (di bagian atas code):
+// ===== CONFIGURATION - UBAH PARAMETER DI SINI =====
+#define MOTOR_PIN    25
+#define SENSOR_PIN   26
+float parameter_1 = 1.0;  // UBAH untuk melihat pengaruh
+int timeout_ms = 100;     // UBAH untuk test response time
+
+PENJELASAN PARAMETER:
+- Setiap parameter diberi comment (input, output, cara kerja)
+- Tiap bagian penting code diberi inline comment
+- README.md: cara compile, upload, test, expected result
+
+OUTPUT:
+- Semua output disimpan di folder output/ dengan naming convention: [modul]_[test]_[date].ext
+- Plot disimpan PNG (high resolution)
+- Data disimpan CSV atau JSON
+
+==============================================================================
+RUBRIK PENILAIAN (GENERAL)
+==============================================================================
+
+RUBRIK PENILAIAN PROJECT:
+
+Aspek Penilaian (Total 100%):
+1. Desain Mekanik (Fusion 360) — 15%
+   • Assembly lengkap dengan constraint, motion study accurate
+   • Engineering drawing (dimensi, toleransi)
+   • Analisis workspace/DOF (jika applicable)
+   • Foto assembly fisik profesional
+
+2. Desain Elektronik (EasyEDA) — 15%
+   • Schematic lengkap & jelas, semua komponen properly rated
+   • PCB layout optimal (power/signal separation, trace width sesuai arus)
+   • Protection device lengkap (fuse, TVS, diode)
+   • BOM & foto implementasi
+
+3. Software Embedded — 20%
+   • Code modular & readable (meaningful variable, good comment)
+   • Algoritma kontrol correct (PID/fuzzy implementation)
+   • Safety system robust (E-Stop, watchdog, fault handling)
+   • Unit test present, compile clean
+
+4. Software PC (ROS2, Web) — 15%
+   • ROS2 architecture well-designed
+   • URDF model accurate
+   • Web dashboard functional & responsive
+   • Database & data logging comprehensive
+
+5. Integrasi Sistem — 15%
+   • Semua layer terintegrasi seamless
+   • Komunikasi reliable dengan error handling
+   • Latency acceptable (< 100ms untuk critical)
+   • Fault recovery robust
+
+6. Performa Sistem — 10%
+   • Memenuhi spesifikasi (akurasi, speed, repeatability)
+   • Data kuantitatif lengkap (error, cycle time, uptime)
+   • Analisis performa mendalam (bandingkan target vs aktual)
+
+7. Laporan & Dokumentasi — 10%
+   • Laporan terstruktur dengan executive summary
+   • Technical content jelas & mendalam
+   • Code documentation lengkap (README, API doc)
+   • GitHub organized dengan version control clean
+
+---
+
+RUBRIK PENILAIAN VIDEO:
+
+Komponen Penilaian:
+1. Pembukaan — 5% (perkenalan jelas, tujuan & outline)
+2. Penjelasan Teori — 25% (konsep jelas, diagram, contoh dunia nyata)
+3. Setup & Hardware — 15% (komponen ditunjukkan, wiring dijelaskan)
+4. Demo Praktikum — 30% (screen recording jelas, output ditampilkan, parameter ubah, analisis)
+5. Troubleshooting & Insight — 15% (masalah & solusi, lesson learned)
+6. Penutup — 5% (kesimpulan, next modul, closing profesional)
+7. Teknis Video — 5% (audio jelas, video 720p, editing profesional, durasi 15-20 menit)
+
+Skala: 91-100 (A), 81-90 (AB), 71-80 (B), 61-70 (BC), 51-60 (C), <50 (D/E)
+
+==============================================================================
+REFERENSI BUKU (BATCH 1)
+==============================================================================
+
+MEKATRONIKA (FUNDAMENTAL):
+1. W. Bolton — Mechatronics: Electronic Control Systems in Mechanical and 
+   Electrical Engineering (7th ed.) — Pearson
+   Coverage: Sensor, aktuator, controller, interfacing
+   Relevant untuk Modul 1-3
+
+2. David G. Alciatore, Michael B. Histand — Introduction to Mechatronics 
+   and Measurement Systems (5th ed.) — McGraw-Hill
+   Coverage: Sistem pengukuran, sensor conditioning
+   Relevant untuk Modul 3
+
+SAFETY (UNTUK MODUL 2):
+1. ISO/IEC 62061 — Safety of machinery - Functional safety of safety-related 
+   control systems (standard, available online atau library)
+
+2. IEC 61508 — Functional Safety of Electrical/Electronic/Programmable 
+   Electronic Safety-Related Systems (standard)
+
+3. Frank D. Petruzella — Programmable Logic Controllers (6th ed.) — McGraw-Hill
+   Coverage: PLC, safety logic, control system
+   Relevant untuk Modul 2, 12
+
+POWER & EMC (UNTUK MODUL 3):
+1. Henry Ott — Electromagnetic Compatibility Engineering (2nd ed.) — Wiley
+   Coverage: EMC design, noise reduction, filtering
+   Recommended untuk deep dive EMC
+
+2. Chemandy Electronics Power Supply Design Calculator & Reference (online tool)
+   Available: chemandy.com
+
+ONLINE RESOURCES:
+- ROS2 Official Documentation: https://docs.ros.org/en/humble/
+- Espressif ESP32 Technical Reference: https://docs.espressif.com/
+- Arduino Reference: https://www.arduino.cc/reference/
+- ISO/IEC Standard (via university library atau online service)
+
+==============================================================================
+CONTACT & SUPPORT (BATCH 1)
+==============================================================================
+
+INSTRUKTUR BATCH 1:
+- Responsible untuk Modul 1, 2, 3
+- Contact: [instruktur email]
+- Office hour: [time]
+
+REPOSITORY:
+- GitHub classroom: [repo link]
+- Documentation: [wiki link]
+- Forum: [discord/slack channel]
+
+TIMELINE:
+- Modul 1: Minggu 1-2
+- Modul 2: Minggu 3-4
+- Modul 3: Minggu 5
+- Catch-up & review: Minggu 6
+
+==============================================================================
+CATATAN PENTING
+==============================================================================
+
+1. UNTUK INSTRUKTUR:
+   - Test semua code & hardware sebelum praktikum
+   - Siapkan troubleshooting guide
+   - Buat demo video referensi
+   - Setup GitHub Classroom
+
+2. UNTUK MAHASISWA:
+   - Baca materi SEBELUM praktikum
+   - Dokumentasikan progress (foto, video, log)
+   - Backup code dengan Git (commit frequently)
+   - Collaborate efficiently dalam kelompok
+
+3. VERSION CONTROL:
+   - Commit message: "[Modul-XX] Description"
+   - Branch: main (stable), develop (development)
+   - Pull request untuk code review
+
+4. FILE NAMING:
+   - Consistent naming convention
+   - Include modul number, test name, date
+   - Example: modul01_blok_diagram_20260205.png
+
+==============================================================================
+GOOD LUCK! 🚀🤖
+==============================================================================

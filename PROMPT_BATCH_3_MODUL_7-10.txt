@@ -1,0 +1,1440 @@
+PROMPT PRAKTIKUM MEKATRONIKA DAN ROBOTIKA - BATCH 3 (MODUL 7-10)
+MEKANISME & KINEMATICS, TRAJECTORY PLANNING, ROS2 FUNDAMENTAL
+
+==============================================================================
+KONTEKS UMUM PROGRAM
+==============================================================================
+
+Batch 3 fokus pada: MEKANIK ADVANCED + SOFTWARE INTEGRATION (ROS2)
+Dari firmware embedded (Batch 2) → transition ke high-level control (ROS2)
+
+ARSITEKTUR SISTEM 5-LAYER:
+- Layer A: Plant/Robot (Mekanik + Elektronik) — dari Batch 1
+- Layer B: Real-time Control (ESP32) — dari Batch 2
+- Layer C: Edge Compute (ROS2 Ubuntu) ← BATCH 3 FOCUS
+- Layer D: Otomasi Industri (optional)
+- Layer E: Webserver IoT (akan Batch 4)
+
+DURASI: Modul 7-10 (4-5 minggu)
+
+==============================================================================
+BATCH 3: MODUL 7-10 (MECHANICS + ROS2 INTEGRATION)
+==============================================================================
+
+MODUL 7: MEKANISME ROBOT & TRANSMISI
+MODUL 8: KINEMATIKA ROBOT (FK/IK APPLIED)
+MODUL 9: TRAJECTORY PLANNING & MOTION CONTROL
+MODUL 10: ROS2 FUNDAMENTAL UNTUK ROBOT NYATA (UBUNTU)
+
+==============================================================================
+PREREQUISITE & INTEGRATION
+==============================================================================
+
+DARI BATCH 1-2:
+- Hardware platform dengan motor control & sensor feedback (working)
+- Embedded firmware dengan PID & sensor fusion
+- Power distribution & safety system
+
+UNTUK BATCH 3:
+- Use embedded platform (dari Batch 2) sebagai actuator/sensor
+- Develop ROS2 node di Ubuntu untuk high-level control
+- Implement kinematics & trajectory planning
+
+UNTUK BATCH 4:
+- Batch 3 provide ROS2 architecture & robot control
+- Batch 4 integrate webserver & monitoring layer
+
+==============================================================================
+MODUL 7: MEKANISME ROBOT & TRANSMISI
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Desain mekanisme (gearbox, pulley, screw) untuk requirement
+- Analyze workspace, DOF, singularity
+- Backlash & compliance analysis
+- Fabrication & assembly
+
+KONSEP UTAMA:
+1. Transmission type: gear (spur, planetary, bevel), belt & pulley, lead screw, rack & pinion
+2. Gear ratio: transmission ratio = output speed / input speed = input torque / output torque
+3. Backlash: gap dalam mechanism, cause error & hysteresis
+4. Stiffness: compliance (inverse of stiffness), affect control accuracy
+5. Workspace: reachable region untuk robot arm
+6. Singularity: configuration dimana arm lose degree of freedom
+7. Friction: air resistance, bearing friction, seal friction
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Mechanism design (Fusion 360)
+- Gear ratio calculation & analysis
+- Backlash measurement & compensation
+- Workspace visualization (Fusion 360 atau Python)
+- Fabrication & assembly
+- Performance test (precision, load capacity)
+
+PANDUAN MATERI.MD (MODUL 7):
+
+1. DEFINISI
+   - Mekanisme: combination komponen mekanik untuk transmit motion & force
+   - Transmisi: gear/belt/screw yang change speed, torque, direction
+   - Backlash: unintended gap cause error saat direction change
+
+2. KONSEP INTI
+   - Gear ratio calculation: ratio = N_output / N_input (teeth ratio)
+   - Spur gear: parallel axis, simple, noise at high speed
+   - Planetary gear: compact, high ratio, smooth, complex
+   - Belt & pulley: smooth, no backlash (with tensioner), power loss via slip
+   - Lead screw: convert rotation → linear motion, high friction (need lubrication)
+   - Backlash source: gear tooth gap, bearing play, bolt preload insufficient
+   - Backlash effect: hysteresis in position, dead-zone saat direction change
+   - Backlash compensation: measure hysteresis, add offset saat direction change
+   - Workspace: set of reachable position (define by arm length, joint limit, singularity)
+   - Dexterity: measure workspace quality (avoid singularity region)
+
+3. DIAGRAM & ILUSTRASI
+   - Gear type comparison (spur, planetary, bevel, worm)
+   - Gear meshing diagram (pitch circle, backlash gap)
+   - Backlash effect on position (before/after compensation)
+   - Lead screw pitch & advance diagram
+   - Belt & pulley system (tension, slip prevention)
+   - Robot arm workspace (circular, rectangular, manipulability)
+   - Singularity position (arm fully extend, or elbow = wrist)
+   - Compliance diagram (force vs deformation)
+
+4. CONTOH KASUS INDUSTRI
+   - Robot arm: planetary gearbox untuk joint (compact, high reduction)
+   - AGV: spur gear untuk wheel drive (simple, low cost)
+   - CNC spindle: belt drive untuk smooth, adjustable speed
+   - Servo robot: backlash < 1 arcmin (requirement), custom gear atau timing belt
+
+5. RINGKASAN
+   - Mekanisme design tradeoff: cost vs performance, simplicity vs precision
+   - Backlash critical untuk control accuracy, must measure & compensate
+   - Workspace & singularity important untuk robot reachability & safety
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 7)
+   Point yang HARUS dijelaskan:
+   - Mekanisme selection: untuk aplikasi ini, gear / belt / screw mana cocok?
+   - Gear ratio calculation: input 1000 RPM motor → output 100 RPM (gear ratio?)
+   - Fusion 360 design: 3D model assembly constraint, motion study
+   - Backlash measurement: hysteresis loop plot
+   - Backlash compensation: direction change detection & offset
+   - Workspace visualization: area reachable vs not reachable
+   - Singularity: arm fully extended, singular point risk
+   - Fabrication: part manufacturing, assembly procedure
+   - Testing: load test, backlash before/after compensation
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 7):
+
+1. TUJUAN PRAKTIKUM
+   - Design mekanisme dengan gear/belt selection
+   - Analyze gear ratio, efficiency, backlash
+   - Create 3D CAD model (Fusion 360) dengan assembly constraint
+   - Workspace & singularity analysis
+   - Fabricate & assemble mechanism
+   - Test & measure performance (backlash, compliance, load capacity)
+
+2. ALAT & BAHAN
+   - Fusion 360 (CAD)
+   - Motor dari Modul 5
+   - Gearbox / belt & pulley / screw (sesuai design)
+   - Mechanical component: bearing, frame, coupler
+   - 3D printer (untuk fabricate part custom) atau order dari supplier
+   - Precision measuring tool: caliper, micrometer, dial indicator
+   - Load: hanging mass atau friction brake
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: MECHANISM DESIGN (FUSION 360)
+   - Design 3D CAD model dengan gear/belt/screw
+   - Add constraint (revolute, prismatic, fixed joint)
+   - Motion study: simulate mekanisme gerak sesuai input
+   - Analyze workspace: menggunakan motion study trace
+   - Identify singularity position
+   
+   Deliverable: CAD model, assembly drawing, workspace plot
+   
+   ---
+   
+   PERCOBAAN 2: GEAR RATIO & EFFICIENCY ANALYSIS
+   - Calculate theoretical gear ratio: input RPM → output RPM
+   - Measure actual ratio: apply input RPM → measure output RPM
+   - Calculate efficiency: (output power) / (input power) × 100%
+   - Efficiency loss source: friction bearing, gear mesh, etc
+   
+   Data:
+   | Gear | Input RPM | Output RPM | Ratio (theory) | Ratio (actual) | Efficiency (%) |
+   |------|-----------|-----------|-----------------|-----------------|-----|
+   | ... | ... | ... | ... | ... | ... |
+   
+   Deliverable: Measurement data, efficiency analysis, comparison theory vs practice
+   
+   ---
+   
+   PERCOBAAN 3: BACKLASH MEASUREMENT
+   - Fix output, apply small input rotation (back & forth)
+   - Measure output position (should be zero, but have hysteresis)
+   - Plot hysteresis loop: input angle vs output position
+   - Backlash = width of hysteresis loop
+   
+   Data:
+   | Input Angle (deg) | Output Pos CCW (mm) | Output Pos CW (mm) | Backlash (mm) |
+   |---|---|---|---|
+   | 1 | ___ | ___ | ___ |
+   | 2 | ___ | ___ | ___ |
+   
+   Deliverable: Hysteresis plot, backlash measurement, analysis
+   
+   ---
+   
+   PERCOBAAN 4: BACKLASH COMPENSATION
+   - Implement direction detection (track setpoint direction)
+   - Add offset saat direction change: if (direction changed) output += backlash_offset
+   - Test: position accuracy before/after compensation
+   
+   Deliverable: Code, position accuracy plot before/after, improvement quantified
+   
+   ---
+   
+   PERCOBAAN 5: LOAD CAPACITY TEST
+   - Apply gradually increasing load (hanging mass)
+   - Measure: deformation (compliance), efficiency drop, temperature
+   - Find: maximum load untuk acceptable performance
+   
+   Data:
+   | Load (kg) | Deformation (mm) | Efficiency (%) | Temperature (°C) |
+   |---|---|---|---|
+   | 0 | 0 | ___ | ___ |
+   | 1 | ___ | ___ | ___ |
+   | ... | ... | ... | ... |
+   
+   Deliverable: Load test data, compliance curve, load limit recommendation
+
+4. DATA PENGAMATAN
+   - CAD 3D model & assembly drawing (screenshot/image)
+   - Workspace plot (reachable area)
+   - Gear ratio measurement (theory vs actual)
+   - Efficiency data
+   - Backlash hysteresis plot
+   - Load vs deformation curve
+   - Position accuracy before/after backlash compensation
+
+5. ANALISIS
+   - Efficiency < target? Apa penyebabnya (friction, slip)?
+   - Backlash acceptable? Compensation effective?
+   - Load capacity meet requirement?
+   - Workspace sufficient untuk task?
+   - Singularity position: safe atau dangerous?
+
+6. KESIMPULAN
+   - Mekanisme design balanced antara cost, performance, complexity
+   - Backlash critical untuk accuracy, must measure & compensate
+   - Test & validation confirm design specification
+
+---
+
+PANDUAN PROJECT.MD (MODUL 7):
+
+JUDUL: "PRECISION GEARBOX DESIGN & OPTIMIZATION"
+
+SPESIFIKASI:
+- Design gearbox untuk robot application (arm / AGV)
+- Select gear type (spur / planetary / timing belt) dengan justifikasi
+- Calculate ratio, efficiency, backlash
+- 3D CAD design dengan assembly constraint
+- Prototype fabrication
+- Performance test & optimization
+- Create gearbox selection guide
+
+DELIVERABLE:
+1. Requirement specification (speed, torque, accuracy need)
+2. Gear selection analysis (candidate comparison)
+3. CAD design (Fusion 360) dengan drawing
+4. Backlash analysis & compensation strategy
+5. Performance test report (efficiency, backlash, load capacity)
+6. Fabrication documentation (assembly procedure, part list)
+7. Cost analysis & trade-off study
+8. Gearbox selection guide document
+9. Video demo (CAD motion study, physical assembly, load test)
+
+BONUS:
+- Backlash-free design (zero-backlash gear atau preloaded bearing)
+- Efficiency optimization (lubrication type test)
+- Compliance reduction (material selection, stiffness analysis)
+
+==============================================================================
+MODUL 8: KINEMATIKA ROBOT (APPLIED)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Implementasi forward kinematics (FK)
+- Implementasi inverse kinematics (IK)
+- Jacobian & velocity kinematics
+- Workspace & singularity analysis
+- Validation dengan hardware nyata
+
+KONSEP UTAMA:
+1. Denavit-Hartenberg (DH) parameter: systematic notation untuk describe link & joint
+2. Homogeneous transformation matrix: rotation (3×3 R) + translation (3×1 p)
+3. Forward kinematics: compute end-effector position from joint angle
+4. Inverse kinematics: solve joint angle given desired end-effector position
+5. Analytical IK: closed-form solution (faster, not always exist)
+6. Numerical IK: iterative solver (Jacobian transpose, damped least square, etc)
+7. Jacobian matrix: relate joint velocity → end-effector velocity
+8. Singularity: Jacobian lose rank, arm lose dexterity
+9. Manipulability: measure workspace quality, avoid singularity
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- DH parameter definition (dari CAD)
+- FK implementation (matrix multiplication)
+- IK implementation (analytical untuk 2-DOF, numerical untuk 3-DOF)
+- Jacobian calculation & visualization
+- Workspace reachability map (Python/Matlab)
+- Singularity detection
+- Hardware validation (move to target position)
+- IK accuracy measurement
+
+PANDUAN MATERI.MD (MODUL 8):
+
+1. DEFINISI
+   - Kinematics: study motion without force (geometry & time)
+   - Forward kinematics: known joint angle → compute position
+   - Inverse kinematics: desired position → compute joint angle
+
+2. KONSEP INTI
+   - DH parameter: link length (a), link twist (α), joint offset (d), joint angle (θ)
+   - Transformation matrix: 4×4 matrix [R p; 0 1] (rotation + translation)
+   - FK algorithm: T_0^n = T_0^1 × T_1^2 × ... × T_{n-1}^n
+   - IK challenge: multiple solution (redundancy), no solution (unreachable), singularity
+   - Analytical IK: solve algebraically, specific untuk robot type
+   - Numerical IK: iterative approach, general but slow
+   - Jacobian: ∂x/∂θ matrix (relate velocity)
+   - Singularity: det(J) = 0, arm cannot move in certain direction
+
+3. DIAGRAM & ILUSTRASI
+   - Robot 3D model dengan joint & link label
+   - DH parameter table illustration
+   - FK process: step-by-step transformation matrix
+   - IK solution geometrically (2-DOF arm, multiple IK solution)
+   - Jacobian visualization (velocity mapping)
+   - Workspace reachability map (2D heatmap, different color for different reachability)
+   - Singularity position (arm fully extended, elbow = wrist)
+   - Manipulability measure (ratio eigenvalue Jacobian)
+
+4. CONTOH KASUS INDUSTRI
+   - Robotic arm ABB IRB: 6-DOF, redundant, need numerical IK
+   - SCARA robot: 4-DOF (3 rotation + 1 vertical), planar + Z movement
+   - Delta robot: 3-DOF parallel kinematics, fast pick & place
+   - Humanoid robot: complex kinematics, balance control
+
+5. RINGKASAN
+   - FK straightforward, IK challenging (multiple solution / no solution)
+   - Singularity must avoid untuk maintain control authority
+   - Numerical IK practical for complex robot, analytical faster for simple robot
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 8)
+   Point yang HARUS dijelaskan:
+   - Robot type & DOF: 2-DOF, 3-DOF, characteristic
+   - DH parameter extraction dari CAD / datasheet
+   - FK calculation: step-by-step matrix multiplication
+   - FK validation: move joint → measure end-effector position
+   - IK solution: analytical method (for 2-DOF) atau numerical method (for 3-DOF)
+   - Multiple IK solution (visualization)
+   - Jacobian & singularity (explain concept, show calculation)
+   - Workspace visualization: reachable area map
+   - Hardware implementation: send desired position → IK compute angle → motor move
+   - Troubleshooting: IK no solution (unreachable), singularity risk, numerical instability
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 8):
+
+1. TUJUAN PRAKTIKUM
+   - Extract DH parameter dari robot (CAD atau physical)
+   - Implement forward kinematics (FK)
+   - Implement inverse kinematics (IK, analytical atau numerical)
+   - Calculate Jacobian matrix
+   - Workspace reachability analysis
+   - Singularity detection
+   - Hardware validation (move to target)
+   - IK accuracy measurement
+
+2. ALAT & BAHAN
+   - Robot arm (2-DOF atau 3-DOF)
+   - CAD file (Fusion 360) atau physical dimension measurement
+   - Python environment (numpy, scipy untuk matrix calculation)
+   - Hardware: motor + encoder untuk joint feedback
+   - ROS2 (untuk later integration, optional at this stage)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: DH PARAMETER EXTRACTION
+   - From robot CAD atau measurement: identify link length, joint type
+   - Define frame 0 (base), frame 1, 2, ... frame N (end-effector)
+   - DH table: link (a), twist (α), offset (d), angle (θ)
+   
+   Data:
+   | Joint | Link Length (mm) | Twist (deg) | Offset (mm) | Type |
+   |-------|-----------------|-----------|-----------|------|
+   | 1 | ___ | 0 | 0 | Revolute |
+   | 2 | ___ | 0 | 0 | Revolute |
+   | 3 | ___ | 0 | 0 | Revolute |
+   
+   Deliverable: DH parameter table, coordinate frame diagram
+   
+   ---
+   
+   PERCOBAAN 2: FORWARD KINEMATICS IMPLEMENTATION
+   - Code FK function: input = joint angle [θ1, θ2, θ3]
+   - Output = end-effector position [x, y, z] & orientation (rotation matrix)
+   - Algorithm:
+     a. For each joint, create transformation matrix Ti
+     b. Multiply: T_final = T1 × T2 × T3
+     c. Extract position p = T[0:3, 3], orientation R = T[0:3, 0:3]
+   
+   Code template (Python):
+   ```python
+   import numpy as np
+   
+   def forward_kinematics(q):
+       # q = [theta1, theta2, theta3]
+       # Return: position [x, y, z], orientation (rotation matrix)
+       T = np.eye(4)
+       for i, theta in enumerate(q):
+           T_i = dh_to_matrix(DH_PARAMS[i], theta)
+           T = T @ T_i
+       return T[0:3, 3], T[0:3, 0:3]
+   ```
+   
+   Test:
+   - Home position (all joint = 0): FK should return [L1+L2+L3, 0, 0] (fully extended)
+   - 90° joint 1: FK should rotate end-effector
+   
+   Data:
+   | Joint Angle (deg) | Position (mm) | Orientation (deg) | Validation |
+   |---|---|---|---|
+   | [0, 0, 0] | [L1+L2+L3, 0, 0] | [0, 0, 0] | ✓ |
+   | [90, 0, 0] | [0, L1+L2+L3, 0] | [0, 0, 90] | ✓ |
+   
+   Deliverable: FK code, validation test, FK result plot (trajectory visualization)
+   
+   ---
+   
+   PERCOBAAN 3: INVERSE KINEMATICS IMPLEMENTATION
+   For 2-DOF (planar arm):
+   - Analytical solution: solve algebraically for θ1, θ2
+   - Geometric approach: law of cosine untuk find θ2, then θ1 = atan2(y,x) - angle2
+   
+   Code (2-DOF):
+   ```python
+   def inverse_kinematics_2dof(x, y):
+       # Analytical solution for 2-link planar arm
+       L1, L2 = link_length[0], link_length[1]
+       
+       # Check reachability
+       dist = np.sqrt(x**2 + y**2)
+       if dist > L1 + L2 or dist < abs(L1 - L2):
+           return None  # Unreachable
+       
+       # Solve using law of cosine
+       cos_theta2 = (x**2 + y**2 - L1**2 - L2**2) / (2*L1*L2)
+       theta2 = np.arccos(cos_theta2)  # Elbow-up solution
+       
+       theta1 = np.atan2(y, x) - np.atan2(L2*np.sin(theta2), L1 + L2*np.cos(theta2))
+       
+       return [theta1, theta2]
+   ```
+   
+   For 3-DOF:
+   - Numerical IK using Jacobian transpose: θ_new = θ_old + J^T × λ × (target - current)
+   - Or use scipy.optimize.fsolve
+   
+   Test:
+   | Target Position (mm) | IK Solution (deg) | FK Verification (mm) | Error (mm) |
+   |---|---|---|---|
+   | [100, 50] | [θ1, θ2] | [x, y] | ___ |
+   | [150, 0] | [θ1, θ2] | [x, y] | ___ |
+   
+   Deliverable: IK code, test table, solution visualization
+   
+   ---
+   
+   PERCOBAAN 4: WORKSPACE VISUALIZATION
+   - Sample all joint angle (0-360° per joint, step 10°)
+   - For each sample, compute FK → end-effector position
+   - Collect all position → create reachability map (2D heatmap atau 3D scatter)
+   - Identify singularity region (end-effector velocity = 0 for non-zero joint velocity)
+   
+   Code (Python with matplotlib):
+   ```python
+   def workspace_map():
+       positions = []
+       for q1 in range(0, 360, 10):
+           for q2 in range(0, 360, 10):
+               pos, _ = forward_kinematics([np.deg2rad(q1), np.deg2rad(q2)])
+               positions.append(pos)
+       
+       positions = np.array(positions)
+       plt.scatter(positions[:, 0], positions[:, 1], alpha=0.5)
+       plt.xlabel('X (mm)')
+       plt.ylabel('Y (mm)')
+       plt.title('Robot Workspace')
+       plt.grid()
+       plt.show()
+   ```
+   
+   Deliverable: Workspace plot image, singularity region identified, reachability analysis
+   
+   ---
+   
+   PERCOBAAN 5: JACOBIAN & SINGULARITY ANALYSIS
+   - Calculate Jacobian matrix J (∂position / ∂angle)
+   - Compute determinant det(J): if det ≈ 0 → singularity
+   - Plot manipulability w(q) = sqrt(det(J×J^T)) across workspace
+   
+   Code:
+   ```python
+   def jacobian(q):
+       # Numerical Jacobian: ∂FK / ∂q
+       epsilon = 1e-6
+       J = np.zeros((3, len(q)))
+       
+       for i in range(len(q)):
+           q_plus = q.copy()
+           q_plus[i] += epsilon
+           
+           pos_plus, _ = forward_kinematics(q_plus)
+           pos, _ = forward_kinematics(q)
+           
+           J[:, i] = (pos_plus - pos) / epsilon
+       
+       return J
+   
+   def singularity_check(q):
+       J = jacobian(q)
+       det = np.linalg.det(J[:3, :3])
+       return abs(det) < 1e-6
+   ```
+   
+   Data:
+   | Joint Angle (deg) | Det(J) | Singularity? | Manipulability |
+   |---|---|---|---|
+   | [45, 45] | ___ | ✓/✗ | ___ |
+   | [0, 0] (extended) | ~0 | ✓ | ___ |
+   
+   Deliverable: Jacobian calculation, singularity region map, manipulability plot
+   
+   ---
+   
+   PERCOBAAN 6: HARDWARE VALIDATION
+   - Command robot to target position: specify [x, y]
+   - Use IK to compute required angle [θ1, θ2]
+   - Send angle command to motor
+   - Measure actual end-effector position (via camera atau forward kinematics)
+   - Calculate error
+   
+   Test trajectory: target multiple position (grid 5×5)
+   
+   Data:
+   | Target (mm) | IK Angle (deg) | Actual Position (mm) | Error (mm) |
+   |---|---|---|---|
+   | [100, 50] | [θ1, θ2] | [x_actual, y_actual] | ___ |
+   | [150, 0] | [θ1, θ2] | [x_actual, y_actual] | ___ |
+   
+   Deliverable: Error plot, accuracy analysis, IK validation result
+
+4. DATA PENGAMATAN
+   - DH parameter table (from CAD)
+   - FK validation test (home position, single joint move)
+   - IK solution test (multiple target)
+   - Workspace reachability plot
+   - Singularity region identification
+   - Hardware accuracy measurement (error vs target)
+
+5. ANALISIS
+   - FK validation pass? Correct parameter?
+   - IK solution accurate? Error acceptable?
+   - Multiple IK solution: all tested? Elbowup vs elbowdown?
+   - Singularity detected? Avoid in application?
+   - Workspace coverage sufficient for task?
+   - Hardware accuracy limit: backlash? Sensor noise?
+
+6. KESIMPULAN
+   - Kinematics essential untuk robot control (position → angle conversion)
+   - IK challenge dengan multiple solution & singularity
+   - Accuracy limited by mechanical backlash & sensor resolution
+
+---
+
+PANDUAN PROJECT.MD (MODUL 8):
+
+JUDUL: "ROBOT ARM KINEMATICS & MOTION PLANNING"
+
+SPESIFIKASI:
+- Develop complete kinematics system untuk robot arm (2 atau 3 DOF)
+- Extract DH parameter dari CAD / physical measurement
+- Implement FK & IK (analytical atau numerical)
+- Calculate Jacobian & identify singularity
+- Workspace analysis & visualization
+- Hardware implementation (ROS2 node atau firmware)
+- Trajectory planning (point-to-point)
+- IK accuracy measurement
+
+DELIVERABLE:
+1. Robot dimension & DH parameter documentation
+2. FK implementation code (verified)
+3. IK implementation code (analytical & numerical option)
+4. Jacobian calculation & singularity analysis
+5. Workspace visualization (reachability map)
+6. Hardware validation test (FK/IK accuracy, error analysis)
+7. Trajectory planning algorithm (point-to-point, smooth path)
+8. Performance report (accuracy, singularity avoidance, speed)
+9. Code organized di GitHub (modular, documented)
+10. Video demo (FW/IK computation, hardware move, trajectory)
+
+BONUS:
+- Redundant IK (for redundant arm, optimize secondary objective)
+- Singularity avoidance algorithm (modify IK to avoid singular configuration)
+- Task-space trajectory planning (not just joint-space)
+- Collision avoidance (planning path avoid obstacle)
+
+==============================================================================
+MODUL 9: TRAJECTORY PLANNING & MOTION CONTROL
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- Point-to-point motion planning (trapezoidal profile)
+- Continuous path planning (linear, circular, spline)
+- S-curve profile (smooth jerk)
+- Implementation & optimization
+- Hardware execution
+
+KONSEP UTAMA:
+1. Velocity profile: trapezoidal (accel → constant → decel), S-curve (smooth jerk)
+2. Jerk: rate of change acceleration, smooth jerk = smooth motion
+3. Path interpolation: linear (straight line), circular (arc), spline (smooth curve)
+4. Trajectory: specify both position AND velocity over time
+5. Constraints: max velocity, max acceleration, max jerk
+6. Optimization: minimize time, energy, deviation
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- Trapezoidal velocity profile implementation
+- S-curve profile implementation
+- Linear path interpolation
+- Circular arc interpolation
+- Trajectory parameter calculation
+- Smooth motion demo (no jerk)
+- Timing optimization
+- Comparison trapezoidal vs S-curve
+
+PANDUAN MATERI.MD (MODUL 9):
+
+1. DEFINISI
+   - Trajectory: position, velocity, acceleration as function of time
+   - Velocity profile: velocity scheduling (how velocity changes over time)
+   - Path: geometric route (position only, no time info)
+
+2. KONSEP INTI
+   - Trapezoidal profile: 3 phase (accel at max accel → move at max velocity → decel at max accel)
+   - Profile parameter: max velocity (vmax), max acceleration (amax), target distance (d)
+   - Calculation: acceleration phase time ta = vmax/amax, distance da = 0.5 * amax * ta^2
+   - S-curve profile: additional phase untuk smooth jerk (accel-accel → accel → decel-accel → decel)
+   - Jerk: dA/dt (rate of acceleration change), high jerk cause vibration
+   - Path interpolation: linear motion (straight line), circular (arc), cubic spline (smooth curve)
+   - Velocity profile over path: can be trapezoidal or S-curve
+
+3. DIAGRAM & ILUSTRASI
+   - Trapezoidal velocity profile (time vs velocity graph)
+   - S-curve velocity profile (smoother transition)
+   - Position vs time (trapezoidal: curved-linear-curved)
+   - Jerk profile (trapezoidal have step jerk, S-curve smooth)
+   - Linear path interpolation (2D position vs time)
+   - Circular arc interpolation (center, radius, angle, arc length)
+   - Spline path (control point, smooth curve)
+   - Robot motion: smooth vs jerky (visual comparison)
+
+4. CONTOH KASUS INDUSTRI
+   - Pick & place robot: smooth motion reduce shock, improve precision
+   - CNC machining: feedrate planning critical untuk tool life
+   - Humanoid robot walking: smooth trajectory important untuk balance
+   - Car motion: smooth acceleration improve comfort & efficiency
+
+5. RINGKASAN
+   - Trapezoidal simple, S-curve smooth
+   - Path planning (geometry) vs trajectory planning (+ timing) different concept
+   - Smooth trajectory reduce vibration, improve accuracy, extend component life
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 9)
+   Point yang HARUS dijelaskan:
+   - Velocity profile: why important untuk motion quality?
+   - Trapezoidal profile: 3 phase explain, parameter calculation
+   - S-curve profile: jerk control explain
+   - Path vs trajectory difference
+   - Linear path implementation: start → target → interpolation
+   - Circular path: arc tangent, smooth curve connect
+   - Implementation: compute velocity at each time step
+   - Hardware demo: smooth motion vs jerky (before/after)
+   - Performance: energy, time, smoothness trade-off
+   - Troubleshooting: unreachable target, high jerk (tune parameter)
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 9):
+
+1. TUJUAN PRAKTIKUM
+   - Implement trapezoidal velocity profile
+   - Implement S-curve velocity profile
+   - Trajectory calculation (position vs time)
+   - Linear path interpolation
+   - Circular arc interpolation (if 2-DOF arm)
+   - Hardware motion test
+   - Smooth motion verification (no jerk spike)
+   - Performance comparison
+
+2. ALAT & BAHAN
+   - Robot dari Modul 7-8 (dengan kinematics)
+   - Python untuk trajectory calculation
+   - Oscilloscope atau sensor untuk measure acceleration
+   - Motor with position feedback (encoder)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: TRAPEZOIDAL PROFILE CALCULATION
+   - Input: start position (s0), target position (s), max velocity (vmax), max acceleration (amax)
+   - Calculation:
+     a. Time acceleration phase: ta = vmax / amax
+     b. Distance acceleration: sa = 0.5 * amax * ta^2
+     c. Constant velocity distance: sv = s - 2*sa
+     d. Constant velocity time: tv = sv / vmax (if sv > 0)
+     e. Deceleration time: td = ta (symmetric)
+   - Output: table of (time, position, velocity, acceleration)
+   
+   Code template (Python):
+   ```python
+   def trapezoidal_profile(start, target, vmax, amax):
+       distance = abs(target - start)
+       
+       # Acceleration phase
+       ta = vmax / amax
+       sa = 0.5 * amax * ta**2
+       
+       if 2*sa > distance:  # Cannot reach vmax
+           # Triangular profile
+           ta = np.sqrt(distance / amax)
+           sa = distance / 2
+           tv = 0
+           td = ta
+       else:
+           # Trapezoidal profile
+           sv = distance - 2*sa
+           tv = sv / vmax
+           td = ta
+       
+       # Generate trajectory
+       trajectory = []
+       # Phase 1: Acceleration (0 to ta)
+       for t in np.linspace(0, ta, 100):
+           s = 0.5 * amax * t**2
+           v = amax * t
+           trajectory.append((t, s, v, amax))
+       # Phase 2: Constant velocity (ta to ta+tv)
+       # ...
+       # Phase 3: Deceleration (ta+tv to ta+tv+td)
+       # ...
+       
+       return trajectory
+   ```
+   
+   Test: plot position, velocity, acceleration vs time
+   
+   Deliverable: Profile calculation code, trajectory table, graph (position/velocity/accel)
+   
+   ---
+   
+   PERCOBAAN 2: S-CURVE PROFILE
+   - Add jerk limiting phase (smooth acceleration ramp)
+   - S-curve = accel-accel → accel (const) → decel-accel → decel → decel-decel
+   - Parameter: max jerk (jmax), then recalculate timeline
+   - More complex calculation, use existing library (trapezoidal_planner dari ROS atau scipy)
+   
+   Comparison:
+   | Profile | Max Jerk (m/s^3) | Rise Time | Smooth? | Vibration |
+   |---|---|---|---|---|
+   | Trapezoidal | Infinite (step) | Fast | No | High |
+   | S-curve | Finite | Slower | Yes | Low |
+   
+   Deliverable: S-curve code / library integration, profile plot, jerk analysis
+   
+   ---
+   
+   PERCOBAAN 3: LINEAR PATH INTERPOLATION
+   - Point A (x1, y1) → Point B (x2, y2)
+   - Linear interpolation: position(t) = A + (B-A) * t / T, t ∈ [0, T]
+   - Apply trapezoidal profile untuk velocity
+   - Result: smooth linear motion from A to B
+   
+   Code:
+   ```python
+   def linear_trajectory(start, target, duration, vmax, amax):
+       # Generate time-parameterized path
+       trajectory = []
+       
+       # Velocity profile (already computed)
+       vel_profile = trapezoidal_profile(0, 1, vmax, amax)  # 0 to 1 (normalized)
+       
+       # Position interpolation
+       direction = (np.array(target) - np.array(start)) / np.linalg.norm(np.array(target) - np.array(start))
+       distance = np.linalg.norm(np.array(target) - np.array(start))
+       
+       for t, s, v, a in vel_profile:
+           actual_position = np.array(start) + direction * s * distance
+           trajectory.append((t, actual_position, v))
+       
+       return trajectory
+   ```
+   
+   Test: move robot A → B, verify smooth linear motion
+   
+   Deliverable: Code, trajectory plot (XY path + time profile), hardware motion video
+   
+   ---
+   
+   PERCOBAAN 4: CIRCULAR ARC INTERPOLATION (optional for 2-DOF arm)
+   - Center (cx, cy), radius r, start angle θ1, end angle θ2
+   - Arc length = r * (θ2 - θ1)
+   - Position on arc: x(θ) = cx + r*cos(θ), y(θ) = cy + r*sin(θ)
+   - Apply trapezoidal profile on arc length
+   
+   Deliverable: Code, circular path plot, hardware motion demo
+   
+   ---
+   
+   PERCOBAAN 5: MULTI-POINT TRAJECTORY
+   - Connect multiple waypoint (start → A → B → C → end)
+   - Each segment linear interpolation
+   - Blend smooth corner (reduce velocity before corner, accelerate after)
+   
+   Data:
+   | Waypoint | Position (mm) | Velocity Reduction (%) |
+   |---|---|---|
+   | Start | [0, 0] | - |
+   | A | [100, 50] | 50% at corner |
+   | B | [150, 150] | 50% at corner |
+   | End | [200, 100] | - |
+   
+   Deliverable: Multi-point trajectory code, path plot, execution time estimate
+
+4. DATA PENGAMATAN
+   - Velocity profile plot (trapezoidal, S-curve, actual motor speed)
+   - Position vs time graph
+   - Acceleration vs time graph
+   - Jerk vs time graph (if S-curve)
+   - Path visualization (linear, circular, multi-point)
+   - Motion smoothness assessment (video frame analysis atau acceleration sensor)
+
+5. ANALISIS
+   - Profile meet specification (vmax, amax)?
+   - S-curve improve smoothness vs trapezoidal (quantify jerk reduction)?
+   - Path accuracy: actual path vs planned path?
+   - Timing: measured execution time vs planned?
+   - Vibration reduced dengan smooth profile?
+
+6. KESIMPULAN
+   - Trajectory planning critical untuk smooth, controlled motion
+   - S-curve profile improve comfort & accuracy vs trapezoidal
+   - Multi-point trajectory enables complex motion sequence
+
+---
+
+PANDUAN PROJECT.MD (MODUL 9):
+
+JUDUL: "TRAJECTORY PLANNING & OPTIMIZATION FOR ROBOT MOTION"
+
+SPESIFIKASI:
+- Implement complete trajectory planner
+- Support multiple profile (trapezoidal, S-curve)
+- Support multiple path (linear, circular, spline)
+- Multi-point waypoint support
+- Constraint: vmax, amax, jmax
+- Optimize: minimum time vs smooth (trade-off study)
+- Hardware implementation & validation
+- Performance comparison
+
+DELIVERABLE:
+1. Trajectory planner architecture design
+2. Trapezoidal & S-curve implementation
+3. Path interpolation (linear, circular, spline)
+4. Multi-point waypoint connection
+5. Parameter optimization study (time vs smoothness)
+6. Constraint checking (velocity, acceleration, jerk limit)
+7. Hardware implementation (firmware atau ROS2 node)
+8. Validation test (accuracy, smoothness, timing)
+9. Performance report & comparison
+10. Code organized di GitHub (modular, tested)
+11. Video demo (trajectory execution, smooth motion, multi-point)
+
+BONUS:
+- Time-optimal trajectory (compute minimum time satisfying constraint)
+- Energy-optimal trajectory (minimize power consumption)
+- Obstacle avoidance (modify path avoid collision)
+- Learning-based trajectory optimization (neural network)
+
+==============================================================================
+MODUL 10: ROS2 FUNDAMENTAL UNTUK ROBOT NYATA (UBUNTU)
+==============================================================================
+
+TUJUAN PEMBELAJARAN:
+- ROS2 fundamental architecture (node, topic, service)
+- URDF robot description (using xacro)
+- TF (transformation) & coordinate frame
+- Launch file & parameter server
+- ROS2 tooling (rqt, rviz, rosbag)
+- Real robot integration
+- Communication reliability
+
+KONSEP UTAMA:
+1. Node: independent ROS2 process (publisher, subscriber, service)
+2. Topic: asynchronous message stream (publisher → subscriber, many-to-many)
+3. Service: synchronous request-response (client → server)
+4. Action: long-running task dengan feedback (goal → result)
+5. Message: data type (sensor_msgs, geometry_msgs, custom)
+6. URDF: Robot description format (link, joint, mass, inertia)
+7. TF: Transform between coordinate frame (tree structure)
+8. Launch file: start multiple node with configuration
+9. Parameter: configuration value (robot param, controller param)
+10. Bag file: record/playback message (for debugging, testing)
+
+PRAKTIKUM YANG AKAN DIBUAT:
+- ROS2 workspace setup
+- Create publisher/subscriber node (sensor & motor)
+- Create service node (command motor)
+- URDF model design
+- TF broadcasting & listening
+- Visualization di RViz
+- Launch file configuration
+- Teleop control (keyboard or joystick)
+- Bagging sensor data
+- Multi-robot communication (basic)
+
+PANDUAN MATERI.MD (MODUL 10):
+
+1. DEFINISI
+   - ROS2: middleware framework untuk robotics (pubsub communication, hardware abstraction)
+   - Node: process melalui ROS2 communication
+   - Publish-subscribe: decoupled communication (publisher tidak perlu know subscriber)
+
+2. KONSEP INTI
+   - Topic: named communication channel (publisher post message → subscriber receive)
+   - Message: data structure (ROS message format, include timestamp)
+   - Quality of Service (QoS): best-effort (low latency) vs reliable (guaranteed)
+   - Service: request-response model (blocking call, return value)
+   - Action: long-task dengan feedback (goal, feedback, result)
+   - Node lifecycle: unconfigured → inactive → active → finalize
+   - Executor: manage node callback scheduling
+   - Domain ID: separate ROS2 network (allow multiple robot di same network)
+
+3. DIAGRAM & ILUSTRASI
+   - ROS2 architecture (node, topic, service, parameter server)
+   - Topic communication flow (pub → DDS middleware → sub)
+   - URDF structure (link, joint hierarchy, mass, inertia)
+   - TF tree (coordinate frame relationship)
+   - RViz visualization (robot model, sensor data, coordinate frame)
+   - Launch file structure (node launch, parameter config, remapping)
+   - ROS2 command (ros2 run, ros2 topic, ros2 service, ros2 param)
+
+4. CONTOH KASUS INDUSTRI
+   - Robot middleware: ABB ROS driver integration (read joint state, command motor)
+   - Multi-robot system: 2 AGV communicate via ROS2 topic (coordinate)
+   - Sensor node: camera → image processing node → detection node
+   - Visualization: real-time robot state monitoring di RViz dashboard
+
+5. RINGKASAN
+   - ROS2 standard framework untuk robot software, widely adopted industri
+   - Topic pubsub provide decoupled, scalable communication
+   - URDF + TF provide geometric model untuk simulation, planning, control
+   - RViz powerful visualization tool untuk development & debugging
+
+6. DESKRIPSI TUGAS VIDEO (MODUL 10)
+   Point yang HARUS dijelaskan:
+   - ROS2 vs ROS1 (difference, advantage)
+   - Node, topic, service concept (with example)
+   - ROS2 workspace structure (src, build, install)
+   - Create simple node (publisher or subscriber)
+   - Message type: sensor_msgs, geometry_msgs, custom
+   - URDF syntax: link (mass, inertia, visual, collision), joint (type, parent, child, axis, limit)
+   - TF broadcasting (publish link position relative to parent)
+   - RViz visualization: load URDF, show robot model
+   - Launch file: node definition, parameter, remapping
+   - Teleop: move robot via keyboard (or joystick)
+   - Troubleshooting: ROS2 daemon issue, topic lag, service timeout
+   - Integration dengan robot hardware (Batch 2 firmware → ROS2 bridge)
+
+---
+
+PANDUAN JOBSHEET.MD (MODUL 10):
+
+1. TUJUAN PRAKTIKUM
+   - Setup ROS2 workspace (Humble)
+   - Create publisher node (sensor data)
+   - Create subscriber node (receive & process)
+   - Create service server (motor command)
+   - Design URDF model untuk robot
+   - Publish TF (link coordinate)
+   - Visualize robot di RViz
+   - Create launch file (multi-node startup)
+   - Teleop control implementation
+   - Record & playback data (rosbag)
+
+2. ALAT & BAHAN
+   - Ubuntu 22.04 (for ROS2 Humble)
+   - ROS2 Humble installed
+   - Robot dari Batch 1-2
+   - Python 3.10+ (for ROS2 node)
+   - Git (for version control)
+   - Keyboard atau joystick (for teleop)
+
+3. LANGKAH KERJA
+   
+   PERCOBAAN 1: ROS2 WORKSPACE & FIRST NODE
+   - Create workspace: mkdir -p ~/robot_ws/src && cd ~/robot_ws/src
+   - Create package: ros2 pkg create my_robot_pkg --build-type ament_python
+   - Create node: publisher_node.py (publish sensor data)
+   
+   Code template:
+   ```python
+   import rclpy
+   from rclpy.node import Node
+   from sensor_msgs.msg import Imu
+   
+   class SensorPublisher(Node):
+       def __init__(self):
+           super().__init__('sensor_publisher')
+           self.publisher = self.create_publisher(Imu, '/robot/imu', 10)
+           self.timer = self.create_timer(0.01, self.publish_callback)  # 100 Hz
+       
+       def publish_callback(self):
+           msg = Imu()
+           msg.header.stamp = self.get_clock().now().to_msg()
+           msg.linear_acceleration.x = 9.8 * np.sin(0.1)  # Simulate
+           self.publisher.publish(msg)
+   
+   def main(args=None):
+       rclpy.init(args=args)
+       node = SensorPublisher()
+       rclpy.spin(node)
+       rclpy.shutdown()
+   ```
+   
+   Test:
+   - colcon build
+   - ros2 run my_robot_pkg sensor_publisher_node
+   - ros2 topic echo /robot/imu (in another terminal)
+   
+   Deliverable: Node code, compiled success (no error), message publish visible
+   
+   ---
+   
+   PERCOBAAN 2: SUBSCRIBER & PROCESSING
+   - Create subscriber node: receive sensor data, process, publish result
+   - Example: receive IMU → integrate acceleration → estimate velocity
+   
+   Code:
+   ```python
+   class VelocityEstimator(Node):
+       def __init__(self):
+           super().__init__('velocity_estimator')
+           self.subscription = self.create_subscription(Imu, '/robot/imu', self.imu_callback, 10)
+           self.publisher = self.create_publisher(TwistStamped, '/robot/velocity', 10)
+           self.velocity = 0.0
+           self.last_time = self.get_clock().now()
+       
+       def imu_callback(self, msg):
+           current_time = self.get_clock().now()
+           dt = (current_time - self.last_time).nanoseconds / 1e9
+           self.last_time = current_time
+           
+           # Integrate acceleration
+           self.velocity += msg.linear_acceleration.x * dt
+           
+           # Publish velocity
+           vel_msg = TwistStamped()
+           vel_msg.twist.linear.x = self.velocity
+           self.publisher.publish(vel_msg)
+   ```
+   
+   Deliverable: Subscriber & processing code, output visualization (ros2 topic echo)
+   
+   ---
+   
+   PERCOBAAN 3: SERVICE (REQUEST-RESPONSE)
+   - Create service server: receive motor command, move motor, return status
+   
+   Code:
+   ```python
+   from my_robot_interfaces.srv import MotorCommand  # Custom service
+   
+   class MotorServer(Node):
+       def __init__(self):
+           super().__init__('motor_server')
+           self.service = self.create_service(MotorCommand, '/robot/move_motor', self.move_callback)
+       
+       def move_callback(self, request, response):
+           # Request: motor_id, target_angle, speed
+           # Control motor (send PWM command to firmware)
+           response.success = True
+           response.message = f"Motor {request.motor_id} moved to {request.target_angle}"
+           return response
+   ```
+   
+   Create custom service interface:
+   ```
+   # my_robot_interfaces/srv/MotorCommand.srv
+   int32 motor_id
+   float64 target_angle
+   float64 speed
+   ---
+   bool success
+   string message
+   ```
+   
+   Test service:
+   ```bash
+   ros2 service call /robot/move_motor my_robot_interfaces/srv/MotorCommand "{motor_id: 1, target_angle: 90.0, speed: 1.0}"
+   ```
+   
+   Deliverable: Service definition, server implementation, test success
+   
+   ---
+   
+   PERCOBAAN 4: URDF ROBOT DESCRIPTION
+   - Create URDF file: describe robot geometry, mass, inertia
+   
+   Simple 2-link arm URDF:
+   ```xml
+   <?xml version="1.0"?>
+   <robot name="simple_arm">
+       <!-- Link 0: Base -->
+       <link name="base_link">
+           <visual>
+               <geometry>
+                   <box size="0.1 0.1 0.05"/>
+               </geometry>
+               <material name="gray">
+                   <color rgba="0.5 0.5 0.5 1.0"/>
+               </material>
+           </visual>
+       </link>
+       
+       <!-- Joint 1: Rotation around Z -->
+       <joint name="joint1" type="revolute">
+           <parent link="base_link"/>
+           <child link="link1"/>
+           <origin xyz="0 0 0.05" rpy="0 0 0"/>
+           <axis xyz="0 0 1"/>
+           <limit lower="0" upper="3.14" effort="10" velocity="1"/>
+       </joint>
+       
+       <!-- Link 1: Arm segment 1 -->
+       <link name="link1">
+           <visual>
+               <geometry>
+                   <cylinder radius="0.01" length="0.3"/>
+               </geometry>
+           </visual>
+       </link>
+       
+       <!-- Similar for Joint 2, Link 2 -->
+   </robot>
+   ```
+   
+   Test URDF:
+   ```bash
+   check_urdf robot.urdf  # Validate syntax
+   urdf_to_graphiz robot.urdf  # Generate tree image
+   ```
+   
+   Deliverable: URDF file (validated), tree structure image, visual model description
+   
+   ---
+   
+   PERCOBAAN 5: TF (TRANSFORMATION)
+   - Broadcast link position & orientation
+   - Setup TF tree (base → link1 → link2 → end_effector)
+   
+   Code:
+   ```python
+   from geometry_msgs.msg import TransformStamped
+   from tf2_ros import TransformBroadcaster
+   
+   class RobotTFBroadcaster(Node):
+       def __init__(self):
+           super().__init__('robot_tf_broadcaster')
+           self.tf_broadcaster = TransformBroadcaster(self)
+           self.timer = self.create_timer(0.01, self.broadcast_tf)
+       
+       def broadcast_tf(self):
+           # Broadcast link1 position relative to base
+           t = TransformStamped()
+           t.header.stamp = self.get_clock().now().to_msg()
+           t.header.frame_id = "base_link"
+           t.child_frame_id = "link1"
+           t.transform.translation.z = 0.3  # Link1 extend 0.3m up
+           t.transform.rotation.w = 1.0  # No rotation
+           self.tf_broadcaster.sendTransform(t)
+           
+           # Broadcast link2 relative to link1
+           # ... similar
+   ```
+   
+   Test TF:
+   ```bash
+   ros2 run tf2_tools view_frames.py  # Generate TF tree image
+   ros2 run rviz2 rviz2  # Visualize in RViz
+   ```
+   
+   Deliverable: TF broadcaster code, TF tree image, RViz visualization
+   
+   ---
+   
+   PERCOBAAN 6: RVIZ VISUALIZATION
+   - Load URDF model
+   - Display TF frame
+   - Visualize sensor data (point cloud, image)
+   - Visualize trajectory (path planning result)
+   
+   RViz setup:
+   - Add RobotModel (load URDF)
+   - Add TF (show coordinate frame)
+   - Add PoseArray / Path (show trajectory)
+   
+   Deliverable: RViz config file (saved), screenshot dengan robot model & sensor data
+   
+   ---
+   
+   PERCOBAAN 7: LAUNCH FILE
+   - Create launch file: start multiple node dengan configuration
+   
+   launch_robot.launch.py:
+   ```python
+   import os
+   from launch import LaunchDescription
+   from launch_ros.actions import Node
+   from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
+   from launch.substitutions import LaunchConfiguration
+   
+   def generate_launch_description():
+       return LaunchDescription([
+           # Declare argument
+           DeclareLaunchArgument('robot_id', default_value='1'),
+           
+           # Sensor publisher node
+           Node(
+               package='my_robot_pkg',
+               executable='sensor_publisher_node',
+               name='sensor_publisher',
+               parameters=[{'publish_rate': 100}],  # Parameter
+           ),
+           
+           # Velocity estimator node
+           Node(
+               package='my_robot_pkg',
+               executable='velocity_estimator_node',
+               name='velocity_estimator',
+           ),
+           
+           # Motor server node
+           Node(
+               package='my_robot_pkg',
+               executable='motor_server_node',
+               name='motor_server',
+           ),
+           
+           # RViz (optional)
+           Node(
+               package='rviz2',
+               executable='rviz2',
+               name='rviz2',
+               arguments=['-d', '/path/to/config.rviz'],
+           ),
+       ])
+   ```
+   
+   Test:
+   ```bash
+   ros2 launch my_robot_pkg launch_robot.launch.py
+   ```
+   
+   Deliverable: Launch file, successful multi-node startup
+   
+   ---
+   
+   PERCOBAAN 8: TELEOP CONTROL
+   - Create teleop node: read keyboard input → send motor command
+   
+   Code (using pynput library):
+   ```python
+   from pynput import keyboard
+   from my_robot_interfaces.srv import MotorCommand
+   
+   class TeleopNode(Node):
+       def __init__(self):
+           super().__init__('teleop')
+           self.client = self.create_client(MotorCommand, '/robot/move_motor')
+           self.listener = keyboard.Listener(on_press=self.on_key_press)
+           self.listener.start()
+       
+       def on_key_press(self, key):
+           try:
+               if key.char == 'w':  # Forward
+                   self.send_command(motor_id=1, angle=45)
+               elif key.char == 's':  # Backward
+                   self.send_command(motor_id=1, angle=-45)
+           except:
+               pass
+       
+       def send_command(self, motor_id, angle):
+           request = MotorCommand.Request()
+           request.motor_id = motor_id
+           request.target_angle = angle
+           self.client.call_async(request)
+   ```
+   
+   Deliverable: Teleop node, successful keyboard control of robot
+
+4. DATA PENGAMATAN
+   - Topic list (ros2 topic list)
+   - Topic data (ros2 topic echo /topic)
+   - Service list (ros2 service list)
+   - Parameter list (ros2 param list)
+   - TF tree image (from view_frames)
+   - RViz visualization screenshot
+
+5. ANALISIS
+   - Topic latency acceptable?
+   - Service response time?
+   - TF broadcasting frequency sufficient?
+   - RViz smooth visualization (no lag)?
+   - Multi-node communication reliable?
+
+6. KESIMPULAN
+   - ROS2 provide standard framework untuk robot software
+   - Decoupled node architecture allow modular development
+   - URDF + TF provide geometric model untuk visualization & planning
+   - Topic/service communication flexible untuk different use case
+
+---
+
+PANDUAN PROJECT.MD (MODUL 10):
+
+JUDUL: "ROS2 ROBOT CONTROL SYSTEM ARCHITECTURE"
+
+SPESIFIKASI:
+- Design complete ROS2 system untuk robot control
+- Implement multiple node: sensor, controller, motor, telemetry
+- URDF robot description dengan xacro (use parametric model)
+- TF tree untuk link geometry
+- Launch file untuk multi-scenario (simulation, real robot)
+- RViz config untuk visualization
+- Parameter server untuk configuration
+- Sensor data logging (rosbag)
+- Fault detection & recovery node
+- Documentation & best practice
+
+DELIVERABLE:
+1. ROS2 workspace structure (well-organized)
+2. Multiple node implementation:
+   - Sensor node (IMU, encoder, etc)
+   - Motor controller node (command → firmware)
+   - State estimator node (sensor fusion)
+   - Teleop node
+3. URDF model (with xacro parameterization)
+4. TF broadcaster & listener
+5. Launch file (for different mode: sim, real, visualization)
+6. RViz configuration
+7. Parameter server YAML file
+8. Rosbag recording & playback
+9. Documentation (README, node description, architecture diagram)
+10. Code organized di GitHub (with ros2 package structure)
+11. Video demo (multi-node startup, sensor visualization, motor control, teleop)
+
+BONUS:
+- Nav2 integration (path planning, navigation)
+- Custom message & service type
+- ROS2 test framework (colcon test)
+- Containerization (Docker for reproducibility)
+
+==============================================================================
+TOOLS & PLATFORM (BATCH 3)
+==============================================================================
+
+ROBOTICS:
+- Fusion 360 (CAD, mechanism design, workspace analysis)
+- ROS2 Humble (Ubuntu 22.04 LTS)
+
+PROGRAMMING:
+- Python 3.10+ (ROS2 node implementation)
+- C++ (optional, for performance-critical node)
+
+VISUALIZATION & DEBUGGING:
+- RViz2 (for visualization)
+- rqt (for introspection: node graph, topic monitor, param reconfigure)
+- rosbag2 (record/playback message for debugging)
+
+MATHEMATICS & SIGNAL:
+- NumPy, SciPy (for kinematics calculation, signal processing)
+- Matplotlib (for trajectory visualization)
+
+VERSION CONTROL:
+- Git & GitHub
+
+==============================================================================
+INTEGRATION WITH BATCH 2 & BATCH 4
+==============================================================================
+
+BATCH 2 → BATCH 3:
+- Batch 2 firmware (embedded) provide sensor data & accept motor command
+- Batch 3 implement ROS2 bridge (MQTT or serial) untuk communicate dengan Batch 2
+- Serial protocol specification: baud rate, message format, handshake
+
+BATCH 3 → BATCH 4:
+- Batch 3 provide ROS2 robot control
+- Batch 4 integrate web server interface (webserver listen to ROS2 topic, publish web command)
+- Data flow: web server → ROS2 node → motor control
+
+---
+
+TESTING STRATEGY:
+- Unit test: each ROS2 node test independent
+- Integration test: multi-node communication test (publish/subscribe working?)
+- System test: full robot control (sensor → control → motor response)
+- Simulation test: use Gazebo simulator (optional for Batch 3)
+
+==============================================================================
+CATATAN PENTING
+==============================================================================
+
+1. ROS2 LEARNING CURVE:
+   - ROS2 powerful tapi kompleks, focus pada essential concept dulu
+   - Topic pubsub lebih penting dari service pada tahap awal
+   - URDF syntax bisa tricky, use URDF syntax check tool
+
+2. REAL ROBOT INTEGRATION:
+   - Batch 3 tidak bisa test dengan real robot tanpa Batch 2 firmware
+   - Simulasi dengan gazebo / mock possible untuk early testing
+   - Serial komunikasi dengan firmware: implement error handling, timeout
+
+3. PERFORMANCE CONSIDERATION:
+   - Topic publish rate (100 Hz typical untuk sensor), avoid too high
+   - Message size (smaller better for latency), use appropriate message type
+   - Executor: single executor for simple system, multi executor for complex
+
+4. BEST PRACTICE:
+   - Node naming: descriptive, follow convention (robot_namespace/node_name)
+   - Topic naming: hierarchical (/robot/sensor/imu, /robot/motor/command)
+   - Parameter: use YAML file, not hardcode
+   - Documentation: README setiap package, inline comment untuk complex logic
+
+==============================================================================
+GOOD LUCK! 🚀🤖
+==============================================================================

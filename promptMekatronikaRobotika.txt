@@ -1,0 +1,845 @@
+PROMPT PRAKTIKUM MEKATRONIKA DAN ROBOTIKA - END-TO-END ROBOTICS/IIoT SYSTEM
+
+==============================================================================
+ARSITEKTUR SISTEM TERINTEGRASI
+==============================================================================
+
+Layer A — Plant/Robot (Mekanik + Elektronik)
+- Mekanik: chassis AGV / arm 3-DOF / conveyor mini, transmisi (belt/gear/screw), backlash & rigiditas
+- Elektronik: power tree (24V/12V/5V), driver motor, proteksi (fuse/TVS), E-Stop & interlock
+
+Layer B — Real-time Control (Embedded)
+- ESP32 untuk loop cepat: pembacaan sensor, PWM/FOC/stepper pulse, PID kecepatan/posisi, watchdog, fault handling
+- Komunikasi: MQTT / Modbus RTU / CAN
+
+Layer C — Edge Compute (Ubuntu Mini PC + ROS2 Humble)
+- ROS2 sebagai "otak sistem": state machine, path planning, TF/URDF, sensor fusion level tinggi
+- Bridge ke perangkat: micro-ROS atau MQTT bridge (ESP32 ↔ ROS2)
+
+Layer D — Otomasi Industri (PLC + SCADA) - jika ada
+- PLC: sequencing, safety logic level proses, handshake start/stop/mode, interlock
+- SCADA: monitoring, alarm, trend, historian
+
+Layer E — Webserver IoT
+- API (REST) + WebSocket untuk dashboard
+- Time-series DB (InfluxDB/Timescale) + Grafana/ThingsBoard
+- Monitoring dan kontrol jarak jauh
+
+==============================================================================
+TOOLS & PLATFORM YANG DIGUNAKAN
+==============================================================================
+
+MEKANIK:
+- Fusion 360 untuk desain 3D, simulasi mekanisme, analisis FEA sederhana
+- Export ke STL untuk 3D printing atau file STEP untuk manufaktur
+
+ELEKTRONIK:
+- EasyEDA untuk desain schematic dan PCB
+- Simulasi rangkaian sebelum implementasi fisik
+- Library komponen industri (driver motor, sensor, power supply)
+
+PROGRAMMING EMBEDDED (PlatformIO):
+- Arduino Mega 2560: untuk sistem sederhana, banyak I/O
+- ESP32: untuk sistem IoT, WiFi/BLE, multi-core, FreeRTOS
+- STM32F4: untuk sistem real-time critical, performa tinggi
+
+PROGRAMMING PC (Ubuntu):
+- ROS2 Humble: framework robotika, komunikasi node, TF, URDF, path planning
+- Python: scripting, data processing, AI/ML, OpenCV
+- Node.js/NPM: web server IoT, API REST, WebSocket, dashboard
+- MQTT Broker (Mosquitto): komunikasi IoT
+- Database: InfluxDB (time-series) atau PostgreSQL/Timescale
+
+SISTEM KONTROL:
+- PID Controller (tuning manual & auto)
+- Fuzzy Logic Controller
+- State Machine / Sequencing
+- Trajectory Planning
+- Feedforward Control
+
+KINEMATIKA ROBOT:
+- Forward Kinematics
+- Inverse Kinematics
+- Jacobian (velocity kinematics)
+- Workspace analysis
+- Trajectory planning & interpolation
+
+==============================================================================
+STRUKTUR 14 MATERI PRAKTIKUM
+==============================================================================
+
+MODUL 1: ARSITEKTUR SISTEM MEKATRONIKA & ROBOTIKA
+- Sensor → Controller → Actuator → Feedback loop
+- Centralized vs Distributed Control
+- Real-time vs non-real-time system
+- Safety layer (E-Stop, interlock, fault handling)
+- Praktikum: Blok diagram sistem robot, mapping sinyal (analog, digital, PWM, bus), failure analysis
+
+MODUL 2: SAFETY & COMMISSIONING SISTEM
+- E-Stop hardware & software implementation
+- Limit switch, homing procedure
+- Interlock logic, fault state management
+- Recovery procedure, SOP fault handling
+- Praktikum: Implementasi safety system lengkap + commissioning checklist
+
+MODUL 3: POWER & EMC PRAKTIS UNTUK ROBOT/IIoT
+- Power tree design (24V/12V/5V/3.3V)
+- Grounding & shielding, EMC dasar
+- Noise motor ke sensor, filter (kapasitor, ferrite bead)
+- Layout kabel (power vs signal separation)
+- Praktikum: Analisis noise sebelum/sesudah filtering, stabilitas kontrol
+
+MODUL 4: SENSOR FUSION & CONDITIONING (ADVANCED)
+- Encoder, IMU (accelerometer + gyroscope), limit switch, proximity sensor
+- Filtering: moving average, low-pass filter, complementary filter, Kalman filter dasar
+- Sensor redundancy & voting
+- Praktikum: Gabung encoder + IMU untuk estimasi posisi, analisis noise vs delay
+
+MODUL 5: MOTOR & DRIVE SYSTEM (INDUSTRIAL-STYLE)
+- DC motor, BLDC, Stepper, Servo motor (perbandingan)
+- Driver: H-bridge, ESC, stepper driver, servo drive
+- PWM, direction control, current limiting
+- Closed-loop vs open-loop control
+- Praktikum: Kontrol kecepatan & posisi motor, pengaruh beban mekanik, karakterisasi motor
+
+MODUL 6: MOTION CONTROL DI ESP32 (CLOSED-LOOP)
+- PID controller implementation (proportional, integral, derivative)
+- Anti-windup, derivative filtering
+- Feedforward control (velocity + acceleration)
+- Tuning methods (Ziegler-Nichols, manual tuning)
+- Praktikum: Tuning PID nyata, kurva step response, analisis settling time & overshoot
+
+MODUL 7: MEKANISME ROBOT & TRANSMISI
+- Gear (spur, planetary), belt & pulley, lead screw, rack & pinion
+- Backlash, compliance, friction
+- Workspace, DOF (degree of freedom)
+- Desain di Fusion 360: assembly, motion study
+- Praktikum: Desain mekanisme, analisis rasio gear, uji presisi gerak, backlash compensation
+
+MODUL 8: KINEMATIKA ROBOT (APPLIED)
+- Forward Kinematics (DH parameters, transformation matrix)
+- Inverse Kinematics (analytical & numerical solution)
+- Joint space vs Cartesian space
+- Jacobian matrix (velocity kinematics)
+- Praktikum: Hitung FK & IK robot 2-DOF / 3-DOF, implementasi di mikrokontroler, validasi gerak nyata
+
+MODUL 9: TRAJECTORY PLANNING & MOTION CONTROL
+- Point-to-point vs continuous path
+- Trapezoidal velocity profile, S-curve profile
+- Soft start / soft stop, jerk limitation
+- Path interpolation (linear, circular, spline)
+- Praktikum: Implementasi trajectory planner, gerak robot halus tanpa getaran, perbandingan profil
+
+MODUL 10: ROS2 FUNDAMENTAL UNTUK ROBOT NYATA (UBUNTU)
+- Node, topic, service, action
+- Publisher/Subscriber pattern
+- TF (transformation), URDF (robot model)
+- Launch files, parameters, logging
+- Praktikum: Buat node ROS2, URDF robot, visualisasi di RViz2, teleop keyboard/joystick
+
+MODUL 11: ESP32 ↔ ROS2 BRIDGE (KOMUNIKASI IoT-ROBOT)
+- Opsi A: micro-ROS (ESP32 sebagai node ROS2 native)
+- Opsi B: MQTT bridge (ESP32 publish → ROS2 subscribe via bridge node)
+- Latency measurement, QoS (Quality of Service)
+- Retry strategy, connection handling
+- Praktikum: Setup bridge, test latency, stress test dengan high-frequency data
+
+MODUL 12: STATE MACHINE & SEQUENCING (ROS2)
+- State machine design (idle/ready/run/fault/manual/auto)
+- Event-driven programming
+- Timeout handling, debouncing
+- Recovery & fault tolerance
+- Praktikum: Implementasi state machine di ROS2, test scenario (normal, fault, recovery)
+
+MODUL 13: WEBSERVER IoT DI UBUNTU (REMOTE MONITORING)
+- Backend: Node.js + Express atau Flask (Python)
+- API REST untuk telemetry, command, configuration
+- WebSocket untuk realtime data streaming
+- Frontend: HTML/CSS/JavaScript (React/Vue optional)
+- Authentication & authorization sederhana
+- Database: InfluxDB atau PostgreSQL untuk time-series data
+- Praktikum: Buat dashboard monitoring, chart realtime, send command ke robot via web
+
+MODUL 14: OBSERVABILITY & DATA ENGINEERING (LEVEL INDUSTRI)
+- Time-series database (InfluxDB, Timescale)
+- Data retention policy, aggregation
+- Event log vs telemetry data
+- KPI: uptime, MTBF, cycle time, fault frequency
+- Visualization: Grafana dashboard
+- Praktikum: Setup monitoring stack, calculate KPI, create alarm system
+
+CAPSTONE PROJECT (2-4 MINGGU): SISTEM TERINTEGRASI
+Pilihan tema:
+A. AGV Mini: navigasi antar station + docking + web monitoring + SCADA (optional)
+B. Pick & Place 3-DOF: robot arm + conveyor + sorting warna + sequencing + web dashboard
+C. Mini Production Cell: inspection station + reject gate + historian + fault recovery
+
+Kriteria:
+✓ Ada desain mekanik (Fusion 360) + PCB (EasyEDA)
+✓ Ada embedded control (ESP32/STM32) dengan PID/fuzzy
+✓ Ada edge computing (ROS2 di Ubuntu)
+✓ Ada web server IoT untuk monitoring & control
+✓ Ada kinematika (untuk robot arm/AGV)
+✓ Ada safety system & fault handling
+✓ Ada data logging & visualization
+
+==============================================================================
+FORMAT DELIVERABLE UNTUK SETIAP MODUL
+==============================================================================
+
+Praktikum_Mekatronika_Robotika/
+│
+├── Modul-01_Arsitektur_Sistem/
+│   ├── Materi.md
+│   │   ├── 1. Definisi & Konsep Utama
+│   │   ├── 2. Diagram/Ilustrasi (block diagram, signal flow)
+│   │   ├── 3. Contoh Kasus Industri/Dunia Nyata
+│   │   ├── 4. Ringkasan
+│   │   └── 5. Deskripsi Tugas Video (point-point yang harus dijelaskan mahasiswa)
+│   │
+│   ├── Jobsheet.md
+│   │   ├── 1. Tujuan Praktikum (breakdown dari materi utama ke percobaan)
+│   │   ├── 2. Alat & Bahan (hardware, software, tools)
+│   │   ├── 3. Langkah Kerja (setup, konfigurasi, eksperimen, pengambilan data)
+│   │   ├── 4. Data Pengamatan (data apa yang harus dihasilkan & diamati)
+│   │   ├── 5. Analisis (panduan cara menganalisis data)
+│   │   └── 6. Kesimpulan (panduan mendapatkan kesimpulan)
+│   │
+│   ├── Project.md (penerapan nyata, tugas lebih sulit dari percobaan, instruksi jelas, soal cerita berbobot)
+│   │
+│   ├── Referensi.md (buku, datasheet, link dokumentasi)
+│   │
+│   ├── Praktikum/
+│   │   ├── Desain_CAD/ (file Fusion 360, STL, STEP)
+│   │   ├── Desain_PCB/ (file EasyEDA, Gerber)
+│   │   ├── Code_Embedded/ (PlatformIO project)
+│   │   │   ├── arduino_mega/
+│   │   │   ├── esp32/
+│   │   │   └── stm32/
+│   │   ├── Code_PC/ (ROS2, Python, Node.js)
+│   │   │   ├── ros2_ws/
+│   │   │   ├── python_scripts/
+│   │   │   └── webserver_iot/
+│   │   ├── output/ (hasil test, plot, data, video)
+│   │   └── README.md (cara menjalankan semua program)
+│   │
+│   ├── Data/
+│   │   ├── images/ (foto komponen, hasil percobaan)
+│   │   ├── videos/ (demo sistem, tutorial)
+│   │   ├── sensor_data/ (log sensor, CSV, JSON)
+│   │   └── test_results/ (grafik, analisis)
+│   │
+│   ├── requirements.txt (Python packages)
+│   ├── platformio.ini (embedded config)
+│   ├── package.json (Node.js dependencies)
+│   │
+│   ├── Rubrik_Penilaian_Project.md
+│   └── Rubrik_Penilaian_Tugas_Video.md
+│
+├── Modul-02_Safety_Commissioning/
+│   └── (struktur sama dengan Modul-01)
+│
+├── ... (Modul 03 - 14)
+│
+└── Capstone_Project/
+    ├── Tema_A_AGV_Mini/
+    ├── Tema_B_Pick_Place/
+    └── Tema_C_Production_Cell/
+
+==============================================================================
+PANDUAN KONTEN MATERI.md
+==============================================================================
+
+1. DEFINISI
+   - Jelaskan konsep dengan bahasa sederhana
+   - Hubungkan dengan praktikum sebelumnya (jika ada)
+   - Tujuan pembelajaran di dunia nyata
+
+2. KONSEP UTAMA
+   - Breakdown konsep menjadi poin-poin kunci
+   - Penjelasan teknis tapi tetap mudah dipahami
+   - Formula/persamaan (jika perlu) dengan contoh perhitungan
+   - Parameter-parameter penting & pengaruhnya
+
+3. DIAGRAM / ILUSTRASI
+   - Block diagram sistem
+   - Flowchart/state machine
+   - Wiring diagram
+   - Timing diagram (untuk sinyal)
+   - Grafik karakteristik (motor curve, sensor response, dll)
+   - Screenshot hasil (untuk referensi mahasiswa)
+
+4. CONTOH KASUS INDUSTRI / DUNIA NYATA
+   - Aplikasi di industri manufaktur
+   - Aplikasi di robot service (AGV, drone, robot medis)
+   - Aplikasi di smart home/building
+   - Aplikasi di otomotif
+   - Ceritakan "mengapa konsep ini penting" dengan contoh konkret
+
+5. RINGKASAN
+   - Poin-poin kunci (bullet points)
+   - Take-away message
+   - Hubungan dengan modul selanjutnya
+
+6. DESKRIPSI TUGAS VIDEO
+   Point-point yang harus mahasiswa jelaskan:
+   
+   A. PEMBUKAAN (1-2 menit)
+      - Perkenalan diri & kelompok
+      - Judul materi
+      - Tujuan pembelajaran
+      - Outline apa yang akan dijelaskan
+   
+   B. PENJELASAN TEORI (3-5 menit)
+      - Konsep utama (dengan slide/whiteboard/animasi)
+      - Diagram/ilustrasi yang relevan
+      - Formula/persamaan (jika ada) dengan contoh
+      - Aplikasi di dunia nyata
+   
+   C. SETUP & HARDWARE (2-3 menit)
+      - Komponen yang digunakan
+      - Wiring/koneksi (show & explain)
+      - Software yang diinstall
+      - Konfigurasi sistem
+   
+   D. DEMO PRAKTIKUM (5-8 menit)
+      - Screen recording: coding, compile, upload
+      - Tampilkan hasil output (serial monitor, plot, dashboard, robot bergerak)
+      - Jelaskan line-by-line untuk bagian penting code
+      - Ubah parameter → tunjukkan efeknya (contoh: ubah Kp PID, lihat response)
+      - Analisis hasil: bandingkan teori vs praktik
+   
+   E. TROUBLESHOOTING & INSIGHT (2-3 menit)
+      - Masalah yang dihadapi saat praktikum
+      - Cara mengatasi (debugging process)
+      - Lesson learned
+      - Tips untuk yang mempraktikkan materi ini
+   
+   F. PENUTUP (1 menit)
+      - Kesimpulan
+      - Link ke modul selanjutnya
+      - Terima kasih & closing statement
+   
+   CATATAN:
+   - Total durasi video: 15-20 menit
+   - Harus ada visual (tidak hanya suara)
+   - Wajib screen recording untuk bagian coding & hasil
+   - Wajib show hardware/robot saat demo
+   - Audio jelas, pencahayaan cukup
+   - Edit sederhana (cut, transition) untuk profesionalisme
+
+==============================================================================
+PANDUAN JOBSHEET.md
+==============================================================================
+
+1. TUJUAN PRAKTIKUM
+   - Tujuan umum (dari materi utama)
+   - Breakdown ke sub-tujuan (tiap percobaan)
+   - Kompetensi yang diharapkan (knowledge, skill, attitude)
+
+2. ALAT & BAHAN
+   HARDWARE:
+   - Mikrokontroler: Arduino Mega / ESP32 / STM32
+   - Sensor: encoder, IMU, limit switch, dll (sesuai modul)
+   - Aktuator: DC motor + driver, stepper + driver, servo
+   - Power supply, kabel jumper, breadboard/PCB
+   - Mechanical parts (jika ada): bracket, gear, belt, dll
+   - Robot arm / AGV chassis (untuk modul lanjutan)
+   - Mini PC (Raspberry Pi / Intel NUC) untuk ROS2
+   
+   SOFTWARE:
+   - PlatformIO IDE (VS Code extension)
+   - Fusion 360 (untuk CAD)
+   - EasyEDA (untuk PCB)
+   - ROS2 Humble (Ubuntu 22.04)
+   - Python 3.10+
+   - Node.js 18+ & NPM
+   - MQTT Broker (Mosquitto)
+   - InfluxDB / Grafana (untuk monitoring)
+   - Serial Plotter / Oscilloscope software
+   
+   TOOLS:
+   - Multimeter
+   - Oscilloscope (untuk analisis sinyal, optional tapi recommended)
+   - 3D Printer (untuk cetak part mekanik)
+   - Solder station (untuk PCB assembly)
+
+3. LANGKAH KERJA
+   A. PERSIAPAN
+      - Install software yang dibutuhkan
+      - Clone repository praktikum dari GitHub
+      - Cek kelengkapan hardware
+      - Baca datasheet komponen
+   
+   B. SETUP HARDWARE
+      - Wiring sesuai diagram (lengkap dengan pin mapping)
+      - Cek tegangan supply (gunakan multimeter)
+      - Test koneksi (continuity test untuk kabel penting)
+      - Pasang safety device (fuse, E-Stop jika ada)
+   
+   C. KONFIGURASI SOFTWARE
+      - Buka project di PlatformIO
+      - Edit configuration file (config.h atau sejenisnya)
+      - Sesuaikan parameter (pin, baudrate, Kp/Ki/Kd, dll)
+      - Compile code (pastikan no error)
+   
+   D. PERCOBAAN 1, 2, 3, ... (breakdown per sub-materi)
+      Untuk tiap percobaan:
+      1. Tujuan percobaan spesifik
+      2. Parameter yang diubah
+      3. Langkah eksekusi (step-by-step, sangat detail)
+      4. Data yang dicatat (tabel kosong untuk diisi mahasiswa)
+      5. Screenshot/foto hasil yang harus didokumentasikan
+   
+   E. TROUBLESHOOTING UMUM
+      - Masalah umum & solusinya
+      - Checklist debugging
+
+4. DATA PENGAMATAN
+   - Template tabel pengamatan (untuk tiap percobaan)
+   - Grafik yang harus dibuat (plot apa vs apa)
+   - Parameter yang dihitung (error, settling time, overshoot, RMSE, dll)
+   - Format penamaan file hasil (konsisten & rapi)
+   
+   Contoh Tabel:
+   | Percobaan | Parameter Kp | Parameter Ki | Kd | Rise Time (s) | Overshoot (%) | Settling Time (s) | Steady-State Error |
+   |-----------|--------------|--------------|-----|---------------|---------------|-------------------|---------------------|
+   | 1         |              |              |     |               |               |                   |                     |
+   | 2         |              |              |     |               |               |                   |                     |
+
+5. ANALISIS
+   PANDUAN:
+   - Bandingkan hasil percobaan 1, 2, 3, ... (apa pengaruh perubahan parameter?)
+   - Apakah hasil sesuai teori? Jika tidak, mengapa? (analisis error)
+   - Identifikasi faktor yang mempengaruhi hasil (noise, friction, delay, dll)
+   - Buat plot perbandingan (overlay multiple curves)
+   - Hitung metrik performa (jika applicable): error mean, std dev, RMSE, response time
+   - Gunakan data untuk menjawab pertanyaan kunci di Jobsheet
+   
+   PERTANYAAN ANALISIS (contoh untuk modul PID):
+   - Apa pengaruh Kp terhadap rise time dan overshoot?
+   - Mengapa Ki menyebabkan overshoot bertambah?
+   - Bagaimana Kd mengurangi overshoot?
+   - Kombinasi Kp, Ki, Kd mana yang terbaik? Mengapa?
+   - Apakah ada trade-off antara speed dan stability?
+
+6. KESIMPULAN
+   PANDUAN:
+   - Rangkum hasil percobaan (poin-poin penting)
+   - Jawab tujuan praktikum (apakah tercapai?)
+   - Lesson learned (apa yang dipelajari dari praktikum ini?)
+   - Saran perbaikan (untuk praktikum selanjutnya atau untuk sistem)
+   - Hubungan dengan materi berikutnya
+
+==============================================================================
+PANDUAN PROJECT.md
+==============================================================================
+
+FORMAT PROJECT:
+- Judul project (menarik, aplikatif)
+- Latar belakang (masalah dunia nyata yang relevan)
+- Tujuan project (spesifik, measurable)
+- Spesifikasi sistem (requirement functional & non-functional)
+- Diagram sistem (block diagram, flowchart, state machine)
+- Hardware yang digunakan
+- Software yang digunakan
+- Instruksi implementasi (step-by-step, sangat detail)
+- Kriteria penilaian (rubrik)
+- Deliverable (apa yang harus diserahkan mahasiswa)
+
+KARAKTERISTIK PROJECT YANG BAIK:
+✓ Lebih sulit dari percobaan (integrasi multiple concepts)
+✓ Penerapan nyata & mudah dipahami tujuannya
+✓ Bersifat open-ended (mahasiswa punya ruang kreativitas)
+✓ Membutuhkan foto/video hasil implementasi
+✓ Bisa menggunakan webcam laptop (untuk vision-based project)
+✓ Instruksi jelas tapi tidak spoon-feeding
+✓ Ada challenge (troubleshooting, optimization)
+✓ Penilaian multi-aspek (hardware, software, report, demo, video)
+
+CONTOH PROJECT (Modul 6 - Motion Control):
+Judul: "LINE FOLLOWING ROBOT WITH ADAPTIVE PID CONTROLLER"
+Latar Belakang: AGV di warehouse harus mengikuti line dengan kecepatan variabel. Tuning PID manual tidak optimal untuk semua kondisi (belokan tajam vs lurus).
+Tujuan: Implementasi PID controller yang bisa auto-tuning berdasarkan kondisi track.
+Spesifikasi:
+- Robot harus bisa follow line hitam di atas putih
+- Kecepatan max 0.5 m/s di lurus, turun di belokan
+- Error maksimal 2 cm dari center line
+- Response time < 200 ms
+Hardware: ESP32, sensor array IR (5-8 sensor), motor DC + encoder, driver motor, chassis
+Software: PlatformIO, PID library custom, logging via serial
+Instruksi: [detail step-by-step]
+Deliverable:
+1. Desain mekanik (Fusion 360) + foto hasil assembly
+2. Source code lengkap (PlatformIO project) + dokumentasi
+3. Video demo robot (minimal 3 lap, include belokan tajam)
+4. Laporan: analisis tuning, grafik error vs time, kesimpulan
+5. Presentasi (slide + demo live)
+
+==============================================================================
+PANDUAN CODING
+==============================================================================
+
+PRINSIP CODING:
+✓ Modular: pisahkan fungsi (sensor, motor, control, communication)
+✓ Readable: variable naming jelas, comment cukup (bukan berlebihan)
+✓ Testable: masing-masing fungsi bisa ditest independent
+✓ Portable: bisa jalan di Windows/Linux/Mac (untuk Python/Node.js)
+✓ Configurable: parameter di file config / #define, jangan hardcode
+
+STRUKTUR CODE EMBEDDED (PlatformIO):
+project_name/
+├── src/
+│   ├── main.cpp (entry point)
+│   ├── config.h (all configuration, pin mapping, constants)
+│   ├── sensor.h / sensor.cpp (sensor reading, filtering)
+│   ├── motor.h / motor.cpp (motor control, PWM)
+│   ├── pid.h / pid.cpp (PID controller class)
+│   ├── kinematics.h / kinematics.cpp (FK/IK calculation)
+│   ├── communication.h / communication.cpp (MQTT, serial)
+│   └── utils.h / utils.cpp (helper functions)
+├── lib/ (external libraries, jika ada)
+├── test/ (unit test, optional)
+├── platformio.ini (board config, dependencies)
+└── README.md (how to compile, upload, test)
+
+STRUKTUR CODE ROS2:
+ros2_ws/
+├── src/
+│   ├── robot_control/
+│   │   ├── robot_control/ (Python package)
+│   │   │   ├── __init__.py
+│   │   │   ├── motor_node.py
+│   │   │   ├── sensor_node.py
+│   │   │   ├── control_node.py
+│   │   │   └── mqtt_bridge.py
+│   │   ├── config/
+│   │   │   ├── robot_params.yaml
+│   │   │   └── control_params.yaml
+│   │   ├── launch/
+│   │   │   ├── robot_bringup.launch.py
+│   │   │   └── teleop.launch.py
+│   │   ├── urdf/
+│   │   │   └── robot.urdf.xacro
+│   │   ├── package.xml
+│   │   ├── setup.py
+│   │   └── README.md
+├── install/
+├── build/
+└── log/
+
+STRUKTUR WEBSERVER IoT (Node.js):
+webserver_iot/
+├── server.js (entry point)
+├── config/
+│   ├── db.js (database connection)
+│   └── mqtt.js (MQTT broker connection)
+├── routes/
+│   ├── api.js (REST API endpoints)
+│   └── websocket.js (WebSocket handler)
+├── controllers/
+│   ├── telemetry.js
+│   ├── command.js
+│   └── alarm.js
+├── models/ (database schema)
+├── public/ (frontend)
+│   ├── index.html
+│   ├── css/
+│   ├── js/
+│   └── assets/
+├── package.json
+├── .env (environment variables)
+└── README.md
+
+VARIABEL YANG BISA DIUBAH (di bagian atas code):
+// ===== CONFIGURATION - UBAH PARAMETER DI SINI =====
+// Pin Assignment
+#define MOTOR_PWM_PIN    25
+#define ENCODER_A_PIN    26
+#define ENCODER_B_PIN    27
+
+// PID Parameters
+float Kp = 2.0;   // Proportional gain - UBAH untuk melihat pengaruh terhadap rise time
+float Ki = 0.5;   // Integral gain - UBAH untuk eliminasi steady-state error
+float Kd = 0.1;   // Derivative gain - UBAH untuk mengurangi overshoot
+
+// Control Parameters
+float setpoint = 100.0;  // Target RPM
+float max_output = 255;  // Max PWM value
+int sample_time_ms = 10; // Control loop period (ms)
+
+// PENJELASAN PARAMETER:
+// - Kp: semakin besar, response semakin cepat, tapi bisa overshoot
+// - Ki: menghilangkan error steady-state, tapi bisa bikin oscillation
+// - Kd: meredam overshoot, tapi sensitive terhadap noise
+// - setpoint: target kecepatan motor (RPM)
+// - sample_time_ms: periode loop kontrol, jangan terlalu kecil (noise) atau besar (lambat)
+
+PENJELASAN DETAIL (BAHASA INDONESIA):
+- Setiap fungsi diberi comment penjelasan (input, output, cara kerja)
+- Setiap bagian penting code diberi inline comment
+- Di README.md: cara compile, upload, test, expected result
+- Troubleshooting section: masalah umum & solusi
+
+OUTPUT:
+- Semua output (plot, log, video) disimpan di folder output/
+- Naming convention: [modul]_[percobaan]_[tanggal].[ext]
+  Contoh: modul06_pid_tuning_20260203.csv
+- Plot disimpan sebagai PNG (high resolution)
+- Video disimpan sebagai MP4 (H.264, resolusi min 720p)
+
+TESTING:
+- Test manual: jalankan program, amati hasil, sesuai ekspektasi?
+- Unit test (optional, untuk code kompleks): test tiap fungsi independent
+- Integration test: test sistem secara keseluruhan
+- Dokumentasikan hasil test di README.md atau test_report.md
+
+==============================================================================
+REFERENSI BUKU (KURASI SESUAI STACK)
+==============================================================================
+
+MEKATRONIKA (MEKANIK + ELEKTRONIK + SISTEM):
+1. W. Bolton — Mechatronics: Electronic Control Systems in Mechanical and Electrical Engineering (7th ed.) (Pearson)
+   - Bab sensor, aktuator, controller, interfacing
+   
+2. David G. Alciatore, Michael B. Histand — Introduction to Mechatronics and Measurement Systems (5th ed.) (McGraw-Hill)
+   - Fokus sistem pengukuran & interfacing
+
+3. Devdas Shetty, Richard A. Kolk — Mechatronics System Design (2nd ed.) (Cengage Learning)
+   - Desain sistem mekatronika dari konsep
+
+ROBOTIKA (KINEMATIKA, PLANNING, KONTROL):
+1. Kevin M. Lynch & Frank C. Park — Modern Robotics: Mechanics, Planning, and Control (Cambridge University Press)
+   - WAJIB untuk kinematika & dinamika robot
+   - Ada materi pendukung gratis di: http://hades.mech.northwestern.edu/index.php/Modern_Robotics
+   
+2. John J. Craig — Introduction to Robotics: Mechanics and Control (4th ed.) (Pearson)
+   - Klasik, mudah dipahami untuk pemula
+
+3. Bruno Siciliano, Lorenzo Sciavicco, Luigi Villani, Giuseppe Oriolo — Robotics: Modelling, Planning and Control (Springer)
+   - Advanced, untuk yang ingin deep dive
+
+ROS2 (UBUNTU ROBOT SOFTWARE STACK):
+1. ROS 2 from Scratch (Packt)
+   - Tutorial praktis ROS2 dari basic
+
+2. Mastering ROS 2 for Robotics Programming (4th ed.) (Packt)
+   - Advanced ROS2: navigation, manipulation, perception
+
+3. A Concise Introduction to Robot Programming with ROS2 (CRC Press)
+   - Cocok untuk praktikum, fokus hands-on
+
+ESP32 & IoT DEVICE ENGINEERING:
+1. Developing IoT Projects with ESP32 (2nd ed., Packt, 2023)
+   - Project-based, langsung praktik
+
+2. IoT Product Development Using ESP32 Microcontrollers (Springer, 2025)
+   - End-to-end IoT product development
+
+3. ESP32 Formats and Communication (Springer)
+   - Deep dive komunikasi (WiFi, BLE, MQTT, HTTP, etc.)
+
+KONTROL SISTEM:
+1. Norman S. Nise — Control Systems Engineering (8th ed.) (Wiley)
+   - Teori kontrol klasik (PID, root locus, bode plot)
+
+2. Karl J. Åström, Richard M. Murray — Feedback Systems: An Introduction for Scientists and Engineers (Princeton University Press)
+   - Gratis online: https://fbswiki.org/
+   - Pendekatan modern feedback control
+
+3. Kiam Heong Ang, G. Chong, Yun Li — "PID control system analysis, design, and technology" (IEEE Transactions on Control Systems Technology, 2005)
+   - Paper klasik tentang PID tuning
+
+PLC, SCADA, PROTOKOL INDUSTRI:
+1. Frank D. Petruzella — Programmable Logic Controllers (6th ed.) (McGraw-Hill)
+   - Standar untuk belajar PLC
+
+2. David Bailey & Edwin Wright — Practical SCADA for Industry (Newnes/Elsevier)
+   - Implementasi SCADA di industri
+
+3. Gordon R. Clarke, Deon Reynders, Edwin Wright — Practical Modern SCADA Protocols: DNP3, 60870.5 and Related Systems (Newnes/Elsevier)
+   - Protokol komunikasi SCADA
+
+4. Wolfgang Mahnke, Stefan-Helmut Leitner, Matthias Damm — OPC Unified Architecture (Springer)
+   - OPC UA untuk Industry 4.0
+
+EMBEDDED LINUX (UBUNTU AS EDGE PLATFORM):
+1. Karim Yaghmour — Building Embedded Linux Systems (O'Reilly)
+   - Build custom Linux untuk embedded
+
+2. Derek Molloy — Exploring Raspberry Pi (Wiley)
+   - Hands-on interfacing untuk edge computing
+
+INDUSTRIAL IoT / ARSITEKTUR SOLUSI:
+1. Architecting the Industrial Internet (Packt)
+   - Arsitektur solusi IIoT end-to-end
+
+2. Shancang Li, Li Da Xu — Securing the Internet of Things (Syngress)
+   - Security untuk IoT/IIoT
+
+DATASHEET & DOCUMENTATION:
+- Espressif ESP32 Technical Reference Manual
+- STM32F4 Reference Manual & Datasheet
+- Arduino Mega 2560 Datasheet
+- ROS2 Humble Documentation: https://docs.ros.org/en/humble/
+- PlatformIO Documentation: https://docs.platformio.org/
+- MQTT Specification v5.0
+- Modbus Protocol Specification
+- CANopen Protocol
+
+==============================================================================
+RUBRIK PENILAIAN
+==============================================================================
+
+RUBRIK PENILAIAN PROJECT:
+┌─────────────────────────┬───────┬────────────────────────────────────────────────────┐
+│ ASPEK                   │ BOBOT │ KRITERIA                                           │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 1. DESAIN MEKANIK       │  15%  │ • Fusion 360: assembly, constraint, motion study  │
+│    (Fusion 360)         │       │ • Engineering drawing (dimensi, toleransi)        │
+│                         │       │ • Analisis: workspace, DOF, singularity (jika ada)│
+│                         │       │ • Foto hasil assembly fisik                        │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 2. DESAIN ELEKTRONIK    │  15%  │ • EasyEDA: schematic lengkap & jelas               │
+│    (EasyEDA)            │       │ • PCB layout (jika ada): routing, grounding        │
+│                         │       │ • Bill of Materials (BOM)                          │
+│                         │       │ • Foto implementasi wiring/PCB                     │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 3. SOFTWARE EMBEDDED    │  20%  │ • Code quality: modular, readable, commented       │
+│    (PlatformIO)         │       │ • Algoritma kontrol: PID/fuzzy/trajectory          │
+│                         │       │ • Safety implementation (E-Stop, fault handling)   │
+│                         │       │ • Testing: unit test atau test procedure          │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 4. SOFTWARE PC          │  15%  │ • ROS2: node architecture, topic/service design    │
+│    (ROS2, Web IoT)      │       │ • URDF & TF (untuk robot)                          │
+│                         │       │ • Web dashboard: functional, responsive, UX        │
+│                         │       │ • Database & data logging                          │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 5. INTEGRASI SISTEM     │  15%  │ • Semua layer terintegrasi (embedded-ROS2-web)     │
+│                         │       │ • Komunikasi reliable (MQTT/bridge)                │
+│                         │       │ • Latency acceptable (< 100 ms untuk critical)     │
+│                         │       │ • Fault recovery & graceful degradation            │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 6. PERFORMA SISTEM      │  10%  │ • Memenuhi spesifikasi (akurasi, speed, repeatability) │
+│                         │       │ • Data kuantitatif: error, cycle time, uptime      │
+│                         │       │ • Analisis performa (bandingkan target vs aktual)  │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 7. LAPORAN & DOKUMENTASI│  10%  │ • Laporan: struktur jelas, analisis mendalam       │
+│                         │       │ • Dokumentasi code (README, comment, API doc)      │
+│                         │       │ • Video demo: jelas, lengkap, profesional          │
+│                         │       │ • Repository GitHub: organized, version controlled │
+└─────────────────────────┴───────┴────────────────────────────────────────────────────┘
+
+SKALA PENILAIAN (per aspek):
+• 91-100 (A)  : Excellent, melebihi ekspektasi, innovative solution
+• 81-90  (AB) : Very good, memenuhi semua requirement dengan baik
+• 71-80  (B)  : Good, memenuhi requirement, ada minor issue
+• 61-70  (BC) : Satisfactory, memenuhi requirement minimal, beberapa issue
+• 51-60  (C)  : Acceptable, banyak issue tapi sistem masih berfungsi
+• < 50   (D/E): Not acceptable, sistem tidak berfungsi atau tidak memenuhi requirement
+
+──────────────────────────────────────────────────────────────────────────────
+
+RUBRIK PENILAIAN TUGAS VIDEO:
+┌─────────────────────────┬───────┬────────────────────────────────────────────────────┐
+│ ASPEK                   │ BOBOT │ KRITERIA                                           │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 1. PEMBUKAAN            │  5%   │ • Perkenalan jelas                                 │
+│                         │       │ • Judul & tujuan disampaikan                       │
+│                         │       │ • Outline video                                    │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 2. PENJELASAN TEORI     │  25%  │ • Konsep utama dijelaskan dengan benar & jelas     │
+│                         │       │ • Menggunakan diagram/ilustrasi yang mendukung     │
+│                         │       │ • Contoh aplikasi dunia nyata                      │
+│                         │       │ • Bahasa mudah dipahami (tidak terlalu teknis)     │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 3. SETUP & HARDWARE     │  15%  │ • Menunjukkan semua komponen dengan jelas          │
+│                         │       │ • Wiring/koneksi dijelaskan (close-up)             │
+│                         │       │ • Software & konfigurasi dijelaskan                │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 4. DEMO PRAKTIKUM       │  30%  │ • Screen recording: coding, compile, upload (jelas)│
+│                         │       │ • Hasil output ditampilkan (serial, plot, robot)   │
+│                         │       │ • Penjelasan code (line-by-line untuk bagian penting) │
+│                         │       │ • Demo ubah parameter → lihat efek (min 2 variasi)│
+│                         │       │ • Analisis hasil (bandingkan teori vs praktik)     │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 5. TROUBLESHOOTING &    │  15%  │ • Masalah yang dihadapi dijelaskan                 │
+│    INSIGHT              │       │ • Cara mengatasi (debugging process)               │
+│                         │       │ • Lesson learned & tips                            │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 6. PENUTUP              │  5%   │ • Kesimpulan singkat & jelas                       │
+│                         │       │ • Link ke materi selanjutnya (optional)            │
+│                         │       │ • Closing profesional                              │
+├─────────────────────────┼───────┼────────────────────────────────────────────────────┤
+│ 7. TEKNIS VIDEO         │  5%   │ • Audio jelas (no noise, volume konsisten)         │
+│                         │       │ • Visual jelas (resolusi min 720p, lighting cukup) │
+│                         │       │ • Editing sederhana (cut, transition)              │
+│                         │       │ • Durasi sesuai (15-20 menit, tidak terlalu panjang) │
+└─────────────────────────┴───────┴────────────────────────────────────────────────────┘
+
+SKALA PENILAIAN:
+• 91-100 (A)  : Sangat jelas, profesional, engaging, bisa jadi referensi
+• 81-90  (AB) : Jelas, terstruktur baik, minor improvement
+• 71-80  (B)  : Cukup jelas, ada beberapa bagian yang kurang detail
+• 61-70  (BC) : Kurang jelas, skip beberapa bagian penting
+• 51-60  (C)  : Banyak bagian tidak jelas atau tidak lengkap
+• < 50   (D/E): Tidak memenuhi requirement, video tidak informatif
+
+BONUS (+5 poin max):
+• Kreativitas presentasi (animasi, analogi menarik, storytelling)
+• Kolaborasi tim terlihat (bukan satu orang ngomong terus)
+• Insight mendalam (analisis beyond what's expected)
+
+==============================================================================
+CATATAN IMPLEMENTASI
+==============================================================================
+
+UNTUK INSTRUKTUR:
+✓ Pastikan semua hardware tersedia & berfungsi sebelum praktikum
+✓ Test semua code sebelum diberikan ke mahasiswa
+✓ Siapkan troubleshooting guide (common issues & solutions)
+✓ Buat demo video (sebagai referensi mahasiswa)
+✓ Setup GitHub Classroom atau Git server untuk submission
+✓ Siapkan feedback template (untuk review project)
+
+UNTUK MAHASISWA:
+✓ Baca materi SEBELUM praktikum (jangan on-the-spot)
+✓ Siapkan pertanyaan untuk asistensi
+✓ Dokumentasikan progress (foto, video, log) sejak awal
+✓ Backup code & data secara berkala (gunakan Git)
+✓ Kolaborasi tim: bagi tugas sesuai expertise
+✓ Jangan plagiasi: kalo stuck, konsultasi dulu
+
+TESTING & VALIDATION:
+✓ Setiap program harus ditest di Windows, Linux, Mac (untuk Python/Node.js)
+✓ Embedded code test di real hardware (bukan simulasi saja)
+✓ ROS2 test di Ubuntu 22.04 (Humble officially supported)
+✓ Web server test di multiple browser (Chrome, Firefox, Edge)
+✓ Load test untuk sistem IoT (simulate multiple concurrent users/devices)
+
+FILE & FOLDER STRUCTURE:
+✓ Konsisten di semua modul
+✓ README.md di root & tiap subfolder (penjelasan isi folder)
+✓ .gitignore untuk file yang tidak perlu di-commit (build/, output/, .vscode/, dll)
+✓ requirements.txt, platformio.ini, package.json selalu ada
+✓ LICENSE file (MIT atau sejenisnya)
+
+VERSION CONTROL (GIT):
+✓ Init repo di awal project
+✓ Commit message jelas: "[Modul-XX] Add PID controller implementation"
+✓ Branch strategy: main (stable), dev (development), feature/* (new features)
+✓ Pull request untuk merge ke main (code review by team/instructor)
+✓ Tag untuk milestone (v1.0-module06-completed)
+
+==============================================================================
+CONTACT & SUPPORT
+==============================================================================
+
+Repository: [URL GitHub praktikum]
+Dokumentasi: [URL dokumentasi lengkap, Wiki, atau Notion]
+Forum diskusi: [URL Discord/Slack/Forum]
+Contact person: [Email/WhatsApp asistensi]
+
+GOOD LUCK & HAPPY LEARNING! 🚀🤖
+
+==============================================================================
