@@ -1,13 +1,13 @@
 # TUGAS VIDEO MODUL 01: PERANCANGAN PCB DARI SKEMATIK HINGGA PRODUKSI
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
-**Mata Kuliah:** Praktikum Mekatronika dan Robotika  
-**Modul:** 01 – Desain PCB  
-**Software:** EasyEDA Standard / Pro  
-**Manufaktur:** JLCPCB  
-**Batas Upload:** Sesuai jadwal dosen  
-**Durasi Video:** 10–20 menit  
-**Format:** MP4, resolusi minimal HD 720p  
+**Program Studi:** Teknologi Rekayasa Otomasi
+**Mata Kuliah:** Praktikum Mekatronika dan Robotika
+**Modul:** 01 – Desain PCB
+**Software:** EasyEDA Standard / Pro
+**Manufaktur:** JLCPCB
+**Batas Upload:** Sesuai jadwal dosen
+**Durasi Video:** 10–20 menit
+**Format:** MP4, resolusi minimal HD 720p
 **Platform Upload:** Google Drive / YouTube (unlisted) / LMS
 
 ---
@@ -201,20 +201,20 @@
 
 ### C.1 Kelengkapan Konten (40 poin)
 
-| No | Bagian | Bobot | Skor (0–10) | Nilai |
-|----|--------|-------|------------|-------|
-| 1 | Bag. 1 – Konsep dasar PCB (jenis, material, copper, alur kerja) | 5 | | |
-| 2 | Bag. 2 – Pengenalan EasyEDA (fitur, antarmuka, half offline) | 4 | | |
-| 3 | Bag. 3 – Spesifikasi proyek | 2 | | |
-| 4 | Bag. 4 – Skematik EasyEDA (LCSC search, wire, net label, ERC) | 8 | | |
-| 5 | Bag. 5 – Footprint dan packaging (Footprint Manager, custom FP) | 4 | | |
-| 6 | Bag. 6 – Konversi ke PCB (Update PCB, board outline, design rules) | 3 | | |
-| 7 | Bag. 7 – Routing (placement, manual route, auto, copper area, cross probe) | 7 | | |
-| 8 | Bag. 8 – DRC dan Design Manager | 3 | | |
-| 9 | Bag. 9 – Silkscreen, Photo View, 3D View | 2 | | |
-| 10 | Bag. 10 – Gerber, BOM, Pick & Place export | 2 | | |
-| 11 | Bag. 11 – Validasi Gerber + simulasi order JLCPCB | 0 | | |
-| **TOTAL** | | **40** | | |
+| No              | Bagian                                                                      | Bobot        | Skor (0–10) | Nilai |
+| --------------- | --------------------------------------------------------------------------- | ------------ | ------------ | ----- |
+| 1               | Bag. 1 – Konsep dasar PCB (jenis, material, copper, alur kerja)            | 5            |              |       |
+| 2               | Bag. 2 – Pengenalan EasyEDA (fitur, antarmuka, half offline)               | 4            |              |       |
+| 3               | Bag. 3 – Spesifikasi proyek                                                | 2            |              |       |
+| 4               | Bag. 4 – Skematik EasyEDA (LCSC search, wire, net label, ERC)              | 8            |              |       |
+| 5               | Bag. 5 – Footprint dan packaging (Footprint Manager, custom FP)            | 4            |              |       |
+| 6               | Bag. 6 – Konversi ke PCB (Update PCB, board outline, design rules)         | 3            |              |       |
+| 7               | Bag. 7 – Routing (placement, manual route, auto, copper area, cross probe) | 7            |              |       |
+| 8               | Bag. 8 – DRC dan Design Manager                                            | 3            |              |       |
+| 9               | Bag. 9 – Silkscreen, Photo View, 3D View                                   | 2            |              |       |
+| 10              | Bag. 10 – Gerber, BOM, Pick & Place export                                 | 2            |              |       |
+| 11              | Bag. 11 – Validasi Gerber + simulasi order JLCPCB                          | 0            |              |       |
+| **TOTAL** |                                                                             | **40** |              |       |
 
 *Skor per bagian: 10 = sempurna; 7–9 = baik; 4–6 = cukup; 1–3 = kurang; 0 = tidak ada*
 
@@ -222,59 +222,60 @@
 
 ### C.2 Akurasi Teknis (30 poin)
 
-| No | Kriteria | Bobot | Skor (0–10) | Nilai |
-|----|---------|-------|------------|-------|
-| 1 | Konsep PCB (material, copper weight, layer) dijelaskan **secara benar** | 6 | | |
-| 2 | Skematik **benar secara elektris** — ERC bersih, koneksi logis tepat | 8 | | |
-| 3 | Routing PCB **sesuai aturan**: sudut 45°, track width sesuai arus, ground plane | 8 | | |
-| 4 | Fitur EasyEDA **digunakan dengan benar** (bukan hanya dibuka tapi tidak dipahami) | 8 | | |
-| **TOTAL** | | **30** | | |
+| No              | Kriteria                                                                               | Bobot        | Skor (0–10) | Nilai |
+| --------------- | -------------------------------------------------------------------------------------- | ------------ | ------------ | ----- |
+| 1               | Konsep PCB (material, copper weight, layer) dijelaskan**secara benar**           | 6            |              |       |
+| 2               | Skematik**benar secara elektris** — ERC bersih, koneksi logis tepat             | 8            |              |       |
+| 3               | Routing PCB**sesuai aturan**: sudut 45°, track width sesuai arus, ground plane  | 8            |              |       |
+| 4               | Fitur EasyEDA**digunakan dengan benar** (bukan hanya dibuka tapi tidak dipahami) | 8            |              |       |
+| **TOTAL** |                                                                                        | **30** |              |       |
 
 ---
 
 ### C.3 Kualitas Presentasi (20 poin)
 
-| No | Kriteria | Bobot | Skor (0–5) | Nilai |
-|----|---------|-------|-----------|-------|
-| 1 | Narasi jelas, tidak terlalu cepat/lambat, mudah dipahami | 5 | | |
-| 2 | Kualitas rekaman layar — resolusi HD, tidak buram, terlihat detail EasyEDA | 5 | | |
-| 3 | Struktur video — ada pembukaan, alur logis urut, ada penutup | 5 | | |
-| 4 | Durasi sesuai (10–20 menit) — tidak terlalu singkat maupun terlalu panjang | 5 | | |
-| **TOTAL** | | **20** | | |
+| No              | Kriteria                                                                     | Bobot        | Skor (0–5) | Nilai |
+| --------------- | ---------------------------------------------------------------------------- | ------------ | ----------- | ----- |
+| 1               | Narasi jelas, tidak terlalu cepat/lambat, mudah dipahami                     | 5            |             |       |
+| 2               | Kualitas rekaman layar — resolusi HD, tidak buram, terlihat detail EasyEDA  | 5            |             |       |
+| 3               | Struktur video — ada pembukaan, alur logis urut, ada penutup                | 5            |             |       |
+| 4               | Durasi sesuai (10–20 menit) — tidak terlalu singkat maupun terlalu panjang | 5            |             |       |
+| **TOTAL** |                                                                              | **20** |             |       |
 
 ---
 
 ### C.4 Demonstrasi Fitur EasyEDA (10 poin)
 
-| No | Fitur yang Wajib Didemonstrasikan | Skor (0 atau 1) |
-|----|----------------------------------|----------------|
-| 1 | LCSC Library Search (cari komponen + lihat info) | |
-| 2 | Symbol Wizard atau Edit Symbol | |
-| 3 | My Library (simpan komponen) | |
-| 4 | ERC (jalankan + perbaiki) | |
-| 5 | Footprint Manager | |
-| 6 | Update PCB dari Schematic | |
-| 7 | Copper Area (Ground Plane) + Rebuild | |
-| 8 | Auto Router (jalankan dan tampilkan hasil) | |
-| 9 | DRC (jalankan + perbaiki + tampilkan bersih) | |
-| 10 | Photo View dan 3D View | |
-| **TOTAL** | | **/10** |
+| No              | Fitur yang Wajib Didemonstrasikan                | Skor (0 atau 1) |
+| --------------- | ------------------------------------------------ | --------------- |
+| 1               | LCSC Library Search (cari komponen + lihat info) |                 |
+| 2               | Symbol Wizard atau Edit Symbol                   |                 |
+| 3               | My Library (simpan komponen)                     |                 |
+| 4               | ERC (jalankan + perbaiki)                        |                 |
+| 5               | Footprint Manager                                |                 |
+| 6               | Update PCB dari Schematic                        |                 |
+| 7               | Copper Area (Ground Plane) + Rebuild             |                 |
+| 8               | Auto Router (jalankan dan tampilkan hasil)       |                 |
+| 9               | DRC (jalankan + perbaiki + tampilkan bersih)     |                 |
+| 10              | Photo View dan 3D View                           |                 |
+| **TOTAL** |                                                  | **/10**   |
 
 ---
 
 ### C.5 Rangkuman Nilai
 
-| Komponen | Bobot | Nilai Didapat |
-|---------|-------|--------------|
-| Kelengkapan Konten | 40 | |
-| Akurasi Teknis | 30 | |
-| Kualitas Presentasi | 20 | |
-| Demonstrasi Fitur EasyEDA | 10 | |
-| **TOTAL** | **100** | |
+| Komponen                  | Bobot         | Nilai Didapat |
+| ------------------------- | ------------- | ------------- |
+| Kelengkapan Konten        | 40            |               |
+| Akurasi Teknis            | 30            |               |
+| Kualitas Presentasi       | 20            |               |
+| Demonstrasi Fitur EasyEDA | 10            |               |
+| **TOTAL**           | **100** |               |
 
-**Penilai:** ___________________  
-**Tanggal:** ___________________  
+**Penilai:** ___________________
+**Tanggal:** ___________________
 **Catatan:**
+
 ```
 _______________________________________________
 ```
@@ -285,22 +286,22 @@ _______________________________________________
 
 ### D.1 Tools Screen Recording
 
-| Tool | Platform | Link | Keterangan |
-|------|---------|------|-----------|
-| **OBS Studio** | Win/Mac/Linux | obsproject.com | Gratis, paling lengkap |
-| Windows Game Bar | Windows | `Win+G` | Built-in, mudah |
-| Loom | Browser/App | loom.com | Gratis (terbatas), langsung share |
-| CapScreen / ShareX | Windows | — | Gratis, banyak fitur |
+| Tool                 | Platform      | Link           | Keterangan                        |
+| -------------------- | ------------- | -------------- | --------------------------------- |
+| **OBS Studio** | Win/Mac/Linux | obsproject.com | Gratis, paling lengkap            |
+| Windows Game Bar     | Windows       | `Win+G`      | Built-in, mudah                   |
+| Loom                 | Browser/App   | loom.com       | Gratis (terbatas), langsung share |
+| CapScreen / ShareX   | Windows       | —             | Gratis, banyak fitur              |
 
 ### D.2 Pengaturan Recording
 
-| Aspek | Rekomendasi |
-|-------|-------------|
-| Resolusi | 1920×1080 (Full HD) atau minimal 1280×720 |
-| Frame rate | 30 fps (cukup untuk screen recording) |
-| Audio | Headset microphone — lebih bersih dari mic internal laptop |
-| Format | MP4 (H.264) |
-| Ukuran file maksimal | 2 GB |
+| Aspek                | Rekomendasi                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| Resolusi             | 1920×1080 (Full HD) atau minimal 1280×720                 |
+| Frame rate           | 30 fps (cukup untuk screen recording)                       |
+| Audio                | Headset microphone — lebih bersih dari mic internal laptop |
+| Format               | MP4 (H.264)                                                 |
+| Ukuran file maksimal | 2 GB                                                        |
 
 ### D.3 Tips Rekaman yang Baik
 
@@ -329,6 +330,7 @@ _______________________________________________
 ## E. CHECKLIST SEBELUM SUBMIT
 
 **Konten:**
+
 - [ ] Semua 11 bagian ada dalam video (cek menggunakan daftar di atas)
 - [ ] Nama dan NIM tampil di awal video
 - [ ] Minimal 5 fitur EasyEDA didemonstrasikan (bukan hanya disebutkan)
@@ -338,17 +340,19 @@ _______________________________________________
 - [ ] Halaman order JLCPCB ditampilkan dengan estimasi harga
 
 **Kualitas:**
+
 - [ ] Resolusi minimal HD 720p
 - [ ] Audio jelas tanpa noise berlebihan
 - [ ] Durasi 10–20 menit
 - [ ] Teks/angka di layar EasyEDA bisa terbaca
 
 **File:**
+
 - [ ] Format MP4
 - [ ] Nama file: `Video_PCB_[NIM]_[NamaLengkap].mp4`
 - [ ] Diupload ke platform yang ditentukan dosen sebelum batas waktu
 
 ---
 
-*Video yang tidak memenuhi minimal 70% kelengkapan konten tidak akan dinilai.*  
+*Video yang tidak memenuhi minimal 70% kelengkapan konten tidak akan dinilai.*
 *Tugas video dikerjakan secara INDIVIDUAL — tidak boleh bergabung dengan anggota kelompok lain.*
