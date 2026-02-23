@@ -2,5 +2,28 @@
 desktop.ini
 Thumbs.db
 
-# PDF folders with long filenames (tracked via Google Drive, not git)
-referensi/all/
+# Module referensi and playwright folders
+Modul01 DesainPCB/referensi/
+Modul01 DesainPCB/.playwright-mcp/
+Modul02 SetupROS/referensi/
+Modul02 SetupROS/.playwright-mcp/
+Modul03 Fusion360/referensi/
+Modul03 Fusion360/.playwright-mcp/
+Modul04 IoT WebServer MQTT ESP32/referensi/
+Modul04 IoT WebServer MQTT ESP32/.playwright-mcp/
+Modul05 IoT PLC AI Mosbus/referensi/
+Modul05 IoT PLC AI Mosbus/.playwright-mcp/
+Modul06 Build LineFollower/referensi/
+Modul06 Build LineFollower/.playwright-mcp/
+Modul07 WallFollower/referensi/
+Modul07 WallFollower/.playwright-mcp/
+Modul08 ROS Dasar dan Gazebo/referensi/
+Modul08 ROS Dasar dan Gazebo/.playwright-mcp/
+Modul09 ROS Kinematika dan Kontroler/referensi/
+Modul09 ROS Kinematika dan Kontroler/.playwright-mcp/
+Modul10 ROS OpenCV dan YOLO/referensi/
+Modul10 ROS OpenCV dan YOLO/.playwright-mcp/
+Modul11 ROS SLAM dan Navigasi/referensi/
+Modul11 ROS SLAM dan Navigasi/.playwright-mcp/
+Modul12 ROS Robot ARM dan MoveIt/referensi/
+Modul12 ROS Robot ARM dan MoveIt/.playwright-mcp/
