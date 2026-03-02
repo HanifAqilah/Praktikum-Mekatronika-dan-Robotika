@@ -1,7 +1,7 @@
 # Windows
 desktop.ini
 Thumbs.db
-
+tes/
 # Module referensi and playwright folders
 Modul01 DesainPCB/referensi/
 Modul01 DesainPCB/.playwright-mcp/
