@@ -1,6 +1,6 @@
 # PROJECT MODUL 06: ROBOT LINE FOLLOWER KOMPETISI
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 06 – Build Line Follower  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

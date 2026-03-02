@@ -1,6 +1,6 @@
 # MATERI MODUL 06: BUILD DAN PROGRAM ROBOT LINE FOLLOWER
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 06 – Build Line Follower  
 **Hardware:** PCB Robot (Modul 01+03), ESP32, Motor DC, Sensor IR Array  

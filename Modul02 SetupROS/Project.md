@@ -1,6 +1,6 @@
 # PROJECT MODUL 02: SETUP LINGKUNGAN ROS 2 UNTUK PRAKTIKUM LANJUTAN
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 02 – Setup ROS  
 **Pengerjaan:** Per Kelompok (maks. 4 orang)  

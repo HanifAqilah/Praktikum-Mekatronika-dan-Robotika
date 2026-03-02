@@ -1,6 +1,6 @@
 # MATERI MODUL 02: SETUP UBUNTU 22.04, ROS 2 HUMBLE, DAN LIBRARY ROBOTIKA
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 02 – Setup ROS  
 **OS Utama:** Ubuntu 22.04 LTS (Jammy)  

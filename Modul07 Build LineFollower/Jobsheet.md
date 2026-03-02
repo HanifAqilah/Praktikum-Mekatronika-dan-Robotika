@@ -1,6 +1,6 @@
 # JOBSHEET MODUL 06: BUILD DAN PROGRAM ROBOT LINE FOLLOWER
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 06 – Build Line Follower  
 **Pertemuan:** 11–12 (2 × 2 SKS)  

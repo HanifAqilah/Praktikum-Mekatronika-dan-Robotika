@@ -1,6 +1,6 @@
 # MATERI MODUL 03: FUSION 360 – DESAIN MEKANIK PROJECT LINE FOLLOWER
 
-**Program Studi:** Teknik Mekatronika dan Robotika
+**Program Studi:** Teknologi Rekayasa Otomasi
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika
 **Modul:** 03 – Fusion 360 Desain Mekanik
 **Software:** Autodesk Fusion 360 (Education License) / Fusion 360 Online
@@ -36,8 +36,7 @@
 10. [Design for Manufacturing (DFM) — Produksi Mandiri](#10-design-for-manufacturing-dfm--produksi-mandiri)
 11. [Fabrikasi Mandiri: 3D Printing dan Laser Cutting](#11-fabrikasi-mandiri-3d-printing-dan-laser-cutting)
 12. [Export dan Produksi File](#12-export-dan-produksi-file)
-13. [Order PCB ke JLCPCB](#13-order-pcb-ke-jlcpcb)
-14. [Referensi](#14-referensi)
+13. [Referensi](#14-referensi)
 
 ---
 
@@ -106,6 +105,7 @@ Dalam proyek robotika, desain mekanik adalah fondasi fisik yang menentukan:
 3. Klik **"Create Account"** (jika belum punya akun Autodesk)
 4. Pada form pendaftaran, **gunakan email institusi/kampus** (contoh: `nama@student.universitasanda.ac.id`)
    > ⚠️ **Penting:** Gunakan email SSO kampus, bukan Gmail/Yahoo. Autodesk akan memverifikasi status mahasiswa melalui domain email ini.
+   >
 5. Isi data: First Name, Last Name, Password
 6. Klik **"Create Account"** dan cek email kampus untuk verifikasi
 
@@ -171,18 +171,18 @@ Dalam proyek robotika, desain mekanik adalah fondasi fisik yang menentukan:
 
 #### Fitur yang Tersedia di Versi Online
 
-| Fitur | Online | Desktop |
-|-------|--------|--------|
-| Sketch 2D | ✅ | ✅ |
-| Solid Modeling | ✅ | ✅ |
-| Assembly & Joint | ✅ | ✅ |
-| Rendering | ✅ (basic) | ✅ (full) |
-| Simulation (FEA) | ⚠️ Terbatas | ✅ |
-| Drawing (2D) | ✅ | ✅ |
-| Export STL/DXF/STEP | ✅ | ✅ |
-| Auto-save Cloud | ✅ | ✅ |
-| Offline mode | ❌ | ✅ |
-| CAM (G-code) | ❌ | ✅ |
+| Fitur               | Online        | Desktop   |
+| ------------------- | ------------- | --------- |
+| Sketch 2D           | ✅            | ✅        |
+| Solid Modeling      | ✅            | ✅        |
+| Assembly & Joint    | ✅            | ✅        |
+| Rendering           | ✅ (basic)    | ✅ (full) |
+| Simulation (FEA)    | ⚠️ Terbatas | ✅        |
+| Drawing (2D)        | ✅            | ✅        |
+| Export STL/DXF/STEP | ✅            | ✅        |
+| Auto-save Cloud     | ✅            | ✅        |
+| Offline mode        | ❌            | ✅        |
+| CAM (G-code)        | ❌            | ✅        |
 
 #### Tips Fusion 360 Online
 
@@ -197,14 +197,14 @@ Dalam proyek robotika, desain mekanik adalah fondasi fisik yang menentukan:
 
 ### 2.4 Perbandingan Desktop vs Online
 
-| Aspek | Fusion 360 Desktop | Fusion 360 Online |
-|-------|-------------------|------------------|
-| Instalasi | Perlu install (~3 GB) | Tidak perlu install |
-| Akses | Bisa offline (terbatas) | Perlu internet |
-| Performa | Lebih smooth/cepat | Tergantung koneksi |
-| Fitur | Penuh | Sebagian besar |
-| Ideal untuk | Proyek kompleks | Belajar, revisi cepat |
-| Platform | Windows/macOS | Browser manapun |
+| Aspek       | Fusion 360 Desktop      | Fusion 360 Online     |
+| ----------- | ----------------------- | --------------------- |
+| Instalasi   | Perlu install (~3 GB)   | Tidak perlu install   |
+| Akses       | Bisa offline (terbatas) | Perlu internet        |
+| Performa    | Lebih smooth/cepat      | Tergantung koneksi    |
+| Fitur       | Penuh                   | Sebagian besar        |
+| Ideal untuk | Proyek kompleks         | Belajar, revisi cepat |
+| Platform    | Windows/macOS           | Browser manapun       |
 
 ---
 
@@ -216,7 +216,7 @@ Dalam proyek robotika, desain mekanik adalah fondasi fisik yang menentukan:
 | CPU      | Intel i5 / Ryzen 5     | Intel i7 / Ryzen 7     |
 | RAM      | 4 GB                   | 8–16 GB               |
 | GPU      | DirectX 11 compatible  | Dedicated GPU 2 GB+    |
-| Internet | Diperlukan untuk login | Stabil ≥ 10 Mbps       |
+| Internet | Diperlukan untuk login | Stabil ≥ 10 Mbps      |
 | Storage  | 3 GB free              | SSD recommended        |
 
 ---
@@ -440,17 +440,17 @@ Assembly adalah proses merangkai beberapa **component** menjadi satu sistem teri
 
 > **⚠️ WAJIB UKUR** — Gunakan **penggaris ukur (30 cm)** untuk mengukur dimensi aktual chassis fisik sebelum membuat model di Fusion 360.
 
-| Parameter       | Nilai (Estimasi — ukur aktual)             |
-| --------------- | ------------------------------------------ |
-| Panjang         | 150–200 mm                                |
-| Lebar           | 120–160 mm                                |
-| Tinggi box      | 50–80 mm (satu bodi terintegrasi)          |
-| Material        | **Pelat metal (aluminium alloy)**          |
-| Tebal pelat     | 1–2 mm (ukur aktual)                       |
+| Parameter       | Nilai (Estimasi — ukur aktual)                 |
+| --------------- | ----------------------------------------------- |
+| Panjang         | 150–200 mm                                     |
+| Lebar           | 120–160 mm                                     |
+| Tinggi box      | 50–80 mm (satu bodi terintegrasi)              |
+| Material        | **Pelat metal (aluminium alloy)**         |
+| Tebal pelat     | 1–2 mm (ukur aktual)                           |
 | Tipe            | **Single-piece box chassis** (1 komponen) |
-| Lubang motor    | Slot pada sisi kiri + kanan               |
-| Lubang mounting | M3 (diameter 3.2 mm)                       |
-| Berat target    | < 300 g (tanpa komponen)                   |
+| Lubang motor    | Slot pada sisi kiri + kanan                     |
+| Lubang mounting | M3 (diameter 3.2 mm)                            |
+| Berat target    | < 300 g (tanpa komponen)                        |
 
 > **Perbedaan dengan chassis 2-deck:** Box chassis ≠ 2 plat terpisah + spacer. Ini adalah SATU bodi box yang sudah mencakup rangka atas, bawah, dan samping. Motor dimasukkan dari samping (poros menembus lubang di dinding samping), semua komponen dipasang di dalam atau di atas box.
 
@@ -480,12 +480,12 @@ Assembly adalah proses merangkai beberapa **component** menjadi satu sistem teri
 10. **Sheet Metal > Flat Pattern** → verifikasi geometri flat (semua bend line terlihat)
 11. Tidak perlu export DXF — chassis sudah jadi, model hanya untuk referensi assembly
 
-| Fitur                   | Nilai (ukur aktual)          |
-|------------------------|------------------------------|
-| Panjang bottom plate   | \_\_\_ mm                    |
-| Lebar bottom plate     | \_\_\_ mm                    |
-| Tinggi dinding samping | \_\_\_ mm                    |
-| Tebal pelat            | \_\_\_ mm                    |
+| Fitur                  | Nilai (ukur aktual)           |
+| ---------------------- | ----------------------------- |
+| Panjang bottom plate   | \_\_\_ mm                     |
+| Lebar bottom plate     | \_\_\_ mm                     |
+| Tinggi dinding samping | \_\_\_ mm                     |
+| Tebal pelat            | \_\_\_ mm                     |
 | Lubang poros motor     | Ø\_\_\_ mm × 2 (kiri+kanan) |
 | Lubang mounting PCB    | Ø3.2 mm × 4 (M3)            |
 
@@ -515,12 +515,12 @@ Langkah:
    - Lubang mounting (jika ada) sebagai referensi
 6. Gunakan **Appearance** → atur warna abu-abu / kuning (sesuai warna motor fisik)
 
-| Parameter | Nilai Estimasi (ukur aktual) |
-|-----------|-----------------------------|
-| Panjang body | 70 mm |
-| Lebar | 22 mm |
-| Tinggi | 18 mm |
-| Diameter poros | Ø5 mm |
+| Parameter      | Nilai Estimasi (ukur aktual) |
+| -------------- | ---------------------------- |
+| Panjang body   | 70 mm                        |
+| Lebar          | 22 mm                        |
+| Tinggi         | 18 mm                        |
+| Diameter poros | Ø5 mm                       |
 
 > **Tidak ada file produksi untuk komponen ini** — hanya `.f3d` referensi assembly.
 
@@ -543,11 +543,11 @@ Langkah:
 6. **Appearance** → atur warna hitam (ban) + abu-abu (hub)
 7. **Mirror / Copy** → buat versi kiri dan kanan
 
-| Parameter | Nilai Estimasi (ukur aktual) |
-|-----------|-----------------------------|
-| Diameter luar | Ø65 mm |
-| Lebar ban | 25 mm |
-| Diameter lubang poros | Ø5 mm |
+| Parameter             | Nilai Estimasi (ukur aktual) |
+| --------------------- | ---------------------------- |
+| Diameter luar         | Ø65 mm                      |
+| Lebar ban             | 25 mm                        |
+| Diameter lubang poros | Ø5 mm                       |
 
 > **Tidak ada file produksi untuk komponen ini** — hanya `.f3d` referensi assembly.
 
@@ -593,12 +593,12 @@ Fungsi: (1) **bracket L** untuk menahan PCB sensor garis pada ketinggian optimal
 5. **Appearance** → warna cerah agar posisi sensor mudah dilihat
 6. Material: PLA 3D print, tebal dinding 2 mm
 
-| Parameter | Nilai |
-|-----------|-------|
+| Parameter                  | Nilai                                |
+| -------------------------- | ------------------------------------ |
 | Bracket — slot adjustable | Tinggi slot 10 mm, lebar slot 3.5 mm |
-| Cover — clearance dalam | +1 mm dari dimensi PCB |
-| Cover — tebal dinding | 2 mm |
-| Material | PLA 3D print |
+| Cover — clearance dalam   | +1 mm dari dimensi PCB               |
+| Cover — tebal dinding     | 2 mm                                 |
+| Material                   | PLA 3D print                         |
 
 ### 8.3 Dudukan PCB MAIN — Standoff (3D Print PLA)
 
@@ -648,23 +648,24 @@ Fungsi: memasang 3 sensor ultrasonik HC-SR04 (depan, kiri, kanan) untuk deteksi 
 ```
 
 **Penjelasan sudut:**
+
 - **Sensor Depan — 0°**: menghadap tepat lurus ke depan. Membaca rintangan di jalur langsung.
 - **Sensor Kanan — 20–25° ke kanan dari arah maju**: sensor tidak terlalu miring sehingga gelombang ultrasonik masih memantul balik dengan akurat. Sudut > 45° menyebabkan pantulan gelombang melenceng dan pembacaan jarak tidak valid.
 - **Sensor Kiri — 20–25° ke kiri dari arah maju**: identik dengan sensor kanan (Mirror).
 
 #### Dimensi HC-SR04 (dari Datasheet)
 
-| Parameter | Nilai |
-|-----------|-------|
-| Panjang PCB | 45 mm |
-| Lebar PCB | 20 mm |
-| Tinggi (termasuk transduser) | 15 mm |
-| Diameter transduser | Ø16 mm |
-| Jarak antar lubang mounting | 40 mm (center-to-center, sepanjang sumbu panjang) |
-| Diameter lubang mounting | Ø2 mm |
-| Tegangan operasi | 5 V |
-| Jarak ukur | 2–400 cm |
-| Sudut efektif | < 15° |
+| Parameter                    | Nilai                                             |
+| ---------------------------- | ------------------------------------------------- |
+| Panjang PCB                  | 45 mm                                             |
+| Lebar PCB                    | 20 mm                                             |
+| Tinggi (termasuk transduser) | 15 mm                                             |
+| Diameter transduser          | Ø16 mm                                           |
+| Jarak antar lubang mounting  | 40 mm (center-to-center, sepanjang sumbu panjang) |
+| Diameter lubang mounting     | Ø2 mm                                            |
+| Tegangan operasi             | 5 V                                               |
+| Jarak ukur                   | 2–400 cm                                         |
+| Sudut efektif                | < 15°                                            |
 
 #### Desain Sheet Metal di Fusion 360
 
@@ -696,6 +697,7 @@ Buat Sketch profil flat → Sheet Metal > Flange → Tambah Bend (sudut tekuk)
 9. Klik kanan Flat Pattern → **Export DXF** → simpan `Bracket_Sensor_Depan.dxf`
 
 > **Proses bending akrilik fisik:**
+>
 > 1. Laser cut sesuai DXF
 > 2. Panaskan garis tekuk dengan heat gun (±60–80°C) selama 30–60 detik hingga akrilik melunak
 > 3. Tekuk perlahan di atas jig kayu sesuai sudut (90° untuk bracket depan)
@@ -717,15 +719,15 @@ Buat Sketch profil flat → Sheet Metal > Flange → Tambah Bend (sudut tekuk)
 
 #### Tabel Komponen Dudukan Sensor Jarak
 
-| Komponen | Qty | Material | Sudut | Metode Produksi |
-|---------|-----|----------|-------|-----------------|
-| Bracket_Sensor_Depan | 1 | Akrilik 3 mm | 0° (lurus) | Laser cut (1 piece) |
-| Bracket_Sensor_Kiri (base plate) | 1 | Akrilik 3 mm | — | Laser cut |
-| Bracket_Sensor_Kiri (face plate) | 1 | Akrilik 3 mm | 20–25° | Laser cut |
-| Bracket_Sensor_Kanan (base plate) | 1 | Akrilik 3 mm | — | Mirror dari Kiri |
-| Bracket_Sensor_Kanan (face plate) | 1 | Akrilik 3 mm | 20–25° | Mirror dari Kiri |
-| Baut M3 × 8 mm | 4 | — | — | Sambung base-face |
-| Baut M2 × 6 mm | 6 | — | — | Ikat sensor ke bracket |
+| Komponen                          | Qty | Material     | Sudut       | Metode Produksi        |
+| --------------------------------- | --- | ------------ | ----------- | ---------------------- |
+| Bracket_Sensor_Depan              | 1   | Akrilik 3 mm | 0° (lurus) | Laser cut (1 piece)    |
+| Bracket_Sensor_Kiri (base plate)  | 1   | Akrilik 3 mm | —          | Laser cut              |
+| Bracket_Sensor_Kiri (face plate)  | 1   | Akrilik 3 mm | 20–25°    | Laser cut              |
+| Bracket_Sensor_Kanan (base plate) | 1   | Akrilik 3 mm | —          | Mirror dari Kiri       |
+| Bracket_Sensor_Kanan (face plate) | 1   | Akrilik 3 mm | 20–25°    | Mirror dari Kiri       |
+| Baut M3 × 8 mm                   | 4   | —           | —          | Sambung base-face      |
+| Baut M2 × 6 mm                   | 6   | —           | —          | Ikat sensor ke bracket |
 
 ### 8.5 Bracket Servo SG90 (3D Print PLA)
 
@@ -785,15 +787,15 @@ Fungsi: komponen estetika dan fungsionalitas tambahan untuk mempercantik robot. 
 
 **Contoh aksesoris yang disarankan:**
 
-| Ide Aksesoris | Fungsi | Keterangan |
-|--------------|--------|------------|
-| Spoiler / finn belakang | Estetika, aerodinamika | Model bebas, 3D print |
-| Cover sensor depan | Pelindung HC-SR04, estetika | Bingkai dekoratif di sekitar sensor |
-| Shroud/diffuser roda | Pelindung roda, estetika | Cover separuh roda |
-| Name plate / branding | Identitas tim | Teks timbul di body |
-| Bumper depan | Pelindung benturan | Biasanya U-shape fleksibel |
-| LED mount | Posisi LED hias | Slot untuk LED strip / WS2812 |
-| Antenna dummy | Estetika | Batang kecil di atas robot |
+| Ide Aksesoris           | Fungsi                      | Keterangan                          |
+| ----------------------- | --------------------------- | ----------------------------------- |
+| Spoiler / finn belakang | Estetika, aerodinamika      | Model bebas, 3D print               |
+| Cover sensor depan      | Pelindung HC-SR04, estetika | Bingkai dekoratif di sekitar sensor |
+| Shroud/diffuser roda    | Pelindung roda, estetika    | Cover separuh roda                  |
+| Name plate / branding   | Identitas tim               | Teks timbul di body                 |
+| Bumper depan            | Pelindung benturan          | Biasanya U-shape fleksibel          |
+| LED mount               | Posisi LED hias             | Slot untuk LED strip / WS2812       |
+| Antenna dummy           | Estetika                    | Batang kecil di atas robot          |
 
 **Langkah umum:**
 
@@ -814,26 +816,27 @@ Fungsi: komponen estetika dan fungsionalitas tambahan untuk mempercantik robot. 
 
 Fungsi: menjepit benda berukuran ±5 cm menggunakan **1× servo SG90** yang sudah ada di robot. Gripper menggunakan mekanisme **parallel jaw** — dua rahang bergerak serentak melalui linkage dari servo horn SG90.
 
-| Parameter | Nilai |
-|-----------|-------|
-| Servo | 1× SG90 (sudah ada) |
-| Lebar bukaan max | 60 mm (grip benda ~5 cm dengan clearance) |
-| Lebar bukaan min | 10 mm (posisi cengkeram penuh) |
-| Panjang jaw | 60 mm |
-| Tebal jaw | 3 mm |
-| Material semua part | PLA 3D print |
-| Posisi di robot | Bagian depan, di atas bracket sensor |
+| Parameter           | Nilai                                     |
+| ------------------- | ----------------------------------------- |
+| Servo               | 1× SG90 (sudah ada)                      |
+| Lebar bukaan max    | 60 mm (grip benda ~5 cm dengan clearance) |
+| Lebar bukaan min    | 10 mm (posisi cengkeram penuh)            |
+| Panjang jaw         | 60 mm                                     |
+| Tebal jaw           | 3 mm                                      |
+| Material semua part | PLA 3D print                              |
+| Posisi di robot     | Bagian depan, di atas bracket sensor      |
 
 **Komponen Gripper (4 STL file):**
 
-| Komponen | Deskripsi | File |
-|----------|-----------|------|
-| `Gripper_Base` | Mount bracket ke rangka robot (4× M3), tempat servo duduk | `Gripper_Base.stl` |
-| `Gripper_Jaw_L` | Rahang kiri (L-shape, ujung berfinger-grip) | `Gripper_Jaw_L.stl` |
-| `Gripper_Jaw_R` | Rahang kanan (mirror dari kiri) | `Gripper_Jaw_R.stl` |
-| `Gripper_Linkage` | Batang penghubung servo horn ke pivot jaw | `Gripper_Linkage.stl` |
+| Komponen            | Deskripsi                                                  | File                    |
+| ------------------- | ---------------------------------------------------------- | ----------------------- |
+| `Gripper_Base`    | Mount bracket ke rangka robot (4× M3), tempat servo duduk | `Gripper_Base.stl`    |
+| `Gripper_Jaw_L`   | Rahang kiri (L-shape, ujung berfinger-grip)                | `Gripper_Jaw_L.stl`   |
+| `Gripper_Jaw_R`   | Rahang kanan (mirror dari kiri)                            | `Gripper_Jaw_R.stl`   |
+| `Gripper_Linkage` | Batang penghubung servo horn ke pivot jaw                  | `Gripper_Linkage.stl` |
 
 **Prinsip kerja:**
+
 - SG90 pada posisi **0°** → linkage mendorong kedua jaw terbuka (60 mm)
 - SG90 pada posisi **90°** → linkage menarik kedua jaw menutup → menjepit benda
 - Pivot jaw: Revolute Joint di Fusion 360
@@ -907,7 +910,7 @@ Fungsi: menjepit benda berukuran ±5 cm menggunakan **1× servo SG90** yang suda
 
 ## 10. DESIGN FOR MANUFACTURING (DFM) — PRODUKSI MANDIRI
 
-> **🔧 Prinsip Utama:** Semua komponen mekanik pada proyek ini **diproduksi sendiri**: bracket dan dudukan dari akrilik (laser cut) atau PLA (3D print). Tidak ada komponen mekanik yang dipesan online. **Yang boleh diorder online hanya PCB ke JLCPCB.**
+> **🔧 Prinsip Utama:** Semua komponen mekanik pada proyek ini **diproduksi sendiri.**
 
 ### 10.1 Prinsip DFM
 
@@ -933,41 +936,41 @@ Fungsi: menjepit benda berukuran ±5 cm menggunakan **1× servo SG90** yang suda
 
 ### 10.3 DFM untuk Laser Cutting + Bending Akrilik (termasuk Part Sheet Metal)
 
-| Parameter | Nilai |
-| --------- | ----- |
-| Material | Akrilik 3 mm |
-| Min detail | 1 mm |
-| Min slot | 3 mm (= tebal material) |
-| Kerf compensation | 0.1–0.15 mm |
-| Tab/slot joint | Slot = tebal material + 0.1 mm |
-| Fillet lubang | R ≥ 1.5 mm (cegah retak akrilik) |
-| Jarak tepi ke lubang | ≥ 4 mm (min. 1× tebal material) |
-| Bridge/web min | 3 mm antar lubang berdekatan |
-| Bend radius (bending) | 1–2 mm untuk akrilik 3 mm |
-| Pemanasan bending | Heat gun ≥ 60°C pada garis tekuk |
+| Parameter             | Nilai                              |
+| --------------------- | ---------------------------------- |
+| Material              | Akrilik 3 mm                       |
+| Min detail            | 1 mm                               |
+| Min slot              | 3 mm (= tebal material)            |
+| Kerf compensation     | 0.1–0.15 mm                       |
+| Tab/slot joint        | Slot = tebal material + 0.1 mm     |
+| Fillet lubang         | R ≥ 1.5 mm (cegah retak akrilik)  |
+| Jarak tepi ke lubang  | ≥ 4 mm (min. 1× tebal material)  |
+| Bridge/web min        | 3 mm antar lubang berdekatan       |
+| Bend radius (bending) | 1–2 mm untuk akrilik 3 mm         |
+| Pemanasan bending     | Heat gun ≥ 60°C pada garis tekuk |
 
 **Prinsip desain bracket akrilik dengan Sheet Metal + Bending:**
 
-| Prinsip | Penjelasan |
-|---------|------------|
-| Single-piece + bend | Desain 1 piece dengan Flange + Bend di Fusion 360; hasil fisik 1 potongan laser cut yang dibending |
-| Sheet Metal Flat Pattern | Gunakan untuk export DXF — termasuk bend allowance otomatis |
-| Bend line marking | Tandai garis tekukan pada DXF sebelum laser cut (menggunakan laser engrave / spidol) |
-| K-factor akrilik | Set K-factor 0.33 di Sheet Metal Rules |
-| Thickness rule | Set 3 mm di Sheet Metal Rules sebelum membuat Flange |
+| Prinsip                  | Penjelasan                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| Single-piece + bend      | Desain 1 piece dengan Flange + Bend di Fusion 360; hasil fisik 1 potongan laser cut yang dibending |
+| Sheet Metal Flat Pattern | Gunakan untuk export DXF — termasuk bend allowance otomatis                                       |
+| Bend line marking        | Tandai garis tekukan pada DXF sebelum laser cut (menggunakan laser engrave / spidol)               |
+| K-factor akrilik         | Set K-factor 0.33 di Sheet Metal Rules                                                             |
+| Thickness rule           | Set 3 mm di Sheet Metal Rules sebelum membuat Flange                                               |
 
 ### 10.4 DFM untuk Sheet Metal Logam (Metal Chassis)
 
-| Parameter | Nilai |
-| --------- | ----- |
-| Material | Pelat baja / aluminium |
-| Tebal pelat | Sesuai chassis aktual (1–2 mm) |
-| Bend radius min | 1× tebal material |
-| K-factor baja | 0.42 (default Fusion 360) |
-| K-factor aluminium | 0.44 |
-| Min lubang | 1.5× tebal material |
-| Jarak lubang ke edge | ≥ 2× tebal material |
-| Relief cut | Tambahkan relief 0.5 mm di sudut bend (Fusion 360 otomatis) |
+| Parameter            | Nilai                                                       |
+| -------------------- | ----------------------------------------------------------- |
+| Material             | Pelat baja / aluminium                                      |
+| Tebal pelat          | Sesuai chassis aktual (1–2 mm)                             |
+| Bend radius min      | 1× tebal material                                          |
+| K-factor baja        | 0.42 (default Fusion 360)                                   |
+| K-factor aluminium   | 0.44                                                        |
+| Min lubang           | 1.5× tebal material                                        |
+| Jarak lubang ke edge | ≥ 2× tebal material                                       |
+| Relief cut           | Tambahkan relief 0.5 mm di sudut bend (Fusion 360 otomatis) |
 
 > Karena chassis sudah jadi, **tabel ini hanya referensi dokumentasi** bagi praktikan yang ingin memahami standar desain sheet metal logam.
 
@@ -979,30 +982,31 @@ Fungsi: menjepit benda berukuran ±5 cm menggunakan **1× servo SG90** yang suda
 
 ### 11.1 Pembagian Material dan Metode Produksi
 
-| Komponen | Material | Metode | Keterangan |
-|---------|----------|--------|------------|
-| **Chassis Box (single-piece)** | **Metal (aluminium)** | **Sudah jadi** | Model 3D box chassis referensi assembly |
-| Motor DC Gearbox | — | **Model 3D referensi** | Tidak diprod, referensi assembly |
-| Roda | — | **Model 3D referensi** | Tidak diprod, referensi assembly |
-| Baterai 18650 | — | **Model 3D referensi** | Tidak diprod, referensi assembly |
-| Bracket sensor depan | Akrilik 3 mm | **Laser cut + bending** | Sheet Metal → Flat Pattern DXF |
-| Bracket sensor kiri/kanan | Akrilik 3 mm | **Laser cut + bending** | Sheet Metal → DXF, dibending |
-| Motor mount (kiri + kanan) | PLA | 3D print | STL dari Fusion 360 |
-| Standoff PCB MAIN ×4 | PLA | 3D print | STL dari Fusion 360 |
-| Cover PCB Sensor Garis | PLA | 3D print | STL dari Fusion 360 |
-| Bracket sensor garis (L) | PLA | 3D print | STL dari Fusion 360 |
-| Bracket servo SG90 | PLA | 3D print | STL dari Fusion 360 |
-| Bracket baterai 2×18650 | PLA | 3D print | STL dari Fusion 360 |
-| **Gripper_Base** | PLA | 3D print | Mount gripper + dudukan servo |
-| **Gripper_Jaw_L + Jaw_R** | PLA | 3D print | Rahang kiri + kanan, parallel jaw |
-| **Gripper_Linkage** | PLA | 3D print | Penghubung servo horn ke jaw |
-| Aksesoris 3D (bebas) | PLA | 3D print | STL dari Fusion 360 |
+| Komponen                             | Material                    | Metode                        | Keterangan                              |
+| ------------------------------------ | --------------------------- | ----------------------------- | --------------------------------------- |
+| **Chassis Box (single-piece)** | **Metal (aluminium)** | **Sudah jadi**          | Model 3D box chassis referensi assembly |
+| Motor DC Gearbox                     | —                          | **Model 3D referensi**  | Tidak diprod, referensi assembly        |
+| Roda                                 | —                          | **Model 3D referensi**  | Tidak diprod, referensi assembly        |
+| Baterai 18650                        | —                          | **Model 3D referensi**  | Tidak diprod, referensi assembly        |
+| Bracket sensor depan                 | Akrilik 3 mm                | **Laser cut + bending** | Sheet Metal → Flat Pattern DXF         |
+| Bracket sensor kiri/kanan            | Akrilik 3 mm                | **Laser cut + bending** | Sheet Metal → DXF, dibending           |
+| Motor mount (kiri + kanan)           | PLA                         | 3D print                      | STL dari Fusion 360                     |
+| Standoff PCB MAIN ×4                | PLA                         | 3D print                      | STL dari Fusion 360                     |
+| Cover PCB Sensor Garis               | PLA                         | 3D print                      | STL dari Fusion 360                     |
+| Bracket sensor garis (L)             | PLA                         | 3D print                      | STL dari Fusion 360                     |
+| Bracket servo SG90                   | PLA                         | 3D print                      | STL dari Fusion 360                     |
+| Bracket baterai 2×18650             | PLA                         | 3D print                      | STL dari Fusion 360                     |
+| **Gripper_Base**               | PLA                         | 3D print                      | Mount gripper + dudukan servo           |
+| **Gripper_Jaw_L + Jaw_R**      | PLA                         | 3D print                      | Rahang kiri + kanan, parallel jaw       |
+| **Gripper_Linkage**            | PLA                         | 3D print                      | Penghubung servo horn ke jaw            |
+| Aksesoris 3D (bebas)                 | PLA                         | 3D print                      | STL dari Fusion 360                     |
 
 ### 11.2 Proses 3D Printing (FDM)
 
 **Perangkat lunak slicer:** Cura / PrusaSlicer
 
 **Alur kerja:**
+
 ```
 Export STL dari Fusion 360
         ↓
@@ -1021,17 +1025,18 @@ Post-process: lepas support, amplas lubang jika terlalu kecil
 
 **Parameter slicer yang direkomendasikan:**
 
-| Parameter | Bracket/Dudukan | Standoff | Dudukan Baterai/Servo |
-|-----------|----------------|---------|---------------------|
-| Layer height | 0.2 mm | 0.2 mm | 0.2 mm |
-| Infill | 30% | 40% | 50% |
-| Wall lines | 3 | 3 | 4 |
-| Support | Hindari | Tidak perlu | Tergantung orientasi |
-| Material | PLA | PLA | PLA |
-| Nozzle temp | 200°C | 200°C | 200°C |
-| Bed temp | 60°C | 60°C | 60°C |
+| Parameter    | Bracket/Dudukan | Standoff    | Dudukan Baterai/Servo |
+| ------------ | --------------- | ----------- | --------------------- |
+| Layer height | 0.2 mm          | 0.2 mm      | 0.2 mm                |
+| Infill       | 30%             | 40%         | 50%                   |
+| Wall lines   | 3               | 3           | 4                     |
+| Support      | Hindari         | Tidak perlu | Tergantung orientasi  |
+| Material     | PLA             | PLA         | PLA                   |
+| Nozzle temp  | 200°C          | 200°C      | 200°C                |
+| Bed temp     | 60°C           | 60°C       | 60°C                 |
 
 **Tips 3D Printing:**
+
 - Orientasikan part agar overhang minimal (putar 90° jika perlu)
 - Lubang M3 cetak 3.4 mm — setelah print biasanya mengecil, panas baud akan sedikit melebarkan
 - Tambahkan **0.2 mm tolerance** pada semua clearance fit
@@ -1042,6 +1047,7 @@ Post-process: lepas support, amplas lubang jika terlalu kecil
 **Perangkat lunak laser:** LightBurn / LaserGRBL / RDWorks
 
 **Alur kerja:**
+
 ```
 Export DXF Flat Pattern dari Fusion 360
         ↓
@@ -1062,14 +1068,15 @@ Post-process: lepas protective film, haluskan tepi dengan amplas 400
 
 **Setting laser akrilik 3 mm (estimasi — sesuaikan dengan mesin lab):**
 
-| Parameter | Cut (potong) | Engrave (ukiran teks) |
-|-----------|-------------|---------------------|
-| Power | 70–80% | 20–30% |
-| Speed | 15–20 mm/s | 200–300 mm/s |
-| Passes | 1–2 | 1 |
-| Focus | Tepat permukaan | Tepat permukaan |
+| Parameter | Cut (potong)    | Engrave (ukiran teks) |
+| --------- | --------------- | --------------------- |
+| Power     | 70–80%         | 20–30%               |
+| Speed     | 15–20 mm/s     | 200–300 mm/s         |
+| Passes    | 1–2            | 1                     |
+| Focus     | Tepat permukaan | Tepat permukaan       |
 
 **Tips Laser Cutting Akrilik:**
+
 - Lepas **protective film** dari akrilik sebelum cutting untuk hasil potongan lebih bersih
 - Atau biarkan film saat cutting, lepas setelahnya — mencegah goresan
 - **Fillet R≥1.5 mm** di sudut dalam lubang — sudut 90° tajam rawan retak
@@ -1107,15 +1114,15 @@ Digunakan untuk: motor mount, standoff PCB, dudukan servo, dudukan baterai.
 
 **Daftar file DXF yang harus dihasilkan dari Sheet Metal:**
 
-| File | Part | Qty |
-|------|------|-----|
-| `Bracket_Sensor_Depan.dxf` | Bracket depan (L-shape single piece) | 1 |
-| `Sensor_Kiri_Base.dxf` | Base plate bracket kiri | 1 |
-| `Sensor_Kiri_Face.dxf` | Face plate bracket kiri (sudut 20–25°) | 1 |
-| `Sensor_Kanan_Base.dxf` | Mirror dari kiri | 1 |
-| `Sensor_Kanan_Face.dxf` | Mirror dari kiri | 1 |
-| `Chassis_Bottom.dxf` | Chassis bawah | 1 |
-| `Chassis_Top.dxf` | Chassis atas | 1 |
+| File                         | Part                                     | Qty |
+| ---------------------------- | ---------------------------------------- | --- |
+| `Bracket_Sensor_Depan.dxf` | Bracket depan (L-shape single piece)     | 1   |
+| `Sensor_Kiri_Base.dxf`     | Base plate bracket kiri                  | 1   |
+| `Sensor_Kiri_Face.dxf`     | Face plate bracket kiri (sudut 20–25°) | 1   |
+| `Sensor_Kanan_Base.dxf`    | Mirror dari kiri                         | 1   |
+| `Sensor_Kanan_Face.dxf`    | Mirror dari kiri                         | 1   |
+| `Chassis_Bottom.dxf`       | Chassis bawah                            | 1   |
+| `Chassis_Top.dxf`          | Chassis atas                             | 1   |
 
 ### 12.3 Export DXF dari Solid Body (Chassis Akrilik)
 
@@ -1134,51 +1141,15 @@ Untuk chassis yang didesain dengan Solid Modeling (bukan Sheet Metal):
 
 ---
 
-## 13. ORDER PCB KE JLCPCB
 
-### 13.1 Proses Order dari EasyEDA
-
-1. Di EasyEDA: **Fabrication > Order at JLCPCB**
-2. File Gerber otomatis dikirim ke JLCPCB
-3. Review parameter:
-
-| Parameter | Nilai Standar  |
-| --------- | -------------- |
-| PCB Qty   | 5 pcs          |
-| Layers    | 2              |
-| Thickness | 1.6 mm         |
-| Color     | Green          |
-| Surface   | HASL Lead-free |
-| Copper    | 1 oz           |
-| Stencil   | Opsional       |
-
-4. Submit order, bayar, tunggu produksi (3–7 hari) + pengiriman
-
-### 13.2 Verifikasi Gerber Sebelum Order
-
-1. Upload ke https://gerber-viewer.jlcpcb.com
-2. Periksa setiap layer: top copper, bottom copper, mask, silk, outline, drill
-3. Pastikan tidak ada artefak atau trace yang hilang
-
-### 13.3 Tips Hemat Biaya
-
-- Gabungkan PCB kecil dalam 1 panel (panelize di EasyEDA)
-- Pilih warna hijau (paling murah)
-- Pilih HASL (bukan ENIG) kecuali untuk fine-pitch
-- Shipping: pilih yang ekonomis jika tidak urgent
-- Cek kupon/promo JLCPCB untuk order pertama
-
----
-
-## 14. REFERENSI
+## 13. REFERENSI
 
 1. Autodesk. (2024). *Fusion 360 Official Documentation*. https://help.autodesk.com/view/fusion360/ENU/
 2. Autodesk Learning. (2024). *Design and Design to Manufacturing with Fusion 360*. https://learn.autodesk.com/paths/design-and-design-to-manufacturing-with-fusion-360
 3. Autodesk. (2024). *Design for Manufacturing (DFM) in Fusion 360*. https://www.autodesk.com/products/fusion-360/resources
 4. Autodesk Fusion. (2024). *PCB Design to Manufacturing*. https://learn.autodesk.com/paths/design-pcbs-with-fusion-360
-5. JLCPCB. (2024). *Manufacturing Capabilities*. https://jlcpcb.com/capabilities
-6. Chua, C. K., Leong, K. F., & Lim, C. S. (2010). *Rapid Prototyping: Principles and Applications*. World Scientific.
-7. Groover, M. P. (2016). *Fundamentals of Modern Manufacturing*. Wiley.
+5. Chua, C. K., Leong, K. F., & Lim, C. S. (2010). *Rapid Prototyping: Principles and Applications*. World Scientific.
+6. Groover, M. P. (2016). *Fundamentals of Modern Manufacturing*. Wiley.
 
 ---
 

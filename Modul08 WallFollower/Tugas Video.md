@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 07: ROBOT WALL FOLLOWER
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 07 – Wall Follower  
 **Sifat Tugas:** Individual  

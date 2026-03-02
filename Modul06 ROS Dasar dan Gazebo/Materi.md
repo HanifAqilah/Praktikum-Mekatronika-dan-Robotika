@@ -1,6 +1,6 @@
 # MATERI MODUL 08: ROS 2 DASAR DAN GAZEBO
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 08 – ROS Dasar dan Gazebo  
 **Platform:** Ubuntu 22.04 + ROS 2 Humble + Gazebo  

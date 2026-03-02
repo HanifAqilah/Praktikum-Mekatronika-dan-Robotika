@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 03: FUSION 360 – DESAIN MEKANIK LINE FOLLOWER & ORDER PCB
 
-**Program Studi:** Teknik Mekatronika dan Robotika
+**Program Studi:** Teknologi Rekayasa Otomasi
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika
 **Modul:** 03 – Fusion 360 Desain Mekanik
 **Sifat Tugas:** Individual
@@ -107,14 +107,7 @@ Desain seluruh part berikut **secara berurutan**:
 - [ ] Mirror roda → buat versi kanan dan kiri
 - [ ] Tunjukkan kedua model di assembly secara bersamaan
 
-#### Part 3 — Motor Mount Kiri dan Kanan (PLA, 3D Print)
-
-- [ ] Sketch L-shape/U-clamp sesuai dimensi motor aktual
-- [ ] Extrude, tambah rib penguat
-- [ ] Mirror → Motor_Mount_R
-- [ ] Export: `Motor_Mount_L.stl`, `Motor_Mount_R.stl`
-
-#### Part 4 — Dudukan 3 Sensor HC-SR04 (Akrilik, Sheet Metal + Bending, Laser Cut)
+#### Part 3 — Dudukan 3 Sensor HC-SR04 (Akrilik, Sheet Metal + Bending, Laser Cut)
 
 - [ ] Buka workspace **Sheet Metal** di Fusion 360 Online
 - [ ] Atur Sheet Metal Rules: Thickness 3 mm, **Bend Radius 1 mm**, K-factor 0.33
@@ -124,27 +117,27 @@ Desain seluruh part berikut **secara berurutan**:
 - [ ] Tunjukkan **garis tekukan** pada Flat Pattern, jelaskan proses bending akrilik (heat gun)
 - [ ] Jelaskan alasan sudut 20–25° (effective angle HC-SR04 < 15°)
 
-#### Part 5 — Standoff PCB MAIN + Cover PCB Sensor Garis (PLA, 3D Print)
+#### Part 4 — Standoff PCB MAIN + Cover PCB Sensor Garis (PLA, 3D Print)
 
 - [ ] Standoff: silinder berlubang outer Ø7 mm, inner Ø3.2 mm, flange Ø12 mm → `Standoff_PCB.stl`
 - [ ] Bracket sensor garis: L-bracket, slot adjustable → `Bracket_Sensor_Garis.stl`
 - [ ] **Cover/Enclosure PCB Sensor**: ukur PCB sensor terlebih dahulu → desain cover yang menutupi PCB dari atas (dimensi dalam = PCB + 1 mm clearance, dinding 2 mm, slot kabel) → `Cover_PCB_Sensor.stl`
 - [ ] Tunjukkan cover ter-join ke bracket pada posisi di atas PCB sensor
 
-#### Part 6 — Dudukan Servo SG90 + Dudukan Baterai + Model Baterai (PLA, 3D Print)
+#### Part 5 — Dudukan Servo SG90 + Dudukan Baterai + Model Baterai (PLA, 3D Print)
 
 - [ ] Dudukan servo: U-shape, pocket sesuai body SG90 + 0.3 mm clearance, lubang flange M2, lubang mounting M3 → `Dudukan_Servo_SG90.stl`
 - [ ] **Model 3D Baterai 18650**: sketch lingkaran Ø aktual → Extrude panjang aktual → tambah positive cap → Appearance biru/hijau → Copy 2 unit
 - [ ] Dudukan baterai: 2 rongga silinder Ø(aktual+0.5), retaining lip, cable channel, 4× lubang M3 → `Dudukan_Baterai_18650.stl`
 
-#### Part 7 — Aksesoris 3D Bebas (PLA, 3D Print — Minimum 2 Buah)
+#### Part 6 — Aksesoris 3D Bebas (PLA, 3D Print — Minimum 2 Buah)
 
 - [ ] Desain aksesoris bebas pilihan sendiri (min. 2 buah)
 - [ ] Tunjukkan proses desain secara singkat (sketching → extrude → fillet → Appearance)
 - [ ] Jelaskan fungsi dan posisi setiap aksesoris
 - [ ] Export masing-masing sebagai STL: `Aksesoris_[Nama1].stl`, `Aksesoris_[Nama2].stl`
 
-#### Part 8 — Gripper SG90 (PLA, 3D Print — Parallel Jaw)
+#### Part 7 — Gripper SG90 (PLA, 3D Print — Parallel Jaw)
 
 > Gripper parallel jaw digerakkan 1× servo SG90. Bukaan jaw: 10–60 mm, grip benda ~5 cm. Desain 4 komponen terpisah.
 
@@ -184,16 +177,6 @@ Desain seluruh part berikut **secara berurutan**:
 
 ---
 
-### BAGIAN 5 — ORDER PCB KE JLCPCB (Maks. 2 menit)
-
-- [ ] Buka **https://jlcpcb.com** → pilih *"Quote Now"* → upload Gerber ZIP PCB MAIN
-- [ ] Tunjukkan Gerber terverifikasi di JLCPCB Gerber Viewer (preview PCB di layar)
-- [ ] Ulangi untuk Gerber ZIP PCB Sensor
-- [ ] Isi parameter order (jumlah, warna soldermask, finish)
-- [ ] Tunjukkan **screenshot halaman order / konfirmasi** (nomor order terlihat)
-
----
-
 ### BAGIAN 6 — PENUTUP (Maks. 1 menit)
 
 - [ ] Tampilkan seluruh file output yang sudah dibuat (STL + DXF + Gerber)
@@ -205,20 +188,20 @@ Desain seluruh part berikut **secara berurutan**:
 
 ## C. RUBRIK PENILAIAN VIDEO (100 POIN)
 
-| No | Komponen Penilaian | Bobot | Indikator |
-|----|-------------------|-------|-----------|
-| 1 | Registrasi Fusion 360 Online + penjelasan antarmuka | 10 | Proses login SSO terlihat, antarmuka dijelaskan |
-| 2 | Video pengukuran komponen fisik dengan penggaris (tangan terlihat) | 15 | Semua komponen diukur, tabel terisi, dimensi aktual digunakan |
-| 3 | Part 1: Model chassis Sheet Metal (referensi) + Spacer | 5 | Sheet Metal workspace, Flat Pattern terlihat |
-| 4 | Part 2: Model 3D Motor DC Gearbox + Roda (referensi) | 5 | Revolve roda, detail motor, Appearance |
-| 5 | Part 3: Motor Mount L + R (PLA, 3D print) | 5 | STL valid, mirror feature |
-| 6 | Part 4: Bracket 3 sensor HC-SR04 (akrilik, Sheet Metal + bending): sudut 0°, 20–25°, 1 piece + bend line | 15 | Flat Pattern dengan bend line, K-factor diset, proses bending dijelaskan |
-| 7 | Part 5: Standoff PCB + Bracket sensor garis + Cover PCB Sensor Garis (3D print) | 8 | Cover fit di atas PCB sensor, STL valid |
-| 8 | Part 6: Dudukan servo + Dudukan baterai + Model 3D Baterai (referensi) | 7 | Model baterai via Revolve, STL housing valid |
-| 9 | Part 7: Aksesoris 3D bebas (min. 2 buah, kreatif, 3D print) | 10 | Desain kreatif, tidak interference, STL valid |
-| 10 | Assembly lengkap: semua komponen + PCB + aksesoris, 0 interference, section analysis | 15 | Screenshot terlampir, joint correct, sudut sensor terlihat |
-| 11 | Order PCB MAIN + PCB Sensor ke JLCPCB | 5 | Gerber terverifikasi, bukti order terlampir |
-| **TOTAL** | | **100** | |
+| No              | Komponen Penilaian                                                                                          | Bobot         | Indikator                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------ |
+| 1               | Registrasi Fusion 360 Online + penjelasan antarmuka                                                         | 10            | Proses login SSO terlihat, antarmuka dijelaskan                          |
+| 2               | Video pengukuran komponen fisik dengan penggaris (tangan terlihat)                                          | 15            | Semua komponen diukur, tabel terisi, dimensi aktual digunakan            |
+| 3               | Part 1: Model chassis Sheet Metal (referensi) + Spacer                                                      | 5             | Sheet Metal workspace, Flat Pattern terlihat                             |
+| 4               | Part 2: Model 3D Motor DC Gearbox + Roda (referensi)                                                        | 5             | Revolve roda, detail motor, Appearance                                   |
+| 5               | Part 3: Motor Mount L + R (PLA, 3D print)                                                                   | 5             | STL valid, mirror feature                                                |
+| 6               | Part 4: Bracket 3 sensor HC-SR04 (akrilik, Sheet Metal + bending): sudut 0°, 20–25°, 1 piece + bend line | 15            | Flat Pattern dengan bend line, K-factor diset, proses bending dijelaskan |
+| 7               | Part 5: Standoff PCB + Bracket sensor garis + Cover PCB Sensor Garis (3D print)                             | 8             | Cover fit di atas PCB sensor, STL valid                                  |
+| 8               | Part 6: Dudukan servo + Dudukan baterai + Model 3D Baterai (referensi)                                      | 7             | Model baterai via Revolve, STL housing valid                             |
+| 9               | Part 7: Aksesoris 3D bebas (min. 2 buah, kreatif, 3D print)                                                 | 15            | Desain kreatif, tidak interference, STL valid                            |
+| 10              | Assembly lengkap: semua komponen + PCB + aksesoris, 0 interference, section analysis                        | 15            | Screenshot terlampir, joint correct, sudut sensor terlihat               |
+|                 |                                                                                                             |               |                                                                          |
+| **TOTAL** |                                                                                                             | **100** |                                                                          |
 
 ---
 
@@ -239,10 +222,8 @@ Desain seluruh part berikut **secara berurutan**:
 - [ ] Screen record Part 6: Dudukan servo SG90 + Dudukan baterai + Model 3D Baterai (referensi)
 - [ ] Screen record Part 7: Aksesoris 3D bebas (min. 2 buah) — desain dan proses dijelaskan
 - [ ] **Screen record Part 8: Gripper SG90** (Gripper_Base + Jaw_L + Jaw_R + Linkage), joint Revolute, animasi 0–60 mm, 4 STL diekspor
-- [ ] Screen record assembly: semua joint terpasang + gripper + PCB MAIN + PCB Sensor + aksesoris terintegrasi
 - [ ] Interference check hasilnya 0
 - [ ] Section analysis — sudut sensor terlihat
-- [ ] Order PCB MAIN + PCB Sensor ke JLCPCB (screenshot konfirmasi)
 - [ ] Penutup: daftar file output + rencana fabrikasi
 
 **Kualitas teknis:**
@@ -256,4 +237,3 @@ Desain seluruh part berikut **secara berurutan**:
 **Penamaan file:**
 
 - [ ] `Video_Modul03_[NIM]_[NamaLengkap].mp4`
-

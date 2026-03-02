@@ -1,6 +1,6 @@
 # JOBSHEET MODUL 08: ROS 2 DASAR DAN GAZEBO
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 08 – ROS Dasar dan Gazebo  
 **Pertemuan:** 15–16 (2 × 2 SKS)  

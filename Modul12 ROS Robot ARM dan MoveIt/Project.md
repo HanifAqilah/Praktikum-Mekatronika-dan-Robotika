@@ -1,6 +1,6 @@
 # PROJECT MODUL 12: AUTOMATED SORTING ROBOT ARM
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 12 – ROS Robot ARM dan MoveIt  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

@@ -1,6 +1,6 @@
 # PROJECT MODUL 10: SMART ROBOT VISION SYSTEM
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 10 – ROS OpenCV dan YOLO  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

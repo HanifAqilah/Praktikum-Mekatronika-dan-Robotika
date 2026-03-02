@@ -1,6 +1,6 @@
 # JOBSHEET MODUL 11: ROS 2 SLAM DAN NAVIGASI
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 11 – ROS SLAM dan Navigasi  
 **Pertemuan:** 21–22 (2 × 2 SKS)  

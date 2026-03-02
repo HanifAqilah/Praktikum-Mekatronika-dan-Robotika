@@ -1,6 +1,6 @@
 # JOBSHEET MODUL 12: ROS 2 ROBOT ARM DAN MOVEIT 2
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 12 – ROS Robot ARM dan MoveIt  
 **Pertemuan:** 23–24 (2 × 2 SKS)  

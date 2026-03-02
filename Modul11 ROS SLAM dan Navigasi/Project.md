@@ -1,6 +1,6 @@
 # PROJECT MODUL 11: AUTONOMOUS EXPLORATION AND NAVIGATION
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 11 – ROS SLAM dan Navigasi  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

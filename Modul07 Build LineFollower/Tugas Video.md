@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 06: BUILD DAN PROGRAM ROBOT LINE FOLLOWER
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 06 – Build Line Follower  
 **Sifat Tugas:** Individual  

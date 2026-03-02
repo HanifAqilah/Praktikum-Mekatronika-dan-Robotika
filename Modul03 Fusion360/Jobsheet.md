@@ -1,8 +1,8 @@
 ![GEARBOX - Motor DC Gearbox 3V - 6V Kuning Smart Car Gear | Lazada Indonesia]()
 
-# JOBSHEET MODUL 03: FUSION 360 – DESAIN MEKANIK PROJECT LINE FOLLOWER & ORDER PCB
+# JOBSHEET MODUL 03: FUSION 360 – DESAIN MEKANIK PROJECT LINE FOLLOWER
 
-**Program Studi:** Teknik Mekatronika dan Robotika
+**Program Studi:** Teknologi Rekayasa Otomasi
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika
 **Modul:** 03 – Fusion 360 Desain Mekanik
 **Software:** Autodesk Fusion 360 (Education License)
@@ -40,7 +40,6 @@ Setelah menyelesaikan praktikum ini, mahasiswa mampu:
 14. Melakukan assembly lengkap semua komponen dan joint
 15. Mengimport PCB MAIN dan PCB Sensor dari EasyEDA ke Fusion 360 dan verifikasi fitment
 16. Mengeksport file STL (3D print) dan DXF (laser cut + bending)
-17. Memverifikasi Gerber file (PCB MAIN dan PCB Sensor) dan melakukan order ke JLCPCB
 
 ---
 
@@ -52,8 +51,7 @@ Setelah menyelesaikan praktikum ini, mahasiswa mampu:
 | -- | ----------------------------------- | ------------------------------ |
 | 1  | **Autodesk Fusion 360**       | Desain 3D mekanik dan assembly |
 | 2  | **EasyEDA**                   | Export file PCB (STEP/DXF)     |
-| 3  | **JLCPCB Gerber Viewer**      | Validasi Gerber sebelum order  |
-| 4  | **Slicer (Cura/PrusaSlicer)** | Preview STL untuk 3D print     |
+| 3  | **Slicer (Cura/PrusaSlicer)** | Preview STL untuk 3D print     |
 
 ### Perangkat Keras
 
@@ -153,15 +151,15 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 8. Pada **dinding depan**: tambahkan lubang untuk bracket sensor dan mounting gripper
 9. **Sheet Metal > Flat Pattern** → verifikasi single flat pattern (semua bend line terlihat)
 
-| Fitur                  | Dimensi (ukur aktual)         | Jumlah |
-| ---------------------- | ----------------------------- | ------ |
-| Panjang bottom plate   | \_\_\_ mm                   | 1      |
-| Lebar bottom plate     | \_\_\_ mm                   | 1      |
-| Tinggi dinding samping | \_\_\_ mm                   | 4 sisi |
-| Tebal pelat            | \_\_\_ mm                   | 1      |
-| Lubang poros motor     | Ø\_\_\_ mm                  | 2      |
-| Lubang mounting PCB    | Ø3.2 mm                      | 4      |
-| Lubang caster (M3)     | Ø3.2 mm                      | 2      |
+| Fitur                  | Dimensi (ukur aktual) | Jumlah |
+| ---------------------- | --------------------- | ------ |
+| Panjang bottom plate   | \_\_\_ mm             | 1      |
+| Lebar bottom plate     | \_\_\_ mm             | 1      |
+| Tinggi dinding samping | \_\_\_ mm             | 4 sisi |
+| Tebal pelat            | \_\_\_ mm             | 1      |
+| Lubang poros motor     | Ø\_\_\_ mm           | 2      |
+| Lubang mounting PCB    | Ø3.2 mm              | 4      |
+| Lubang caster (M3)     | Ø3.2 mm              | 2      |
 
 **Checkpoint ✅:** Model 3D box chassis single-piece selesai, Flat Pattern terverifikasi, semua lubang aktual terdokumentasi.
 
@@ -212,12 +210,12 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 18. **Inspect > Interference** → 0 interference pada seluruh rentang gerak
 19. Export STL: `Gripper_Base.stl`, `Gripper_Jaw_L.stl`, `Gripper_Jaw_R.stl`, `Gripper_Linkage.stl`
 
-| Komponen | Ukuran Kunci | Material | File |
-|----------|-------------|----------|------|
-| Gripper_Base | Lebar robot × 30 mm | PLA | Gripper_Base.stl |
-| Gripper_Jaw_L | 60 mm arm, R3 finger | PLA | Gripper_Jaw_L.stl |
-| Gripper_Jaw_R | Mirror Jaw_L | PLA | Gripper_Jaw_R.stl |
-| Gripper_Linkage | 30 mm, 2× pivot Ø3.2 | PLA | Gripper_Linkage.stl |
+| Komponen        | Ukuran Kunci           | Material | File                |
+| --------------- | ---------------------- | -------- | ------------------- |
+| Gripper_Base    | Lebar robot × 30 mm   | PLA      | Gripper_Base.stl    |
+| Gripper_Jaw_L   | 60 mm arm, R3 finger   | PLA      | Gripper_Jaw_L.stl   |
+| Gripper_Jaw_R   | Mirror Jaw_L           | PLA      | Gripper_Jaw_R.stl   |
+| Gripper_Linkage | 30 mm, 2× pivot Ø3.2 | PLA      | Gripper_Linkage.stl |
 
 **Checkpoint ✅:** Gripper 4-part selesai, joint gripper teranimasi (0–60 mm), 4 STL terekspor.
 
@@ -305,6 +303,7 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 11. **Mirror** `Bracket_Sensor_Kiri` pada sumbu YZ → buat `Bracket_Sensor_Kanan`
 
 > **💡 Proses bending fisik akrilik:**
+>
 > 1. Laser cut dari DXF
 > 2. Panaskan garis tekuk dengan heat gun (±60–80°C) selama 30–60 detik hingga akrilik melunak
 > 3. Tekuk perlahan di atas jig kayu sesuai sudut target
@@ -314,9 +313,9 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 
 | Komponen             | Qty    | Material     | Sudut     | File                         |
 | -------------------- | ------ | ------------ | --------- | ---------------------------- |
-| Bracket_Sensor_Depan | 1 buah | Akrilik 3 mm | 0° lurus  | `Bracket_Sensor_Depan.dxf`  |
-| Bracket_Sensor_Kiri  | 1 buah | Akrilik 3 mm | 20–25°   | `Bracket_Sensor_Kiri.dxf`   |
-| Bracket_Sensor_Kanan | 1 buah | Akrilik 3 mm | 20–25°   | Mirror kiri                  |
+| Bracket_Sensor_Depan | 1 buah | Akrilik 3 mm | 0° lurus | `Bracket_Sensor_Depan.dxf` |
+| Bracket_Sensor_Kiri  | 1 buah | Akrilik 3 mm | 20–25°  | `Bracket_Sensor_Kiri.dxf`  |
+| Bracket_Sensor_Kanan | 1 buah | Akrilik 3 mm | 20–25°  | Mirror kiri                  |
 
 **Checkpoint ✅:** 3 bracket sensor selesai (1 piece + bending each), DXF siap laser cut.
 
@@ -389,11 +388,11 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 5. **Appearance** → warna abu-abu / kuning sesuai motor fisik
 
 | Parameter motor | Nilai (ukur aktual) |
-|----------------|---------------------|
-| Panjang body   | ___ mm              |
-| Lebar          | ___ mm              |
-| Tinggi         | ___ mm              |
-| Diameter poros | ___ mm              |
+| --------------- | ------------------- |
+| Panjang body    | ___ mm              |
+| Lebar           | ___ mm              |
+| Tinggi          | ___ mm              |
+| Diameter poros  | ___ mm              |
 
 **Checkpoint ✅:** Model 3D motor referensi selesai (tidak diproduksi, hanya referensi assembly).
 
@@ -408,11 +407,11 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 5. **Appearance** → hitam (ban) + abu-abu (hub)
 6. **Copy** → buat versi kiri dan kanan
 
-| Parameter roda      | Nilai (ukur aktual) |
-|--------------------|---------------------|
-| Diameter luar      | ___ mm              |
-| Lebar ban          | ___ mm              |
-| Diameter lubang poros | ___ mm           |
+| Parameter roda        | Nilai (ukur aktual) |
+| --------------------- | ------------------- |
+| Diameter luar         | ___ mm              |
+| Lebar ban             | ___ mm              |
+| Diameter lubang poros | ___ mm              |
 
 **Checkpoint ✅:** Model 3D roda kiri dan kanan selesai (referensi assembly).
 
@@ -430,11 +429,11 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 4. Tambahkan slot/ventilasi untuk keluaran kabel sensor
 5. Tambahkan 2× lubang M2 kecil untuk mengunci cover ke bracket
 
-| Parameter     | Nilai                        |
-|--------------|------------------------------|
-| Clearance dalam | PCB + 1 mm (semua sisi)   |
-| Tebal dinding  | 2 mm                        |
-| Lubang pengunci | 2× M2                      |
+| Parameter       | Nilai                   |
+| --------------- | ----------------------- |
+| Clearance dalam | PCB + 1 mm (semua sisi) |
+| Tebal dinding   | 2 mm                    |
+| Lubang pengunci | 2× M2                  |
 
 **Checkpoint ✅:** Cover PCB Sensor Garis selesai, siap export STL.
 
@@ -454,9 +453,9 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 4. Export masing-masing sebagai **STL**
 
 | Aksesoris | Fungsi | Posisi di Assembly |
-|-----------|--------|-------------------|
-| \_\_\_    | \_\_\_ | \_\_\_            |
-| \_\_\_    | \_\_\_ | \_\_\_            |
+| --------- | ------ | ------------------ |
+| \_\_\_    | \_\_\_ | \_\_\_             |
+| \_\_\_    | \_\_\_ | \_\_\_             |
 
 **Checkpoint ✅:** Minimal 2 aksesoris 3D selesai, di-joint di assembly.
 
@@ -537,7 +536,7 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 
 ---
 
-### PERCOBAAN 7: EXPORT FILE PRODUKSI DAN ORDER PCB
+### PERCOBAAN 7: EXPORT FILE PRODUKSI
 
 **Estimasi waktu: 30 menit**
 
@@ -569,41 +568,30 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 
 > **Catatan:** Chassis tidak perlu DXF lagi — chassis metal sudah jadi, model Fusion 360 hanya referensi assembly.
 
-#### C. Order PCB ke JLCPCB
+> **Catatan PCB:** Order PCB MAIN dan PCB Sensor telah dilakukan pada **Modul 01**. Di modul ini cukup mengimport file STEP/DXF PCB ke assembly Fusion 360 untuk verifikasi fitment.
 
-1. Buka EasyEDA → project PCB Modul 01
-2. **Fabrication > PCB Fabrication File (Gerber)** → download ZIP
-3. Upload ke https://gerber-viewer.jlcpcb.com → verifikasi semua layer
-4. **Fabrication > Order at JLCPCB** → review parameter:
-   - Qty: 5 pcs, Layer: 2, Thickness: 1.6 mm
-   - Color: Green, Surface: HASL Lead-free
-   - Copper: 1 oz
-5. Submit order dan catat nomor order
+| Deliverable                 | Format        | Nama File                     | Keterangan                                               |
+| --------------------------- | ------------- | ----------------------------- | -------------------------------------------------------- |
+| **Chassis Box (ref)** | F3D           | `Chassis_Box.f3d`           | **Single-piece box chassis — referensi assembly** |
+| Motor DC Gearbox (ref)      | F3D/STL       | `Motor_DC_Gearbox.f3d`      | Model 3D referensi assembly                              |
+| Roda (ref)                  | F3D/STL       | `Roda.f3d`                  | Model 3D referensi assembly                              |
+| Motor Mount L               | STL           | `Motor_Mount_L.stl`         | 3D print PLA                                             |
+| Motor Mount R               | STL           | `Motor_Mount_R.stl`         | 3D print PLA                                             |
+| Sensor Bracket (garis)      | STL           | `Sensor_Bracket.stl`        | 3D print PLA                                             |
+| Cover PCB Sensor Garis      | STL           | `Cover_PCB_Sensor.stl`      | **3D print PLA — cover enclosure sensor garis**   |
+| Standoff PCB × 4           | STL           | `Standoff_PCB.stl`          | 3D print PLA                                             |
+| Bracket Sensor Depan        | **DXF** | `Bracket_Sensor_Depan.dxf`  | **Laser cut + bending akrilik 3 mm**               |
+| Bracket Sensor Kiri         | **DXF** | `Bracket_Sensor_Kiri.dxf`   | **Laser cut + bending akrilik 3 mm, 20–25°**     |
+| Bracket Sensor Kanan        | **DXF** | `Bracket_Sensor_Kanan.dxf`  | **Mirror kiri — laser cut + bending**             |
+| Bracket Servo SG90          | STL           | `Dudukan_Servo_SG90.stl`    | 3D print PLA                                             |
+| Dudukan Baterai 2×18650    | STL           | `Dudukan_Baterai_18650.stl` | 3D print PLA                                             |
+| **Gripper Base**      | STL           | `Gripper_Base.stl`          | **3D print PLA — mount servo + bracket**          |
+| **Gripper Jaw L**     | STL           | `Gripper_Jaw_L.stl`         | **3D print PLA — rahang kiri**                    |
+| **Gripper Jaw R**     | STL           | `Gripper_Jaw_R.stl`         | **3D print PLA — rahang kanan**                   |
+| **Gripper Linkage**   | STL           | `Gripper_Linkage.stl`       | **3D print PLA — penghubung servo–jaw**          |
+| Aksesoris 3D (min 2 buah)   | STL           | `Aksesoris_[Nama].stl`      | **3D print PLA — desain bebas**                   |
 
-| Deliverable                | Format   | Nama File                    | Keterangan                                       |
-| -------------------------- | -------- | ---------------------------- | ------------------------------------------------ |
-| **Chassis Box (ref)**      | F3D      | `Chassis_Box.f3d`            | **Single-piece box chassis — referensi assembly**|
-| Motor DC Gearbox (ref)     | F3D/STL  | `Motor_DC_Gearbox.f3d`       | Model 3D referensi assembly                      |
-| Roda (ref)                 | F3D/STL  | `Roda.f3d`                   | Model 3D referensi assembly                      |
-| Motor Mount L              | STL      | `Motor_Mount_L.stl`          | 3D print PLA                                     |
-| Motor Mount R              | STL      | `Motor_Mount_R.stl`          | 3D print PLA                                     |
-| Sensor Bracket (garis)     | STL      | `Sensor_Bracket.stl`         | 3D print PLA                                     |
-| Cover PCB Sensor Garis     | STL      | `Cover_PCB_Sensor.stl`       | **3D print PLA — cover enclosure sensor garis**  |
-| Standoff PCB × 4           | STL      | `Standoff_PCB.stl`           | 3D print PLA                                     |
-| Bracket Sensor Depan       | **DXF**  | `Bracket_Sensor_Depan.dxf`   | **Laser cut + bending akrilik 3 mm**             |
-| Bracket Sensor Kiri        | **DXF**  | `Bracket_Sensor_Kiri.dxf`    | **Laser cut + bending akrilik 3 mm, 20–25°**    |
-| Bracket Sensor Kanan       | **DXF**  | `Bracket_Sensor_Kanan.dxf`   | **Mirror kiri — laser cut + bending**            |
-| Bracket Servo SG90         | STL      | `Dudukan_Servo_SG90.stl`     | 3D print PLA                                     |
-| Dudukan Baterai 2×18650    | STL      | `Dudukan_Baterai_18650.stl`  | 3D print PLA                                     |
-| **Gripper Base**           | STL      | `Gripper_Base.stl`           | **3D print PLA — mount servo + bracket**         |
-| **Gripper Jaw L**          | STL      | `Gripper_Jaw_L.stl`          | **3D print PLA — rahang kiri**                   |
-| **Gripper Jaw R**          | STL      | `Gripper_Jaw_R.stl`          | **3D print PLA — rahang kanan**                  |
-| **Gripper Linkage**        | STL      | `Gripper_Linkage.stl`        | **3D print PLA — penghubung servo–jaw**          |
-| Aksesoris 3D (min 2 buah)  | STL      | `Aksesoris_[Nama].stl`       | **3D print PLA — desain bebas**                  |
-| Gerber PCB MAIN            | ZIP      | `Gerber_PCB_Main.zip`        | Verifikasi JLCPCB Viewer                         |
-| Gerber PCB Sensor          | ZIP      | `Gerber_PCB_Sensor.zip`      | Verifikasi JLCPCB Viewer                         |
-
-**Checkpoint ✅:** Semua file produksi diekspor dan PCB diorder ke JLCPCB.
+**Checkpoint ✅:** Semua file produksi diekspor, siap untuk proses fabrikasi di lab.
 
 ---
 
@@ -646,11 +634,11 @@ Ukur Komponen Fisik → Buat Sketch 2D → Solid Modeling 3D
 1. Apa keuntungan mengimport model PCB 3D dibanding hanya outline DXF?
 2. Jika lubang mounting PCB tidak sejajar dengan chassis, langkah apa yang harus dilakukan?
 
-### Analisa Percobaan 7 – Export dan Order PCB
+### Analisa Percobaan 7 – Export File Produksi
 
 1. Apa perbedaan format STL dan STEP? Kapan masing-masing digunakan?
-2. Jelaskan parameter JLCPCB yang Anda pilih dan alasannya.
-3. Mengapa Gerber harus diverifikasi di viewer sebelum order?
+2. Apa perbedaan format STL dan DXF dalam konteks fabrikasi? File mana yang digunakan untuk 3D print dan file mana untuk laser cut?
+3. Mengapa setting **Refinement = High** penting saat export STL, terutama untuk komponen dengan permukaan lengkung (dudukan baterai, gripper jaw)?
 
 ---
 
@@ -679,9 +667,6 @@ Tuliskan minimal 5 poin kesimpulan hasil praktikum:
 - [ ] Screenshot assembly lengkap dari 3 sudut (isometric, top, front) dengan sudut sensor terlihat jelas
 - [ ] Screenshot **Section Analysis** dari atas (tampilkan sudut 20–25° sensor kiri/kanan)
 - [ ] Screenshot interference check (0 interference)
-- [ ] Screenshot Gerber PCB MAIN di JLCPCB Gerber Viewer
-- [ ] Screenshot Gerber PCB Sensor di JLCPCB Gerber Viewer
-- [ ] Screenshot konfirmasi order JLCPCB (jika ada)
 - [ ] **File DXF bracket sensor** (Bracket_Sensor_Depan.dxf, Kiri.dxf, Kanan.dxf)
 - [ ] File STL semua komponen 3D print (motor mount, standoff PCB, cover sensor garis, servo, baterai, aksesoris)
 

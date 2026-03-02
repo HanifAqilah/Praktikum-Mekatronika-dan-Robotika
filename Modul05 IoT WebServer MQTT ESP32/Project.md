@@ -1,6 +1,6 @@
 # PROJECT MODUL 04: SISTEM MONITORING DAN KONTROL ROBOT IoT
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 04 – IoT WebServer MQTT ESP32  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

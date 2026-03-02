@@ -1,6 +1,6 @@
 # PROJECT MODUL 05: SISTEM SCADA MINI DENGAN PLC, ESP32, DAN AI
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 05 – IoT PLC AI Modbus  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

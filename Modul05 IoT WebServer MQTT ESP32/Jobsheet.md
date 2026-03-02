@@ -1,6 +1,6 @@
 # JOBSHEET MODUL 04: IoT WebServer MQTT ESP32
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 04 – IoT WebServer MQTT ESP32  
 **Pertemuan:** 7–8 (2 × 2 SKS)  

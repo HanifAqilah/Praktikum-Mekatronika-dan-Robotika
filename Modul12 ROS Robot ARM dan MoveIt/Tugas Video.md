@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 12: ROS 2 ROBOT ARM DAN MOVEIT 2
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 12 – ROS Robot ARM dan MoveIt  
 **Sifat Tugas:** Individual  

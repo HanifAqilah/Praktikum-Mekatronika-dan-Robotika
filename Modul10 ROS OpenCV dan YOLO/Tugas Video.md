@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 10: ROS 2 OPENCV DAN YOLO
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 10 – ROS OpenCV dan YOLO  
 **Sifat Tugas:** Individual  

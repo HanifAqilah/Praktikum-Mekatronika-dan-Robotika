@@ -1,6 +1,6 @@
 # MATERI MODUL 01: PERANCANGAN PCB DARI SKEMATIK HINGGA PRODUKSI
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 01 – Desain PCB  
 **Software:** EasyEDA (Standard / Pro)  

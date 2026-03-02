@@ -1,6 +1,6 @@
-# PROJECT MODUL 03: DESAIN MEKANIK LENGKAP ROBOT LINE FOLLOWER SIAP PRODUKSI
+# PROJECT MODUL 03: DESAIN MEKANIK LENGKAP ROBOT LINE FOLLOWER SIAP FABRIKASI
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 03 – Fusion 360 Desain Mekanik  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)
@@ -13,7 +13,7 @@
 
 > Tim robotik kampus Anda dipercaya merancang **Robot Line Follower dengan kemampuan deteksi rintangan** untuk kompetisi antar-universitas. Robot harus mampu mengikuti garis hitam di atas latar putih dengan kecepatan tinggi, berbelok tajam, dan menghindari rintangan menggunakan 3 sensor ultrasonik HC-SR04.
 >
-> Semua komponen mekanik — chassis, bracket, dudukan sensor, dudukan servo, dan dudukan baterai — **diproduksi mandiri** menggunakan mesin yang tersedia di lab: **3D printer (PLA)** dan **mesin laser cutting (akrilik 3 mm)**. Tidak ada komponen mekanik yang dipesan secara online. **Hanya PCB yang diorder ke JLCPCB.**
+> Semua komponen mekanik — chassis, bracket, dudukan sensor, dudukan servo, dan dudukan baterai — **diproduksi mandiri** menggunakan mesin yang tersedia di lab: **3D printer (PLA)** dan **mesin laser cutting (akrilik 3 mm)**. Tidak ada komponen mekanik yang dipesan secara online. **PCB MAIN dan PCB Sensor menggunakan PCB yang sudah diorder pada Modul 01.**
 >
 > Robot harus **modular**: chassis box metal satu-piece yang kokoh, semua bracket mudah dilepas dan dipasang ulang tanpa merusak komponen. Kelompok Anda harus menghasilkan desain Fusion 360 yang lengkap, dapat difabrikasi di lab, dan terintegrasi dengan PCB MAIN serta PCB Sensor yang sudah didesain di Modul 01.
 
@@ -250,9 +250,6 @@
 | 22 | Screenshot assembly (3 sudut) | `.png` | — | Isometric, Top, Front |
 | 23 | Screenshot interference check | `.png` | — | Harus menunjukkan 0 interference |
 | 24 | Screenshot section analysis | `.png` | — | Sudut sensor 20–25° terlihat |
-| 25 | Gerber ZIP PCB MAIN | `.zip` | **Order JLCPCB** | Terverifikasi di Gerber Viewer |
-| 26 | Gerber ZIP PCB Sensor | `.zip` | **Order JLCPCB** | Terverifikasi di Gerber Viewer |
-| 27 | Screenshot order JLCPCB | `.png` | — | Nomor order PCB terlihat |
 ---
 
 ## D. RUBRIK PENILAIAN PROJECT (100 POIN)
@@ -268,8 +265,7 @@
 | 7 | Aksesoris 3D bebas (min. 2 buah): kreatif, 3D print, tidak interference | 8 | STL valid, terpasang di assembly, 0 interference |
 | 8 | **Gripper SG90**: 4 komponen (Base+Jaw_L+Jaw_R+Linkage), joint teranimasi 0–60 mm, 0 interference | 10 | 4 STL valid, Revolute Joint benar, animasi OK |
 | 9 | Assembly lengkap: 0 interference (semua komponen + gripper), section analysis, joint benar | 13 | Screenshot terlampir, joint correct, gripper OK |
-| 10 | PCB MAIN + PCB Sensor terintegrasi, fitment dan clearance Ok | 6 | Joint dan clearance benar |
-| 11 | Gerber PCB MAIN + PCB Sensor terverifikasi dan diorder ke JLCPCB | 7 | Screenshot order terlampir |
+| 10 | PCB MAIN + PCB Sensor terintegrasi (dari Modul 01), fitment dan clearance OK | 13 | Joint dan clearance benar |
 | **TOTAL** | | **100** | |
 
 ---
@@ -280,6 +276,5 @@
 2. Autodesk Sheet Metal: https://help.autodesk.com/view/fusion360/ENU/?guid=SHT-OVERVIEW
 3. HC-SR04 Datasheet: https://components101.com/sensors/ultrasonic-sensor-working-pinout-datasheet
 4. SG90 Servo Datasheet — TowerPro Official: https://www.towerpro.com.tw/product/sg90-7/
-5. JLCPCB Manufacturing Capabilities: https://jlcpcb.com/capabilities
-6. LightBurn Laser Software: https://lightburnsoftware.com/
-7. Ultimaker Cura Slicer: https://ultimaker.com/software/ultimaker-cura/
+5. LightBurn Laser Software: https://lightburnsoftware.com/
+6. Ultimaker Cura Slicer: https://ultimaker.com/software/ultimaker-cura/

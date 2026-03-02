@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 04: IoT WebServer MQTT ESP32
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 04 – IoT WebServer MQTT ESP32  
 **Sifat Tugas:** Individual  

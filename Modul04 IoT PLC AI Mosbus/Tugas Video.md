@@ -1,6 +1,6 @@
 # TUGAS VIDEO MODUL 05: IoT PLC SCHNEIDER MODBUS
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 05 – IoT PLC AI Modbus  
 **Sifat Tugas:** Individual  

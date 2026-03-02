@@ -1,6 +1,6 @@
 # PROJECT MODUL 08: CUSTOM ROBOT SIMULATION
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 08 – ROS Dasar dan Gazebo  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

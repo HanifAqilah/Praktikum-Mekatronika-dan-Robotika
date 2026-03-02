@@ -1,6 +1,6 @@
 # PROJECT MODUL 07: MAZE SOLVER ROBOT
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 07 – Wall Follower  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)

@@ -1,6 +1,6 @@
 # MATERI MODUL 09: ROS 2 KINEMATIKA DAN KONTROLER
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 09 – ROS Kinematika dan Kontroler  
 **Platform:** Ubuntu 22.04 + ROS 2 Humble + Gazebo  

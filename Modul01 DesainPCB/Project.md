@@ -1,6 +1,6 @@
 # PROJECT MODUL 01: PERANCANGAN PCB ROBOT OTONOM (LINE FOLLOWER + OBSTACLE AVOIDANCE)
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 01 – Desain PCB  
 **Software:** EasyEDA Standard / Pro  

@@ -1,6 +1,6 @@
 # PROJECT MODUL 09: AUTONOMOUS DELIVERY ROBOT NAVIGATION
 
-**Program Studi:** Teknik Mekatronika dan Robotika  
+**Program Studi:** Teknologi Rekayasa Otomasi  
 **Mata Kuliah:** Praktikum Mekatronika dan Robotika  
 **Modul:** 09 – ROS Kinematika dan Kontroler  
 **Pengerjaan:** Per Kelompok (Maks. 4 Orang)
