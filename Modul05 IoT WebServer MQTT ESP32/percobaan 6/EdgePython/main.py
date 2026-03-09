@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 Percobaan 6 – Edge MQTT Subscriber with Alerts
 ================================================
