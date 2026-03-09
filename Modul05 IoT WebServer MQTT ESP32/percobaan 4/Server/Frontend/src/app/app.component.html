@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="logo">🌐 IoT Dashboard</span>
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="auth.isLoggedIn()">
+    <a mat-button routerLink="/"     routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+      <mat-icon>dashboard</mat-icon> Dashboard
+    </a>
+    <a mat-button routerLink="/data" routerLinkActive="active-link">
+      <mat-icon>table_chart</mat-icon> Data
+    </a>
+    <span class="username-badge">👤 {{ auth.getUsername() }}</span>
+    <button mat-icon-button (click)="logout()" title="Logout">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </ng-container>
+</mat-toolbar>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>
+
+<style>
+.app-toolbar { border-bottom: 1px solid #30363d; }
+.logo        { font-weight: 700; color: #58a6ff; font-size: 1.05rem; }
+.spacer      { flex: 1; }
+.username-badge { font-size: 0.85rem; color: #8b949e; margin: 0 0.5rem; }
+.active-link { color: #58a6ff !important; }
+.app-main   { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+</style>

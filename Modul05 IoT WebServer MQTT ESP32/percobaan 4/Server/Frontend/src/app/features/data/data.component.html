@@ -1,0 +1,113 @@
+<div class="data-page">
+
+  <!-- Header -->
+  <div class="data-header">
+    <h2>📊 Data & Statistik Sensor</h2>
+    <button mat-raised-button color="accent" (click)="fetchAll()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+      {{ loading ? 'Memuat...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="stats-grid" *ngIf="stats">
+    <mat-card class="stat-card">
+      <div class="stat-label">Rata-rata Suhu</div>
+      <div class="stat-value orange">{{ stats.avg_suhu ?? '--' }} °C</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-label">Rata-rata Kelembaban</div>
+      <div class="stat-value blue">{{ stats.avg_kelembaban ?? '--' }} %</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-label">Suhu Maks</div>
+      <div class="stat-value red">{{ stats.max_suhu ?? '--' }} °C</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-label">Suhu Min</div>
+      <div class="stat-value green">{{ stats.min_suhu ?? '--' }} °C</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-label">Total Pembacaan</div>
+      <div class="stat-value purple">{{ stats.count }}</div>
+    </mat-card>
+  </div>
+
+  <!-- Table -->
+  <mat-card class="table-card">
+    <h3 class="table-title">Riwayat Pembacaan Sensor</h3>
+
+    <div class="mat-elevation-z0 table-container">
+      <table mat-table [dataSource]="dataSource" class="full-width-table">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="device_id">
+          <th mat-header-cell *matHeaderCellDef>Device</th>
+          <td mat-cell *matCellDef="let row">{{ row.device_id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="suhu">
+          <th mat-header-cell *matHeaderCellDef>Suhu (°C)</th>
+          <td mat-cell *matCellDef="let row" class="orange">{{ row.suhu | number:'1.1-1' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="kelembaban">
+          <th mat-header-cell *matHeaderCellDef>Kelembaban (%)</th>
+          <td mat-cell *matCellDef="let row" class="blue">{{ row.kelembaban | number:'1.1-1' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cahaya">
+          <th mat-header-cell *matHeaderCellDef>Cahaya</th>
+          <td mat-cell *matCellDef="let row" class="yellow">{{ row.cahaya }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="created_at">
+          <th mat-header-cell *matHeaderCellDef>Waktu</th>
+          <td mat-cell *matCellDef="let row">{{ row.created_at | date:'dd/MM/yy HH:mm:ss' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            Belum ada data.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  </mat-card>
+</div>
+
+<style>
+.data-page { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.data-header { display: flex; align-items: center; justify-content: space-between; }
+.data-header h2 { font-size: 1.1rem; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+
+.stat-card { padding: 1rem 1.25rem !important; border-radius: 8px !important; }
+.stat-label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+.stat-value { font-size: 1.4rem; font-weight: 700; }
+.orange { color: #f97316; }
+.blue   { color: #38bdf8; }
+.red    { color: #f87171; }
+.green  { color: #4ade80; }
+.yellow { color: #facc15; }
+.purple { color: #a78bfa; }
+
+.table-card { padding: 1.25rem 1.5rem !important; border-radius: 10px !important; }
+.table-title { font-size: 0.95rem; color: #8b949e; margin-bottom: 0.75rem; }
+
+.table-container { overflow-x: auto; }
+.full-width-table { width: 100%; }
+
+.no-data { text-align: center; color: #484f58; padding: 2rem; }
+</style>

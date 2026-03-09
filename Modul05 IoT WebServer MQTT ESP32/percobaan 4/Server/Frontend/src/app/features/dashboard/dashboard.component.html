@@ -1,0 +1,92 @@
+<div class="dashboard-page">
+
+  <!-- Status badge -->
+  <div class="status-bar">
+    <span [class]="wsConnected ? 'badge connected' : 'badge disconnected'">
+      {{ wsConnected ? '🟢 WebSocket Terhubung' : '🔴 WebSocket Terputus' }}
+    </span>
+    <span *ngIf="wsError" class="ws-error">{{ wsError }}</span>
+  </div>
+
+  <!-- Sensor Cards -->
+  <div class="cards-grid">
+    <mat-card class="sensor-card temp-card">
+      <div class="card-icon">🌡️</div>
+      <div class="card-body">
+        <div class="card-label">SUHU</div>
+        <div class="card-value">{{ latest?.suhu?.toFixed(1) ?? '--' }} <span class="unit">°C</span></div>
+      </div>
+    </mat-card>
+
+    <mat-card class="sensor-card humid-card">
+      <div class="card-icon">💧</div>
+      <div class="card-body">
+        <div class="card-label">KELEMBABAN</div>
+        <div class="card-value">{{ latest?.kelembaban?.toFixed(1) ?? '--' }} <span class="unit">%</span></div>
+      </div>
+    </mat-card>
+
+    <mat-card class="sensor-card light-card">
+      <div class="card-icon">☀️</div>
+      <div class="card-body">
+        <div class="card-label">CAHAYA</div>
+        <div class="card-value">{{ latest?.cahaya ?? '--' }} <span class="unit">ADC</span></div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Suhu chart -->
+  <mat-card class="chart-card">
+    <h3 class="chart-title">📈 Riwayat Suhu Real-time (WebSocket)</h3>
+    <div class="chart-container">
+      <canvas #suhuChart></canvas>
+    </div>
+  </mat-card>
+
+  <!-- Last update -->
+  <p class="last-update" *ngIf="latest">
+    Device: <strong>{{ latest.device_id }}</strong> &nbsp;|&nbsp;
+    Terakhir: {{ latest.created_at | date:'HH:mm:ss' }}
+  </p>
+</div>
+
+<style>
+.dashboard-page { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.status-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+.badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.badge.connected    { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid #4ade80; }
+.badge.disconnected { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid #f87171; }
+.ws-error { color: #f87171; font-size: 0.82rem; }
+
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+
+.sensor-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  padding: 1.25rem 1.5rem !important;
+  border-top: 3px solid transparent !important;
+  border-radius: 10px !important;
+}
+.temp-card   { border-top-color: #f97316 !important; }
+.humid-card  { border-top-color: #38bdf8 !important; }
+.light-card  { border-top-color: #facc15 !important; }
+
+.card-icon  { font-size: 2rem; }
+.card-label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; }
+.card-value { font-size: 1.9rem; font-weight: 700; }
+.unit       { font-size: 0.9rem; color: #8b949e; }
+
+.chart-card { padding: 1.25rem 1.5rem !important; border-radius: 10px !important; }
+.chart-title { font-size: 0.95rem; color: #8b949e; margin-bottom: 0.75rem; }
+.chart-container { height: 240px; position: relative; }
+
+.last-update { font-size: 0.82rem; color: #484f58; }
+</style>
