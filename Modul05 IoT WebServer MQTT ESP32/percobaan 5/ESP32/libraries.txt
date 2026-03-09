@@ -1,0 +1,39 @@
+# Daftar Library Arduino yang Dibutuhkan — Percobaan 5
+
+## Library Wajib
+
+| Library           | Versi      | Sumber / Board Manager          | Keterangan                        |
+|-------------------|------------|---------------------------------|-----------------------------------|
+| WiFi              | built-in   | ESP32 Arduino Core              | Koneksi WiFi Station mode         |
+| HTTPClient        | built-in   | ESP32 Arduino Core              | HTTP POST dan GET ke backend      |
+| ArduinoJson       | >= 6.21.5  | Library Manager (Benoit Blanchon) | Serialisasi dan parsing JSON     |
+
+## Library Opsional (untuk sensor nyata)
+
+| Library           | Versi      | Sumber / Library Manager        | Keterangan                        |
+|-------------------|------------|---------------------------------|-----------------------------------|
+| DHT sensor library| >= 1.4.6   | Adafruit                        | Sensor DHT11 / DHT22 (suhu & lembab) |
+| Adafruit Unified Sensor | >= 1.1.9 | Adafruit                   | Dependensi DHT library            |
+
+## Cara Install via Arduino IDE
+
+1. Buka **Sketch → Include Library → Manage Libraries…**
+2. Cari **ArduinoJson** → pilih versi >= 6.21.5 → klik Install
+3. (Opsional) Cari **DHT sensor library** oleh Adafruit → Install beserta semua dependensi
+
+## Cara Install ESP32 Board
+
+1. Buka **File → Preferences**
+2. Tambahkan URL berikut ke *Additional Board Manager URLs*:
+   ```
+   https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+   ```
+3. Buka **Tools → Board → Boards Manager…** → Cari **esp32** → Install
+
+## Pengaturan Board
+
+- **Board**: ESP32 Dev Module (atau sesuai modul yang digunakan)
+- **Upload Speed**: 921600
+- **CPU Frequency**: 240MHz (WiFi/BT)
+- **Flash Size**: 4MB (32Mb)
+- **Partition Scheme**: Default 4MB with spiffs
