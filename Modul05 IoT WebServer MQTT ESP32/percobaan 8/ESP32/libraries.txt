@@ -1,0 +1,32 @@
+# Library yang Dibutuhkan untuk Percobaan 8 (ESP32)
+# Install melalui Arduino IDE → Library Manager
+
+PubSubClient by Nick O'Leary         (versi >= 2.8)
+  - Untuk koneksi MQTT
+  - URL: https://github.com/knolleary/pubsubclient
+
+ArduinoJson by Benoit Blanchon       (versi >= 6.21)
+  - Untuk parse/serialize JSON
+  - URL: https://arduinojson.org
+
+WiFi (bawaan core ESP32)
+  - Sudah termasuk dalam ESP32 Arduino Core
+  - Tidak perlu install terpisah
+
+# Opsional (jika USE_DHT = true di config.h)
+DHT sensor library by Adafruit       (versi >= 1.4)
+  - Untuk sensor suhu DHT22
+Adafruit Unified Sensor by Adafruit  (dependensi DHT)
+
+# Cara Install ESP32 Board di Arduino IDE:
+# 1. File → Preferences → Additional Board Manager URLs
+#    Tambahkan: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+# 2. Tools → Board Manager → cari "esp32" → Install "esp32 by Espressif Systems"
+# 3. Pilih Board: Tools → Board → ESP32 Arduino → ESP32 Dev Module
+
+# Upload Settings yang disarankan:
+# - Board:         ESP32 Dev Module
+# - CPU Frequency: 240MHz
+# - Flash Mode:    QIO
+# - Upload Speed:  921600
+# - Baud Rate (Serial Monitor): 115200
