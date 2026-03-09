@@ -201,7 +201,7 @@ interface Stats {
 | `CORS error` di browser | Origin tidak terdaftar | Tambahkan origin ke `CORS_ORIGINS` di `.env` |
 | Database terkunci (`SQLITE_BUSY`) | WAL mode | Sudah dihandle dengan `PRAGMA journal_mode=WAL` |
 | WebSocket disconnect berulang | Jaringan tidak stabil | Hook auto-reconnect dengan exponential backoff (1s→30s) aktif |
-| Grafik tidak muncul | Belum ada data di store | Tunggu pembacaan pertama dari ESP32 atau kirm data manual |
+| Grafik tidak muncul | Belum ada data di store | Tunggu pembacaan pertama dari ESP32 atau kirim data manual |
 
 ### Tes Manual API (tanpa ESP32)
 
@@ -209,7 +209,7 @@ interface Stats {
 # Kirim data sensor
 curl -s -X POST http://localhost:8005/api/sensor \
   -H "Content-Type: application/json" \
-  -d '{"device_id":"test","suhu":28.5,"kelembaban":65.2,"cahaya":1024}'
+  -d '{"device_id":"test","suhu":28.5,"kelembaban":65.2,"cahaya":1024}' | python3 -m json.tool
 
 # Cek status server
 curl -s http://localhost:8005/api/status | python3 -m json.tool
