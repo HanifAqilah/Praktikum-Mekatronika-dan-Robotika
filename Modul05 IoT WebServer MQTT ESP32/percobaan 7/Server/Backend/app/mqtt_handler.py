@@ -44,7 +44,7 @@ async def _check_and_manage_alerts(session, payload: dict, device_id: str):
             select(Alert).where(
                 Alert.device_id == device_id,
                 Alert.field == alert_key,
-                Alert.resolved == False,  # noqa: E712
+                Alert.resolved.is_(False),
             )
         )
         existing = result.scalars().first()

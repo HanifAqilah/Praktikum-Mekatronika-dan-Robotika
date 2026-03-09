@@ -23,6 +23,7 @@ Usage:
 import asyncio
 import json
 import logging
+import logging.handlers
 import os
 import time
 from collections import deque
@@ -59,6 +60,10 @@ DEFAULT_RULES = [
 ]
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
+_file_handler = logging.handlers.RotatingFileHandler(
+    LOG_FILE, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
+)
+
 structlog.configure(
     processors=[
         structlog.stdlib.add_log_level,
@@ -66,9 +71,7 @@ structlog.configure(
         structlog.processors.JSONRenderer(),
     ],
     wrapper_class=structlog.stdlib.BoundLogger,
-    logger_factory=structlog.WriteLoggerFactory(
-        file=open(LOG_FILE, "a", encoding="utf-8")  # noqa: WPS515
-    ),
+    logger_factory=structlog.WriteLoggerFactory(file=_file_handler.stream),
 )
 _console = logging.getLogger("edge")
 _console.setLevel(logging.DEBUG)
@@ -246,3 +249,5 @@ if __name__ == "__main__":
         asyncio.run(run())
     except KeyboardInterrupt:
         _console.info("Edge agent interrupted by user")
+    finally:
+        _file_handler.close()
