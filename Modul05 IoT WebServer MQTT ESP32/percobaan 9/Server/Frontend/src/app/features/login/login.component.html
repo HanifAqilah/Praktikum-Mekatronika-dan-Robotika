@@ -1,0 +1,79 @@
+<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#e3f2fd;">
+  <mat-card style="width:400px;padding:16px;">
+    <mat-card-header style="justify-content:center;margin-bottom:16px;">
+      <mat-icon style="font-size:48px;height:48px;width:48px;color:#1976d2;">sensors</mat-icon>
+      <div style="margin-left:16px;">
+        <mat-card-title>IoT Monitor</mat-card-title>
+        <mat-card-subtitle>Percobaan 9 – Smart Monitoring</mat-card-subtitle>
+      </div>
+    </mat-card-header>
+
+    <mat-tab-group [(selectedIndex)]="showRegister ? 1 : 0"
+                   (selectedIndexChange)="showRegister = $event === 1">
+      <!-- Login Tab -->
+      <mat-tab label="Login">
+        <form [formGroup]="loginForm" (ngSubmit)="login()" style="padding:16px 0;">
+          <mat-form-field class="full-width" style="margin-bottom:8px;">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" autocomplete="username">
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="full-width" style="margin-bottom:16px;">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'"
+                   formControlName="password" autocomplete="current-password">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix type="button"
+                    (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="full-width" type="submit"
+                  [disabled]="loginForm.invalid || loading">
+            <mat-spinner *ngIf="loading" diameter="20" style="display:inline-block;margin-right:8px;"></mat-spinner>
+            {{ loading ? 'Logging in...' : 'Login' }}
+          </button>
+        </form>
+      </mat-tab>
+
+      <!-- Register Tab -->
+      <mat-tab label="Register">
+        <form [formGroup]="registerForm" (ngSubmit)="register()" style="padding:16px 0;">
+          <mat-form-field class="full-width" style="margin-bottom:8px;">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="registerForm.get('username')?.hasError('minlength')">
+              Minimum 3 characters
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="full-width" style="margin-bottom:8px;">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email">
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+              Invalid email
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="full-width" style="margin-bottom:16px;">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">
+              Minimum 6 characters
+            </mat-error>
+          </mat-form-field>
+
+          <button mat-raised-button color="accent" class="full-width" type="submit"
+                  [disabled]="registerForm.invalid || loading">
+            {{ loading ? 'Registering...' : 'Register' }}
+          </button>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
