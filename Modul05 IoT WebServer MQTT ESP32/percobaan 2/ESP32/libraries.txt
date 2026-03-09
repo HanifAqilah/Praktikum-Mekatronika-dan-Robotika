@@ -1,0 +1,27 @@
+# Library yang dibutuhkan untuk ESP32 Percobaan 2
+# Install via Arduino IDE → Tools → Manage Libraries
+
+## Built-in (sudah termasuk dalam ESP32 Arduino Core)
+- WiFi.h          (bagian dari ESP32 Arduino Core)
+- HTTPClient.h    (bagian dari ESP32 Arduino Core)
+
+## Install dari Library Manager
+- ArduinoJson     versi 6.x atau 7.x
+  Author: Benoit Blanchon
+  URL: https://arduinojson.org/
+
+## ESP32 Board Package
+- esp32 by Espressif Systems  versi >= 2.0.0
+  URL: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+## Cara Install Board ESP32
+1. Buka Arduino IDE → File → Preferences
+2. Tambahkan URL board di "Additional Board Manager URLs":
+   https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+3. Tools → Board → Board Manager → cari "esp32" → Install
+4. Pilih Board: "ESP32 Dev Module"
+
+## Catatan
+- HTTP response 201 = sukses disimpan ke SQLite
+- HTTP response 422 = validasi gagal (data di luar range)
+  → Periksa Serial Monitor untuk detail error

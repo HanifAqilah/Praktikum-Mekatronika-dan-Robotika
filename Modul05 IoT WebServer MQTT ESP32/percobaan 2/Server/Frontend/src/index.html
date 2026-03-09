@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESP32 DataLogger</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>📊 ESP32 DataLogger</h1>
+    <span class="chip">Percobaan 2</span>
+  </div>
+  <div class="header-right">
+    <span id="clock">--:--:--</span>
+    <div id="status-badge" class="offline">
+      <div id="status-dot"></div>
+      <span id="status-text">Offline</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Sensor Cards ───────────────────────────────────────── -->
+  <section>
+    <p class="section-title">📡 Sensor Terkini</p>
+    <div class="sensor-grid">
+
+      <div class="card suhu-card">
+        <div class="card-icon">🌡️</div>
+        <div class="card-label">Suhu</div>
+        <div class="card-value" id="val-suhu">--<span class="card-unit">°C</span></div>
+        <div class="card-sub" id="sub-suhu">–</div>
+      </div>
+
+      <div class="card humidity-card">
+        <div class="card-icon">💧</div>
+        <div class="card-label">Kelembaban</div>
+        <div class="card-value" id="val-kelembaban">--<span class="card-unit">%</span></div>
+        <div class="card-sub" id="sub-kelembaban">–</div>
+      </div>
+
+      <div class="card light-card">
+        <div class="card-icon">☀️</div>
+        <div class="card-label">Cahaya</div>
+        <div class="card-value" id="val-cahaya">--<span class="card-unit">ADC</span></div>
+        <div class="card-sub" id="sub-device">–</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Stats ──────────────────────────────────────────────── -->
+  <section>
+    <p class="section-title">📈 Statistik 24 Jam Terakhir</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Rata-rata Suhu</div>
+        <div class="stat-val" id="stat-avg-suhu">--</div>
+        <div class="stat-unit">°C</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max Suhu</div>
+        <div class="stat-val" id="stat-max-suhu">--</div>
+        <div class="stat-unit">°C</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Min Suhu</div>
+        <div class="stat-val" id="stat-min-suhu">--</div>
+        <div class="stat-unit">°C</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Rata-rata Kelembaban</div>
+        <div class="stat-val" id="stat-avg-kel">--</div>
+        <div class="stat-unit">%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Data</div>
+        <div class="stat-val" id="stat-count">--</div>
+        <div class="stat-unit">records</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── History Table ──────────────────────────────────────── -->
+  <section>
+    <div class="table-header">
+      <p class="section-title" style="margin-bottom:0">📋 Riwayat Data (20 terakhir)</p>
+      <button class="btn-csv" id="btn-csv" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+
+    <div id="error-box" class="error-box hidden"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Waktu</th>
+            <th>Device</th>
+            <th>Suhu (°C)</th>
+            <th>Kelembaban (%)</th>
+            <th>Cahaya (ADC)</th>
+          </tr>
+        </thead>
+        <tbody id="history-body">
+          <tr><td colspan="6" class="empty-row">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<div class="footer-bar">
+  <span>ESP32 DataLogger &nbsp;|&nbsp; SQLite + Zod + Express</span>
+  <span>Last update: <span id="last-update">–</span></span>
+</div>
+
+<script src="./main.js"></script>
+</body>
+</html>
