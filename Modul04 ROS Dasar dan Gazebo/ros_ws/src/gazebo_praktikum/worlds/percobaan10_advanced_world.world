@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="world_advanced">
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Plugin cuaca / perubahan environment -->
+    <plugin name="my_world_plugin" filename="libmy_world_plugin.so"/>
+
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <gravity>0 0 -9.81</gravity>
+    </physics>
+
+    <!-- Beberapa model untuk demonstrasi plugin -->
+    <model name="box_plugin_demo">
+      <pose>2 2 0.5 0 0 0</pose>
+      <static>false</static>
+      <link name="link">
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.0833</ixx><ixy>0</ixy><ixz>0</ixz>
+            <iyy>0.0833</iyy><iyz>0</iyz>
+            <izz>0.0833</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.5 0.5 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.5 0.5 0.5</size></box></geometry>
+          <material>
+            <ambient>0.8 0 0.8 1</ambient>
+            <diffuse>0.8 0 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>8 -8 5 0 0.4 2.4</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+
+  </world>
+</sdf>

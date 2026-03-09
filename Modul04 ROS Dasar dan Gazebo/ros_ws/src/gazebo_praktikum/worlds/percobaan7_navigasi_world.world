@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="world_navigasi">
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+    </physics>
+
+    <!-- Labirin sederhana -->
+    <!-- Dinding luar -->
+    <model name="dinding_utara">
+      <pose>0 7 1 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>14 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>14 0.2 2</size></box></geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="dinding_selatan">
+      <pose>0 -7 1 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>14 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>14 0.2 2</size></box></geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="dinding_timur">
+      <pose>7 0 1 0 0 1.5707</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>14 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>14 0.2 2</size></box></geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="dinding_barat">
+      <pose>-7 0 1 0 0 1.5707</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>14 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>14 0.2 2</size></box></geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Rintangan dalam -->
+    <model name="rintangan_tengah_1">
+      <pose>2 2 1 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>4 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>4 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.3 0 1</ambient><diffuse>0.7 0.4 0 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="rintangan_tengah_2">
+      <pose>-2 -2 1 0 0 1.5707</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>4 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>4 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.3 0 1</ambient><diffuse>0.7 0.4 0 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="rintangan_kanan">
+      <pose>4 -3 1 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.3 0 1</ambient><diffuse>0.7 0.4 0 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>0 0 20 0 1.57 0</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+
+  </world>
+</sdf>

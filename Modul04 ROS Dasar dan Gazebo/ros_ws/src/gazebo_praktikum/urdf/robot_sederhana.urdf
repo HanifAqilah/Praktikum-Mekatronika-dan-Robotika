@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<!--
+  URDF Sederhana: differential drive robot
+  Percobaan 3: Belajar membangun URDF dari awal
+  Percobaan 4: Spawn robot ini di Gazebo
+-->
+<robot name="robot_sederhana" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ============================================================ -->
+  <!-- Properti material -->
+  <!-- ============================================================ -->
+  <material name="biru">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="hitam">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="abu_abu">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <material name="merah">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+
+  <!-- ============================================================ -->
+  <!-- LINK: base_footprint (titik asal di tanah) -->
+  <!-- ============================================================ -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.065" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- LINK: base_link (badan utama robot) -->
+  <!-- ============================================================ -->
+  <link name="base_link">
+    <inertial>
+      <mass value="1.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.010416" ixy="0" ixz="0"
+        iyy="0.010416" iyz="0"
+        izz="0.018750"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.20 0.07"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.20 0.07"/>
+      </geometry>
+      <material name="biru"/>
+    </visual>
+  </link>
+
+  <!-- ============================================================ -->
+  <!-- LINK + JOINT: Roda kiri -->
+  <!-- ============================================================ -->
+  <link name="roda_kiri">
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.000526" ixy="0" ixz="0"
+        iyy="0.000526" iyz="0"
+        izz="0.001"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0"/>
+      <geometry>
+        <cylinder radius="0.065" length="0.03"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0"/>
+      <geometry>
+        <cylinder radius="0.065" length="0.03"/>
+      </geometry>
+      <material name="hitam"/>
+    </visual>
+  </link>
+
+  <joint name="joint_roda_kiri" type="continuous">
+    <parent link="base_link"/>
+    <child link="roda_kiri"/>
+    <origin xyz="0.0 0.115 -0.0275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- LINK + JOINT: Roda kanan -->
+  <!-- ============================================================ -->
+  <link name="roda_kanan">
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.000526" ixy="0" ixz="0"
+        iyy="0.000526" iyz="0"
+        izz="0.001"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0"/>
+      <geometry>
+        <cylinder radius="0.065" length="0.03"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0"/>
+      <geometry>
+        <cylinder radius="0.065" length="0.03"/>
+      </geometry>
+      <material name="hitam"/>
+    </visual>
+  </link>
+
+  <joint name="joint_roda_kanan" type="continuous">
+    <parent link="base_link"/>
+    <child link="roda_kanan"/>
+    <origin xyz="0.0 -0.115 -0.0275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.1"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- LINK + JOINT: Roda kastor depan (caster wheel) -->
+  <!-- ============================================================ -->
+  <link name="caster_depan">
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.000040" ixy="0" ixz="0"
+        iyy="0.000040" iyz="0"
+        izz="0.000040"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0325"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0325"/>
+      </geometry>
+      <material name="abu_abu"/>
+    </visual>
+  </link>
+
+  <joint name="joint_caster_depan" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_depan"/>
+    <origin xyz="0.10 0.0 -0.035" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- LINK + JOINT: Roda kastor belakang -->
+  <!-- ============================================================ -->
+  <link name="caster_belakang">
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia
+        ixx="0.000040" ixy="0" ixz="0"
+        iyy="0.000040" iyz="0"
+        izz="0.000040"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0325"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0325"/>
+      </geometry>
+      <material name="abu_abu"/>
+    </visual>
+  </link>
+
+  <joint name="joint_caster_belakang" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_belakang"/>
+    <origin xyz="-0.10 0.0 -0.035" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- Gazebo: Material warna untuk Gazebo GUI -->
+  <!-- ============================================================ -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="roda_kiri">
+    <material>Gazebo/Black</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+  <gazebo reference="roda_kanan">
+    <material>Gazebo/Black</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+  <gazebo reference="caster_depan">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+  <gazebo reference="caster_belakang">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+</robot>
