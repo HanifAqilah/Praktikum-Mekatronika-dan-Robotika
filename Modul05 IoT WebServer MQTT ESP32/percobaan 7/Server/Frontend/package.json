@@ -1,0 +1,22 @@
+{
+  "name": "percobaan7-dashboard",
+  "version": "1.0.0",
+  "description": "IoT Sensor Dashboard – Percobaan 7",
+  "scripts": {
+    "dev": "vite --port 9007",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview --port 9007",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.2",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8",
+    "vue-tsc": "^2.0.13"
+  }
+}
