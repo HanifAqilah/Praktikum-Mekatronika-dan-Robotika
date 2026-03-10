@@ -1,0 +1,12 @@
+{
+  "/api": {
+    "target": "http://localhost:8009",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api/ws": {
+    "target": "ws://localhost:8009",
+    "secure": false,
+    "ws": true
+  }
+}

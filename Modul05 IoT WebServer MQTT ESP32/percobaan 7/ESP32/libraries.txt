@@ -1,0 +1,19 @@
+# Required Arduino Libraries for Percobaan 7
+# Install via Arduino IDE Library Manager or PlatformIO
+
+# WiFi & MQTT
+WiFi                  (built-in ESP32 core)
+PubSubClient          >= 2.8.0   (Nick O'Leary)
+
+# Sensors
+DHT sensor library    >= 1.4.4   (Adafruit)
+Adafruit Unified Sensor >= 1.1.9 (Adafruit)
+
+# JSON
+ArduinoJson           >= 6.21.0  (Benoit Blanchon)
+
+# Watchdog
+esp_task_wdt          (built-in ESP32 IDF)
+
+# Board
+esp32 by Espressif    >= 2.0.14

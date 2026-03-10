@@ -1,0 +1,21 @@
+/* Global styles for IoT Dashboard */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+}
+
+* { box-sizing: border-box; }
+
+/* Angular Material dark theme overrides */
+.mat-toolbar { background: #161b22 !important; border-bottom: 1px solid #30363d !important; }
+.mat-card    { background: #161b22 !important; border: 1px solid #30363d !important; color: #e6edf3 !important; }
+.mat-table   { background: #161b22 !important; }
+.mat-header-cell, .mat-cell { color: #e6edf3 !important; border-bottom-color: #30363d !important; }
+.mat-header-row { background: #21262d !important; }
+.mat-row:hover { background: rgba(255,255,255,0.04) !important; }
+.mat-paginator { background: #161b22 !important; color: #8b949e !important; }
+.mat-form-field-outline { color: #30363d !important; }
+.mat-input-element { color: #e6edf3 !important; }

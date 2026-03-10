@@ -1,0 +1,15 @@
+# Arduino / ESP32 Libraries Required for Percobaan 6
+# Install via Arduino Library Manager (Sketch → Include Library → Manage Libraries…)
+# or use arduino-cli (see server.sh option 4 – Build All)
+
+PubSubClient        # MQTT client by Nick O'Leary     — version >=2.8
+ArduinoJson         # JSON serialization by Benoît Blanchon — version >=6.21
+
+# Board support (ESP32) – add via Arduino Board Manager or:
+# arduino-cli core install esp32:esp32
+# URL: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+# Optional sensor libraries (if you replace simulated readings):
+# DHT sensor library    — Adafruit DHT Sensor Library >=1.4
+# Adafruit BusIO        — required by Adafruit libraries
+# BH1750                — BH1750 Light Sensor by Christopher Laws >=1.3

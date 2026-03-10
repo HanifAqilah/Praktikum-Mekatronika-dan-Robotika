@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESP32 WebServer Monitor</title>
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0f1117;
+      --card-bg:     #1a1d2e;
+      --card-border: #2a2d3e;
+      --accent:      #4f8ef7;
+      --green:       #22c55e;
+      --red:         #ef4444;
+      --amber:       #f59e0b;
+      --text:        #e2e8f0;
+      --muted:       #64748b;
+      --font:        'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+    }
+
+    /* ── Header ────────────────────────────────────────────────────────── */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .header-left h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.02em; }
+    .header-left .chip {
+      background: #1e3a5f;
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 1.25rem; }
+
+    #clock {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Status badge */
+    #status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    #status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      transition: background 0.3s;
+    }
+    #status-badge.online #status-dot  { background: var(--green); }
+    #status-badge.online #status-text { color: var(--green); }
+    #status-badge.offline #status-dot  { background: var(--red); }
+    #status-badge.offline #status-text { color: var(--red); }
+
+    /* ── Main layout ───────────────────────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    /* Section title */
+    .section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* ── Sensor Cards ──────────────────────────────────────────────────── */
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.25s;
+    }
+    .card:hover { border-color: var(--accent); }
+
+    .card-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+    .card-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    .card-value {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .card-unit {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-left: 0.2rem;
+    }
+    .card-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .suhu-card   .card-value { color: #fb923c; }
+    .humidity-card .card-value { color: #38bdf8; }
+    .light-card  .card-value { color: #facc15; }
+
+    /* ── LED Control ───────────────────────────────────────────────────── */
+    .led-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .led-info { display: flex; align-items: center; gap: 1rem; }
+    .led-bulb {
+      font-size: 2.5rem;
+      transition: filter 0.3s;
+    }
+    .led-bulb.on  { filter: drop-shadow(0 0 8px #facc15); }
+    .led-bulb.off { filter: grayscale(0.8) brightness(0.5); }
+
+    .led-label  { font-size: 1rem; font-weight: 600; }
+    .led-state  { font-size: 0.85rem; margin-top: 0.2rem; color: var(--muted); }
+    .led-state span { font-weight: 700; }
+    .led-state span.on  { color: var(--green); }
+    .led-state span.off { color: var(--muted); }
+
+    .btn-toggle {
+      padding: 0.65rem 1.75rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-toggle:active { transform: scale(0.97); }
+    .btn-toggle.on  { background: var(--green); color: #fff; }
+    .btn-toggle.off { background: #334155; color: var(--text); }
+
+    /* ── Footer / last update ──────────────────────────────────────────── */
+    .footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--card-border);
+      margin-top: 1rem;
+    }
+
+    #last-update { font-variant-numeric: tabular-nums; }
+
+    /* ── Responsive ────────────────────────────────────────────────────── */
+    @media (max-width: 540px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .card-value { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-left">
+    <h1>🔌 ESP32 WebServer Monitor</h1>
+    <span class="chip">Percobaan 1</span>
+  </div>
+  <div class="header-right">
+    <span id="clock">--:--:--</span>
+    <div id="status-badge" class="offline">
+      <div id="status-dot"></div>
+      <span id="status-text">Offline</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ────────────────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- Sensor Cards -->
+  <section>
+    <p class="section-title">📡 Sensor Readings</p>
+    <div class="sensor-grid">
+
+      <div class="card suhu-card">
+        <div class="card-icon">🌡️</div>
+        <div class="card-label">Suhu</div>
+        <div class="card-value" id="val-suhu">--<span class="card-unit">°C</span></div>
+        <div class="card-sub">Temperatur ruangan</div>
+      </div>
+
+      <div class="card humidity-card">
+        <div class="card-icon">💧</div>
+        <div class="card-label">Kelembaban</div>
+        <div class="card-value" id="val-kelembaban">--<span class="card-unit">%</span></div>
+        <div class="card-sub">Relative humidity</div>
+      </div>
+
+      <div class="card light-card">
+        <div class="card-icon">☀️</div>
+        <div class="card-label">Cahaya</div>
+        <div class="card-value" id="val-cahaya">--<span class="card-unit">ADC</span></div>
+        <div class="card-sub">Intensitas cahaya (0–4095)</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LED Control -->
+  <section>
+    <p class="section-title">💡 LED Control</p>
+    <div class="led-section">
+      <div class="led-info">
+        <div class="led-bulb off" id="led-bulb">💡</div>
+        <div>
+          <div class="led-label">LED GPIO 2</div>
+          <div class="led-state">Status: <span class="off" id="led-state-text">OFF</span></div>
+        </div>
+      </div>
+      <button class="btn-toggle off" id="btn-led" onclick="toggleLED()">Toggle LED</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ──────────────────────────────────────────────────────────────── -->
+<div class="footer-bar">
+  <span>ESP32 WebServer Monitor &nbsp;|&nbsp; Auto-refresh setiap 2 detik</span>
+  <span>Last update: <span id="last-update">belum ada data</span></span>
+</div>
+
+<!-- ── JavaScript ──────────────────────────────────────────────────────────── -->
+<script>
+  const API_BASE = '';   // same origin
+
+  // ── Clock ─────────────────────────────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('id-ID', { hour12: false });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function setOnline(online) {
+    const badge = document.getElementById('status-badge');
+    const text  = document.getElementById('status-text');
+    if (online) {
+      badge.className = 'online';
+      text.textContent = 'Online';
+    } else {
+      badge.className = 'offline';
+      text.textContent = 'Offline';
+    }
+  }
+
+  function renderSensor(data) {
+    // Suhu
+    const suhu = document.getElementById('val-suhu');
+    suhu.innerHTML = data.suhu !== null
+      ? `${parseFloat(data.suhu).toFixed(1)}<span class="card-unit">°C</span>`
+      : `--<span class="card-unit">°C</span>`;
+
+    // Kelembaban
+    const kel = document.getElementById('val-kelembaban');
+    kel.innerHTML = data.kelembaban !== null
+      ? `${parseFloat(data.kelembaban).toFixed(1)}<span class="card-unit">%</span>`
+      : `--<span class="card-unit">%</span>`;
+
+    // Cahaya
+    const cah = document.getElementById('val-cahaya');
+    cah.innerHTML = data.cahaya !== null
+      ? `${data.cahaya}<span class="card-unit">ADC</span>`
+      : `--<span class="card-unit">ADC</span>`;
+
+    // LED state
+    const bulb  = document.getElementById('led-bulb');
+    const stTxt = document.getElementById('led-state-text');
+    const btn   = document.getElementById('btn-led');
+    if (data.ledState) {
+      bulb.className  = 'led-bulb on';
+      stTxt.className = 'on';
+      stTxt.textContent = 'ON';
+      btn.className   = 'btn-toggle on';
+      btn.textContent = 'Turn OFF';
+    } else {
+      bulb.className  = 'led-bulb off';
+      stTxt.className = 'off';
+      stTxt.textContent = 'OFF';
+      btn.className   = 'btn-toggle off';
+      btn.textContent = 'Turn ON';
+    }
+
+    // Last update
+    if (data.lastUpdate) {
+      const d = new Date(data.lastUpdate);
+      document.getElementById('last-update').textContent =
+        d.toLocaleString('id-ID', { hour12: false });
+    } else {
+      document.getElementById('last-update').textContent = 'belum ada data dari ESP32';
+    }
+  }
+
+  // ── Fetch sensor data ──────────────────────────────────────────────────────
+  async function fetchData() {
+    try {
+      const resp = await fetch(`${API_BASE}/api/data`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      renderSensor(data);
+      setOnline(true);
+    } catch (err) {
+      setOnline(false);
+      console.error('[fetchData]', err.message);
+    }
+  }
+
+  // ── Toggle LED ─────────────────────────────────────────────────────────────
+  async function toggleLED() {
+    const btn = document.getElementById('btn-led');
+    btn.disabled = true;
+    try {
+      const resp = await fetch(`${API_BASE}/api/led`, { method: 'POST' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      await fetchData();
+    } catch (err) {
+      console.error('[toggleLED]', err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // ── Auto-refresh every 2 seconds ───────────────────────────────────────────
+  fetchData();
+  setInterval(fetchData, 2000);
+</script>
+</body>
+</html>

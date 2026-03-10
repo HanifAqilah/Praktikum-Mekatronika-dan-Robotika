@@ -1,0 +1,33 @@
+Required Arduino Libraries for Percobaan 9
+==========================================
+Install via Arduino IDE Library Manager (Tools > Manage Libraries)
+or via Arduino CLI: arduino-cli lib install "<name>"
+
+1. PubSubClient by Nick O'Leary
+   Version : >= 2.8.0
+   Install : Tools > Manage Libraries > search "PubSubClient"
+
+2. DHT sensor library by Adafruit
+   Version : >= 1.4.4
+   Install : Tools > Manage Libraries > search "DHT sensor library"
+   Dependency: also install "Adafruit Unified Sensor"
+
+3. ArduinoJson by Benoit Blanchon
+   Version : >= 6.21.0
+   Install : Tools > Manage Libraries > search "ArduinoJson"
+
+4. Preferences  (built-in for ESP32 Arduino Core)
+   No separate install needed – comes with ESP32 board support.
+
+Board Setup
+===========
+- Board   : ESP32 Dev Module (or your specific ESP32 board)
+- CPU Freq: 240 MHz
+- Flash   : 4MB
+- Partition: Default 4MB with spiffs
+- Upload Speed: 921600
+
+ESP32 Arduino Core
+==================
+- Install via Boards Manager: "esp32 by Espressif Systems" >= 2.0.0
+- URL: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json

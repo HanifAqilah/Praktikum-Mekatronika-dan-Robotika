@@ -1,0 +1,17 @@
+# Node.js
+Server/Backend/node_modules/
+Server/Backend/percobaan6.db
+Server/Backend/.env
+
+# Python
+EdgePython/__pycache__/
+EdgePython/.venv/
+EdgePython/.env
+EdgePython/edge_log*.txt
+
+# Arduino build artifacts
+ESP32/build/
+
+# OS
+.DS_Store
+desktop.ini

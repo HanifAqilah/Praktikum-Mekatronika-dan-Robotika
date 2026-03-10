@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Percobaan 6 – IoT Dashboard ESP32</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0f172a;
+      --surface:   #1e293b;
+      --surface2:  #263248;
+      --border:    #334155;
+      --primary:   #38bdf8;
+      --success:   #4ade80;
+      --warning:   #facc15;
+      --danger:    #f87171;
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --radius:    12px;
+      --font:      'Segoe UI', system-ui, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+    header h1 span { color: var(--primary); }
+
+    /* ── MQTT Status Badge ── */
+    .broker-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border: 1px solid transparent;
+    }
+    .badge.connected    { background: #14532d44; border-color: var(--success); color: var(--success); }
+    .badge.disconnected { background: #7f1d1d44; border-color: var(--danger);  color: var(--danger);  }
+    .badge-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .badge.connected .badge-dot { animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
+    /* ── LIVE indicator ── */
+    #live-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--success);
+      letter-spacing: 1px;
+    }
+    #live-indicator.visible { display: inline-flex; }
+    #live-indicator::before {
+      content: '';
+      display: block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: livePulse 0.8s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { transform: scale(1);   opacity: 1; }
+      50%       { transform: scale(1.5); opacity: 0.5; }
+    }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── Sensor Cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .card.flash { border-color: var(--primary); }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+    .card.suhu::before       { background: #f97316; }
+    .card.kelembaban::before { background: #38bdf8; }
+    .card.cahaya::before     { background: #facc15; }
+
+    .card-icon { font-size: 2rem; margin-bottom: 8px; }
+    .card-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .card-value {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .card.suhu       .card-value { color: #fb923c; }
+    .card.kelembaban .card-value { color: var(--primary); }
+    .card.cahaya     .card-value { color: #fde047; }
+    .card-ts {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* ── LED Control ── */
+    .control-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .led-label {
+      font-size: 1rem;
+      font-weight: 600;
+      flex: 1;
+      min-width: 120px;
+    }
+    .led-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+    .led-bulb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #374151;
+      border: 2px solid #4b5563;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .led-bulb.on {
+      background: #fde047;
+      border-color: #facc15;
+      box-shadow: 0 0 12px 4px #fde04788;
+    }
+    .btn-group { display: flex; gap: 10px; }
+    .btn {
+      padding: 9px 26px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-on  { background: var(--success); color: #052e16; }
+    .btn-off { background: var(--danger);  color: #1f2937; }
+    #cmd-feedback {
+      font-size: 0.78rem;
+      color: var(--muted);
+      min-width: 120px;
+    }
+
+    /* ── History Table ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .table-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface2); }
+    .topic-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: #1d3557;
+      color: var(--primary);
+    }
+    .topic-pill.status   { background: #1c3a2a; color: var(--success); }
+    .topic-pill.command  { background: #312005; color: var(--warning); }
+    .payload-cell { font-family: 'Courier New', monospace; word-break: break-all; max-width: 360px; }
+    .ts-cell { color: var(--muted); white-space: nowrap; }
+
+    /* ── Empty state ── */
+    .empty-row td { text-align: center; color: var(--muted); padding: 28px; font-style: italic; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.2rem; }
+      .card-value { font-size: 2rem; }
+      .control-section { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── Header ── -->
+  <header>
+    <h1>ESP32 IoT <span>Dashboard</span> — Percobaan 6</h1>
+    <div class="broker-row">
+      <span id="broker-badge" class="badge disconnected">
+        <span class="badge-dot"></span>
+        <span id="broker-text">Disconnected</span>
+      </span>
+      <span id="live-indicator" title="Data baru diterima">● LIVE</span>
+    </div>
+  </header>
+
+  <!-- ── Sensor Cards ── -->
+  <p class="section-title">📡 Sensor Real-time</p>
+  <div class="cards-grid">
+    <div class="card suhu" id="card-suhu">
+      <div class="card-icon">🌡️</div>
+      <div class="card-label">Suhu</div>
+      <div class="card-value" id="val-suhu">—</div>
+      <div class="card-ts" id="ts-suhu">Menunggu data…</div>
+    </div>
+    <div class="card kelembaban" id="card-kelembaban">
+      <div class="card-icon">💧</div>
+      <div class="card-label">Kelembaban</div>
+      <div class="card-value" id="val-kelembaban">—</div>
+      <div class="card-ts" id="ts-kelembaban">Menunggu data…</div>
+    </div>
+    <div class="card cahaya" id="card-cahaya">
+      <div class="card-icon">☀️</div>
+      <div class="card-label">Cahaya</div>
+      <div class="card-value" id="val-cahaya">—</div>
+      <div class="card-ts" id="ts-cahaya">Menunggu data…</div>
+    </div>
+  </div>
+
+  <!-- ── LED Control ── -->
+  <p class="section-title">💡 Kendali LED GPIO2</p>
+  <div class="control-section">
+    <div class="led-label">
+      LED Status
+      <div class="led-status" style="margin-top:6px;">
+        <div class="led-bulb" id="led-bulb"></div>
+        <span id="led-state-text">Unknown</span>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-on"  id="btn-on"  onclick="sendCommand('ON')">💡 ON</button>
+      <button class="btn btn-off" id="btn-off" onclick="sendCommand('OFF')">🔴 OFF</button>
+    </div>
+    <span id="cmd-feedback">—</span>
+  </div>
+
+  <!-- ── Message History Table ── -->
+  <p class="section-title">📋 Riwayat Pesan MQTT (20 Terakhir)</p>
+  <div class="table-wrap">
+    <div class="table-header">
+      <strong>Log Pesan</strong>
+      <span id="history-count" style="font-size:0.75rem;color:var(--muted);">0 pesan</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Waktu</th>
+            <th>Topic</th>
+            <th>Payload</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <tr class="empty-row"><td colspan="4">Memuat data…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  /* ── State ── */
+  let prevLatestSnapshot = '';
+  let liveTimer = null;
+  let ledState = null; // 'ON' | 'OFF' | null
+
+  /* ── Utilities ── */
+  function fmtTime(isoStr) {
+    if (!isoStr) return '—';
+    const d = new Date(isoStr);
+    if (isNaN(d)) return isoStr;
+    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function fmtDateTime(isoStr) {
+    if (!isoStr) return '—';
+    const d = new Date(isoStr);
+    if (isNaN(d)) return isoStr;
+    return d.toLocaleString('id-ID');
+  }
+
+  function topicClass(topic) {
+    if (topic.includes('status'))  return 'status';
+    if (topic.includes('command')) return 'command';
+    return '';
+  }
+
+  function flashCard(cardId) {
+    const el = document.getElementById(cardId);
+    if (!el) return;
+    el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 800);
+  }
+
+  function showLive() {
+    const el = document.getElementById('live-indicator');
+    el.classList.add('visible');
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(() => el.classList.remove('visible'), 4000);
+  }
+
+  /* ── Broker Status ── */
+  async function fetchBrokerStatus() {
+    try {
+      const r = await fetch('/api/broker/status');
+      const data = await r.json();
+      const badge = document.getElementById('broker-badge');
+      const txt   = document.getElementById('broker-text');
+      if (data.connected) {
+        badge.className = 'badge connected';
+        txt.textContent = 'MQTT Connected';
+      } else {
+        badge.className = 'badge disconnected';
+        txt.textContent = 'Disconnected';
+      }
+    } catch {
+      document.getElementById('broker-badge').className = 'badge disconnected';
+      document.getElementById('broker-text').textContent = 'Server Offline';
+    }
+  }
+
+  /* ── Latest Sensor Data ── */
+  async function fetchLatest() {
+    try {
+      const r = await fetch('/api/latest');
+      const data = await r.json();
+
+      const snapshot = JSON.stringify(data);
+      const isNew = snapshot !== prevLatestSnapshot;
+      prevLatestSnapshot = snapshot;
+      if (isNew) showLive();
+
+      function updateCard(topicKey, valId, tsId, cardId, formatter) {
+        const entry = data[topicKey];
+        if (!entry) return;
+        const raw = entry.payload;
+        let display;
+        try {
+          const parsed = JSON.parse(raw);
+          display = formatter ? formatter(parsed) : JSON.stringify(parsed);
+        } catch {
+          display = raw;
+        }
+        const valEl = document.getElementById(valId);
+        const tsEl  = document.getElementById(tsId);
+        if (valEl && valEl.textContent !== display) {
+          valEl.textContent = display;
+          if (isNew) flashCard(cardId);
+        }
+        if (tsEl) tsEl.textContent = fmtTime(entry.ts);
+      }
+
+      updateCard('esp32/sensor/suhu',       'val-suhu',       'ts-suhu',       'card-suhu',
+        (p) => typeof p === 'object' ? (p.suhu ?? p.value ?? JSON.stringify(p)) + ' °C' : p + ' °C');
+      updateCard('esp32/sensor/kelembaban', 'val-kelembaban', 'ts-kelembaban', 'card-kelembaban',
+        (p) => typeof p === 'object' ? (p.kelembaban ?? p.value ?? JSON.stringify(p)) + ' %' : p + ' %');
+      updateCard('esp32/sensor/cahaya',     'val-cahaya',     'ts-cahaya',     'card-cahaya',
+        (p) => typeof p === 'object' ? (p.cahaya ?? p.value ?? JSON.stringify(p)) + ' lux' : p + ' lux');
+
+    } catch (err) {
+      console.warn('fetchLatest error:', err);
+    }
+  }
+
+  /* ── History Table ── */
+  async function fetchHistory() {
+    try {
+      const r = await fetch('/api/history?limit=20');
+      const rows = await r.json();
+      const tbody = document.getElementById('history-tbody');
+      const countEl = document.getElementById('history-count');
+
+      if (!rows.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Belum ada pesan</td></tr>';
+        countEl.textContent = '0 pesan';
+        return;
+      }
+      countEl.textContent = `${rows.length} pesan`;
+
+      tbody.innerHTML = rows.map((row, idx) => `
+        <tr>
+          <td style="color:var(--muted);font-size:0.75rem;">${rows.length - idx}</td>
+          <td class="ts-cell">${fmtDateTime(row.received_at)}</td>
+          <td><span class="topic-pill ${topicClass(row.topic)}">${escHtml(row.topic)}</span></td>
+          <td class="payload-cell">${escHtml(row.payload)}</td>
+        </tr>
+      `).join('');
+    } catch (err) {
+      console.warn('fetchHistory error:', err);
+    }
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ── LED Command ── */
+  async function sendCommand(cmd) {
+    const btnOn  = document.getElementById('btn-on');
+    const btnOff = document.getElementById('btn-off');
+    const fb     = document.getElementById('cmd-feedback');
+
+    btnOn.disabled = true;
+    btnOff.disabled = true;
+    fb.style.color = 'var(--muted)';
+    fb.textContent = 'Mengirim…';
+
+    try {
+      const r = await fetch('/api/command', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: cmd }),
+      });
+      const data = await r.json();
+      if (r.ok) {
+        ledState = cmd;
+        updateLedVisual(cmd);
+        fb.style.color = 'var(--success)';
+        fb.textContent = `✓ Perintah "${cmd}" terkirim`;
+      } else {
+        fb.style.color = 'var(--danger)';
+        fb.textContent = `✗ ${data.error || 'Gagal'}`;
+      }
+    } catch (err) {
+      fb.style.color = 'var(--danger)';
+      fb.textContent = '✗ Server tidak terjangkau';
+    } finally {
+      btnOn.disabled = false;
+      btnOff.disabled = false;
+      setTimeout(() => { fb.textContent = '—'; fb.style.color = 'var(--muted)'; }, 4000);
+    }
+  }
+
+  function updateLedVisual(state) {
+    const bulb = document.getElementById('led-bulb');
+    const txt  = document.getElementById('led-state-text');
+    if (state === 'ON') {
+      bulb.classList.add('on');
+      txt.textContent = 'ON';
+    } else {
+      bulb.classList.remove('on');
+      txt.textContent = 'OFF';
+    }
+  }
+
+  /* ── Refresh loop ── */
+  async function refresh() {
+    await Promise.all([
+      fetchBrokerStatus(),
+      fetchLatest(),
+      fetchHistory(),
+    ]);
+  }
+
+  refresh();
+  setInterval(refresh, 2000);
+</script>
+</body>
+</html>

@@ -35,3 +35,7 @@ Modul04 ROS Dasar dan Gazebo/ros_ws/install/
 Modul04 ROS Dasar dan Gazebo/ros_ws/log/
 Modul04 ROS Dasar dan Gazebo/ros_ws/src/nexus_4wd_mecanum_simulator/
 Modul04 ROS Dasar dan Gazebo/ros_ws/src/omni_navigation/
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

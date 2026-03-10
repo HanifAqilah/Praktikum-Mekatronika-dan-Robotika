@@ -1,0 +1,175 @@
+<div *ngIf="loading" style="display:flex;justify-content:center;padding:40px;">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!loading && summary">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h2 style="margin:0;">Dashboard</h2>
+    <span style="color:rgba(0,0,0,.54);font-size:0.85rem;">
+      Updated: {{ lastUpdated | date:'HH:mm:ss' }}
+    </span>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <mat-card>
+      <mat-card-content style="text-align:center;">
+        <mat-icon color="primary" style="font-size:40px;height:40px;width:40px;">devices</mat-icon>
+        <div class="sensor-value">{{ summary.total_devices }}</div>
+        <div class="sensor-unit">Total Devices</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content style="text-align:center;">
+        <mat-icon color="accent" style="font-size:40px;height:40px;width:40px;">wifi</mat-icon>
+        <div class="sensor-value status-online">{{ summary.online_devices }}</div>
+        <div class="sensor-unit">Online Devices</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content style="text-align:center;">
+        <mat-icon color="warn" style="font-size:40px;height:40px;width:40px;">warning</mat-icon>
+        <div class="sensor-value" [class.status-offline]="summary.active_alerts > 0">
+          {{ summary.active_alerts }}
+        </div>
+        <div class="sensor-unit">Active Alerts</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content style="text-align:center;">
+        <mat-icon style="font-size:40px;height:40px;width:40px;color:#607d8b;">storage</mat-icon>
+        <div class="sensor-value">{{ summary.total_readings }}</div>
+        <div class="sensor-unit">Total Readings</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Latest Sensor Readings -->
+  <div *ngIf="latestReading" style="margin-top:24px;">
+    <h3>Live Sensor Data – {{ latestReading.device_id }}</h3>
+    <div class="dashboard-grid">
+      <mat-card class="sensor-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar color="warn">thermostat</mat-icon>
+          <mat-card-title>Suhu</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="sensor-value"
+               [style.color]="latestReading.suhu > 30 ? '#f44336' : '#4caf50'">
+            {{ latestReading.suhu | number:'1.1-1' }}
+          </div>
+          <div class="sensor-unit">°C</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sensor-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar color="primary">water_drop</mat-icon>
+          <mat-card-title>Kelembaban</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="sensor-value"
+               [style.color]="latestReading.kelembaban < 40 ? '#f44336' : '#4caf50'">
+            {{ latestReading.kelembaban | number:'1.1-1' }}
+          </div>
+          <div class="sensor-unit">%</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sensor-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar color="accent">light_mode</mat-icon>
+          <mat-card-title>Cahaya</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="sensor-value"
+               [style.color]="latestReading.cahaya < 500 ? '#ff9800' : '#4caf50'">
+            {{ latestReading.cahaya | number:'1.0-0' }}
+          </div>
+          <div class="sensor-unit">lux</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sensor-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar style="color:#795548;">grass</mat-icon>
+          <mat-card-title>Kelembaban Tanah</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="sensor-value"
+               [style.color]="latestReading.tanah < 30 ? '#f44336' : '#4caf50'">
+            {{ latestReading.tanah | number:'1.1-1' }}
+          </div>
+          <div class="sensor-unit">%</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Actuator Status -->
+    <div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;">
+      <mat-card style="flex:1;min-width:180px;">
+        <mat-card-header>
+          <mat-card-title>Kipas (Fan)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="text-align:center;">
+          <mat-icon [color]="latestReading.fan_state ? 'accent' : ''"
+                    style="font-size:48px;height:48px;width:48px;">
+            {{ latestReading.fan_state ? 'air' : 'air' }}
+          </mat-icon>
+          <div [class]="latestReading.fan_state ? 'status-online' : 'status-offline'"
+               style="font-size:1.2rem;font-weight:500;">
+            {{ latestReading.fan_state ? 'ON' : 'OFF' }}
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card style="flex:1;min-width:180px;">
+        <mat-card-header>
+          <mat-card-title>Pompa (Pump)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="text-align:center;">
+          <mat-icon [color]="latestReading.pump_state ? 'primary' : ''"
+                    style="font-size:48px;height:48px;width:48px;">water</mat-icon>
+          <div [class]="latestReading.pump_state ? 'status-online' : 'status-offline'"
+               style="font-size:1.2rem;font-weight:500;">
+            {{ latestReading.pump_state ? 'ON' : 'OFF' }}
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card style="flex:1;min-width:180px;">
+        <mat-card-header>
+          <mat-card-title>Mode</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="text-align:center;">
+          <mat-icon color="primary" style="font-size:48px;height:48px;width:48px;">
+            {{ latestReading.auto_mode ? 'auto_mode' : 'touch_app' }}
+          </mat-icon>
+          <div style="font-size:1.2rem;font-weight:500;">
+            {{ latestReading.auto_mode ? 'AUTO' : 'MANUAL' }}
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Device List -->
+  <div style="margin-top:24px;" *ngIf="summary.devices.length > 0">
+    <h3>Devices</h3>
+    <mat-card>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let dev of summary.devices">
+            <mat-icon matListItemIcon
+                      [class]="dev.status === 'online' ? 'status-online' : 'status-offline'">
+              {{ dev.status === 'online' ? 'wifi' : 'wifi_off' }}
+            </mat-icon>
+            <div matListItemTitle>{{ dev.name }} ({{ dev.device_id }})</div>
+            <div matListItemLine>
+              Last seen: {{ dev.last_seen ? (dev.last_seen | date:'dd/MM HH:mm:ss') : 'Never' }}
+              &nbsp;|&nbsp; Mode: {{ dev.auto_mode ? 'AUTO' : 'MANUAL' }}
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,8 +1,11 @@
 # Konfigurasi Controller Robot Manipulator 3-DOF
 # Format ROS 2 Humble + ros2_control
-# Digunakan pada Percobaan 9 (Manipulator)
+# Digunakan pada Percobaan 8 & 9 (Manipulator)
+#
+# CATATAN: node berjalan di namespace /manipulator, sehingga kunci YAML
+# harus menggunakan path lengkap agar parameter-mapping cocok.
 
-controller_manager:
+/manipulator/controller_manager:
   ros__parameters:
     update_rate: 50  # Hz
 
@@ -12,14 +15,24 @@ controller_manager:
     arm_position_controller:
       type: position_controllers/JointGroupPositionController
 
-arm_position_controller:
+    joint_2_position_controller:
+      type: position_controllers/JointGroupPositionController
+
+    joint_3_position_controller:
+      type: position_controllers/JointGroupPositionController
+
+/manipulator/joint_1_position_controller:
   ros__parameters:
     joints:
       - joint_1
+
+/manipulator/joint_2_position_controller:
+  ros__parameters:
+    joints:
       - joint_2
       - joint_3
 
-joint_3_position_controller:
+/manipulator/joint_3_position_controller:
   ros__parameters:
     joints:
       - joint_3

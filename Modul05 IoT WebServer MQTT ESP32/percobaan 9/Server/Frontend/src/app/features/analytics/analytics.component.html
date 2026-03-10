@@ -1,0 +1,94 @@
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+  <h2 style="margin:0;">Analytics</h2>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <mat-form-field style="width:200px;">
+      <mat-label>Device</mat-label>
+      <mat-select [(ngModel)]="selectedDevice" (ngModelChange)="loadData()">
+        <mat-option *ngFor="let d of devices" [value]="d.device_id">
+          {{ d.name }} ({{ d.device_id }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field style="width:120px;">
+      <mat-label>Period</mat-label>
+      <mat-select [(ngModel)]="selectedHours" (ngModelChange)="loadData()">
+        <mat-option [value]="1">1 hour</mat-option>
+        <mat-option [value]="6">6 hours</mat-option>
+        <mat-option [value]="24">24 hours</mat-option>
+        <mat-option [value]="48">48 hours</mat-option>
+        <mat-option [value]="168">1 week</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="exportCsv()" [disabled]="!selectedDevice">
+      <mat-icon>download</mat-icon> Export CSV
+    </button>
+  </div>
+</div>
+
+<div *ngIf="loading" style="display:flex;justify-content:center;padding:40px;">
+  <mat-spinner></mat-spinner>
+</div>
+
+<!-- Stats Cards -->
+<div *ngIf="stats" class="dashboard-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
+  <mat-card>
+    <mat-card-header><mat-card-title>Suhu</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div>Avg: <strong>{{ stats.suhu_avg | number:'1.1-1' }}°C</strong></div>
+      <div>Min: {{ stats.suhu_min | number:'1.1-1' }}°C</div>
+      <div>Max: {{ stats.suhu_max | number:'1.1-1' }}°C</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-header><mat-card-title>Kelembaban</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div>Avg: <strong>{{ stats.kelembaban_avg | number:'1.1-1' }}%</strong></div>
+      <div>Min: {{ stats.kelembaban_min | number:'1.1-1' }}%</div>
+      <div>Max: {{ stats.kelembaban_max | number:'1.1-1' }}%</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-header><mat-card-title>Cahaya</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div>Avg: <strong>{{ stats.cahaya_avg | number:'1.0-0' }} lux</strong></div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-header><mat-card-title>Kel. Tanah</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div>Avg: <strong>{{ stats.tanah_avg | number:'1.1-1' }}%</strong></div>
+      <div>Total: {{ stats.total_readings }} readings</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Charts -->
+<mat-card style="margin-bottom:16px;">
+  <mat-card-header>
+    <mat-card-title>Suhu & Kelembaban</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="chart-container">
+      <canvas baseChart
+              [data]="lineChartData"
+              [options]="lineChartOptions"
+              type="line">
+      </canvas>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Cahaya & Kelembaban Tanah</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="chart-container">
+      <canvas baseChart
+              [data]="lineChartData2"
+              [options]="lineChartOptions"
+              type="line">
+      </canvas>
+    </div>
+  </mat-card-content>
+</mat-card>

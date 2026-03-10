@@ -1,0 +1,66 @@
+<div class="login-page">
+  <mat-card class="login-card">
+    <h2 class="login-title">🔐 IoT Dashboard Login</h2>
+    <p class="login-hint">Default: <strong>admin</strong> / <strong>admin123</strong></p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" autocomplete="username" />
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+        <mat-icon matPrefix>lock</mat-icon>
+      </mat-form-field>
+
+      <div *ngIf="errorMsg" class="error-msg">⚠️ {{ errorMsg }}</div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="full-width login-btn"
+        [disabled]="form.invalid || loading"
+      >
+        <mat-spinner *ngIf="loading" diameter="20" style="display:inline-block"></mat-spinner>
+        <span *ngIf="!loading">Masuk</span>
+      </button>
+    </form>
+  </mat-card>
+</div>
+
+<style>
+.login-page {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  border-radius: 12px !important;
+}
+
+.login-title { text-align: center; margin-bottom: 0.25rem; color: #58a6ff; }
+.login-hint  { text-align: center; color: #8b949e; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+.login-form  { display: flex; flex-direction: column; gap: 0.75rem; }
+.full-width  { width: 100%; }
+
+.error-msg {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid #f87171;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: #f87171;
+  font-size: 0.85rem;
+}
+
+.login-btn { height: 44px; font-size: 1rem; margin-top: 0.5rem; }
+</style>
