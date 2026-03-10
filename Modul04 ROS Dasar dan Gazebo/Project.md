@@ -119,8 +119,9 @@ NamaKelompok_Modul04/
 
 ## E. REFERENSI
 
-1. Package `gazebo_praktikum` (di workspace ini) – seluruh percobaan 1–10
+1. Package `gazebo_praktikum` (di workspace ini) – seluruh percobaan 1–20
 2. ROS 2 Humble Docs: https://docs.ros.org/en/humble/
 3. Nav2 Docs: https://navigation.ros.org/
 4. URDF Tutorial: https://docs.ros.org/en/humble/Tutorials/Intermediate/URDF/URDF-Main.html
 5. slam_toolbox: https://github.com/SteveMacenski/slam_toolbox
+6. TurtleBot3 e-Manual: https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/

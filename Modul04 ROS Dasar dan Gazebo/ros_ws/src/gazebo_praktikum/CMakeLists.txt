@@ -53,13 +53,14 @@ install(TARGETS my_world_plugin
 )
 
 install(DIRECTORY
-  launch worlds urdf config rviz maps
+  launch worlds urdf config rviz maps meshes
   DESTINATION share/${PROJECT_NAME}/
 )
 
 install(PROGRAMS
   scripts/demo_manipulator.py
   scripts/advanced_demo.py
+  scripts/kinematics_demo.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

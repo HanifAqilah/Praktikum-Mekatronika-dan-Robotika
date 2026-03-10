@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Demo Gerakan Manipulator (Percobaan 8) – ROS 2 Humble
-=======================================================
+Demo Gerakan Manipulator (Percobaan 10) - ROS 2 Humble
+========================================================
 Script ini mengirimkan perintah posisi joint secara berurutan
-untuk mendemonstrasikan gerakan robot lengan 3-DOF di Gazebo.
+dan dengan interpolasi halus untuk mendemonstrasikan gerakan robot lengan 3-DOF.
 
 Topik yang digunakan (ros2_control JointGroupPositionController):
-  /manipulator/joint_1_position_controller/commands  (std_msgs/Float64MultiArray)
-  /manipulator/joint_2_position_controller/commands  (std_msgs/Float64MultiArray)
-  /manipulator/joint_3_position_controller/commands  (std_msgs/Float64MultiArray)
+  /arm_position_controller/commands  (std_msgs/Float64MultiArray)
 """
 
 import rclpy
@@ -21,56 +19,65 @@ import time
 
 class DemoManipulator(Node):
     def __init__(self):
-        super().__init__('demo_gerak_manipulator')
+        super().__init__("demo_gerak_manipulator")
 
-        ns = '/manipulator'
-        self.pub_j1 = self.create_publisher(
-            Float64MultiArray, f'{ns}/joint_1_position_controller/commands', 10)
-        self.pub_j2 = self.create_publisher(
-            Float64MultiArray, f'{ns}/joint_2_position_controller/commands', 10)
-        self.pub_j3 = self.create_publisher(
-            Float64MultiArray, f'{ns}/joint_3_position_controller/commands', 10)
+        self.pub_arm = self.create_publisher(
+            Float64MultiArray, "/arm_position_controller/commands", 10)
 
-        self.get_logger().info('Demo Manipulator dimulai. Tunggu 3 detik...')
+        # Posisi saat ini (dilacak secara internal)
+        self.current_joints = [0.0, 0.0, 0.0]
+
+        self.get_logger().info("Demo Manipulator dimulai. Tunggu 3 detik...")
         time.sleep(3.0)
 
         self._run_demo()
 
     def _publish(self, j1: float, j2: float, j3: float):
-        def _msg(val):
-            m = Float64MultiArray()
-            m.data = [val]
-            return m
-        self.pub_j1.publish(_msg(j1))
-        self.pub_j2.publish(_msg(j2))
-        self.pub_j3.publish(_msg(j3))
+        m = Float64MultiArray()
+        m.data = [j1, j2, j3]
+        self.pub_arm.publish(m)
+
+    def _smooth_move(self, target: list, duration: float = 2.0, hz: float = 50.0):
+        """Gerak halus dari posisi saat ini ke target dengan interpolasi linear."""
+        start = self.current_joints[:]
+        steps = max(1, int(duration * hz))
+        dt = 1.0 / hz
+        for i in range(1, steps + 1):
+            if not rclpy.ok():
+                return
+            t = i / steps
+            interp = [start[k] + t * (target[k] - start[k]) for k in range(3)]
+            self._publish(*interp)
+            time.sleep(dt)
+        self.current_joints = target[:]
 
     def _run_demo(self):
-        # Urutan gerakan demonstrasi: (joint1, joint2, joint3, tahan_detik, keterangan)
+        # Urutan gerakan demonstrasi: (joint1, joint2, joint3, durasi_detik, keterangan)
         posisi_demo = [
-            (0.0,   0.0,   0.0,   2.0, 'Posisi Home'),
-            (0.0,   0.5,  -1.0,   2.0, 'Reach depan'),
-            (1.57,  0.5,  -1.0,   2.0, 'Rotate kiri'),
-            (1.57,  0.8,  -1.5,   2.0, 'Turunkan lengan'),
-            (-1.57, 0.5,  -1.0,   2.0, 'Rotate kanan'),
-            (-1.57, 0.8,  -1.5,   2.0, 'Turunkan lengan kanan'),
-            (0.0,   0.0,   0.0,   2.0, 'Kembali Home'),
+            ([0.0,   0.0,   0.0],   2.0, "Posisi Home"),
+            ([0.0,   0.5,  -1.0],   2.5, "Reach depan"),
+            ([1.57,  0.5,  -1.0],   2.5, "Rotate kiri"),
+            ([1.57,  0.8,  -1.5],   2.5, "Turunkan lengan kiri"),
+            ([-1.57, 0.5,  -1.0],   3.0, "Rotate kanan"),
+            ([-1.57, 0.8,  -1.5],   2.5, "Turunkan lengan kanan"),
+            ([0.0,   0.0,   0.0],   2.5, "Kembali Home"),
         ]
 
-        self.get_logger().info('Memulai urutan gerakan demo...')
-        for idx, (j1, j2, j3, tahan, ket) in enumerate(posisi_demo):
+        self.get_logger().info("Memulai urutan gerakan demo (gerakan halus)...")
+        for idx, (target, durasi, ket) in enumerate(posisi_demo):
             if not rclpy.ok():
                 return
             self.get_logger().info(
-                f'Langkah {idx+1}: {ket}  '
-                f'J1={j1:.2f}  J2={j2:.2f}  J3={j3:.2f} rad')
-            self._publish(j1, j2, j3)
-            time.sleep(tahan)
+                f"Langkah {idx+1}: {ket}  "
+                f"J=[{target[0]:.2f}, {target[1]:.2f}, {target[2]:.2f}] rad")
+            self._smooth_move(target, duration=durasi)
+            # Tahan 0.5 detik sebelum langkah berikutnya
+            time.sleep(0.5)
 
         # Gerakan sinusoidal berkelanjutan
-        self.get_logger().info('Memulai gerakan sinusoidal...')
+        self.get_logger().info("Memulai gerakan sinusoidal...")
         t_start = time.monotonic()
-        rate_ns = 100_000_000  # 10 Hz dalam nanosecond
+        dt = 0.02  # 50 Hz
 
         while rclpy.ok():
             t = time.monotonic() - t_start
@@ -78,7 +85,8 @@ class DemoManipulator(Node):
             j2 = math.sin(0.3 * t + 1.0) * 0.5
             j3 = -abs(math.sin(0.4 * t)) * 1.5
             self._publish(j1, j2, j3)
-            time.sleep(0.1)  # 10 Hz
+            self.current_joints = [j1, j2, j3]
+            time.sleep(dt)
 
 
 def main(args=None):
@@ -93,5 +101,5 @@ def main(args=None):
         rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

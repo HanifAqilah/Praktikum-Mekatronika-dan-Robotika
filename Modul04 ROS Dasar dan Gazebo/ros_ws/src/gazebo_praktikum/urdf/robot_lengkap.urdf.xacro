@@ -104,7 +104,7 @@
   <xacro:roda nama="kiri"    sisi="kiri"   offset_y="${roda_jarak}"/>
   <xacro:roda nama="kanan"   sisi="kanan"  offset_y="${-roda_jarak}"/>
 
-  <!-- Caster wheel -->
+  <!-- Caster wheel belakang -->
   <link name="caster_roda">
     <inertial>
       <mass value="0.05"/>
@@ -126,6 +126,33 @@
     <origin xyz="-0.10 0 ${-base_tinggi/2 - 0.0325 + 0.0025}" rpy="0 0 0"/>
   </joint>
   <gazebo reference="caster_roda">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <!-- Caster wheel depan (mencegah robot jatuh ke depan saat belok) -->
+  <link name="caster_depan">
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00004" ixy="0" ixz="0"
+               iyy="0.00004" iyz="0" izz="0.00004"/>
+    </inertial>
+    <collision>
+      <geometry><sphere radius="0.0325"/></geometry>
+    </collision>
+    <visual>
+      <geometry><sphere radius="0.0325"/></geometry>
+      <material name="abu_abu"/>
+    </visual>
+  </link>
+  <joint name="joint_caster_depan" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_depan"/>
+    <origin xyz="0.10 0 ${-base_tinggi/2 - 0.0325 + 0.0025}" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="caster_depan">
     <material>Gazebo/Grey</material>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>

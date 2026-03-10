@@ -1,5 +1,5 @@
 """
-PERCOBAAN 9 – Multi Robot: Dua Robot di Satu World
+PERCOBAAN 8 – Multi Robot: Dua Robot di Satu World
 ====================================================
 Tujuan:
   - Mengelola multiple robot di Gazebo menggunakan namespace
@@ -7,7 +7,7 @@ Tujuan:
   - Mengendalikan dua robot secara independen
 
 Cara menjalankan:
-  ros2 launch gazebo_praktikum percobaan9_multi_robot.launch.py
+  ros2 launch gazebo_praktikum percobaan8_multi_robot.launch.py
 
 Topik Robot 1 (namespace /robot1):
   /robot1/cmd_vel   /robot1/odom   /robot1/scan
@@ -16,11 +16,11 @@ Topik Robot 2 (namespace /robot2):
   /robot2/cmd_vel   /robot2/odom   /robot2/scan
 
 Teleop Robot 1 (terminal baru):
-  ros2 run teleop_twist_keyboard teleop_twist_keyboard \
+  ros2 run teleop_twist_keyboard teleop_twist_keyboard \\
     --ros-args --remap /cmd_vel:=/robot1/cmd_vel
 
 Teleop Robot 2 (terminal baru):
-  ros2 run teleop_twist_keyboard teleop_twist_keyboard \
+  ros2 run teleop_twist_keyboard teleop_twist_keyboard \\
     --ros-args --remap /cmd_vel:=/robot2/cmd_vel
 """
 
@@ -44,15 +44,16 @@ def generate_launch_description():
 
     xacro_file = os.path.join(pkg_share, 'urdf',   'robot_lengkap.urdf.xacro')
     world_file = os.path.join(pkg_share, 'worlds', 'percobaan9_multi_robot.world')
-    rviz_file  = os.path.join(pkg_share, 'rviz',   'percobaan9_multi_robot.rviz')
+    rviz_file  = os.path.join(pkg_share, 'rviz',   'percobaan8_multi_robot.rviz')
 
     arg_gui = DeclareLaunchArgument('gui', default_value='true')
+
     kill_stale = ExecuteProcess(
         cmd=['bash', '-c',
              'pkill -9 -x gzserver 2>/dev/null; pkill -9 -x gzclient 2>/dev/null; true'],
         output='screen',
     )
-    # ── Gazebo ────────────────────────────────────────────────────────────────
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(gazebo_share, 'launch', 'gazebo.launch.py')
@@ -63,10 +64,9 @@ def generate_launch_description():
         }.items(),
     )
 
-    # ── Helper: buat group robot ──────────────────────────────────────────────
     def robot_group(ns, x, y, yaw, delay):
         robot_desc = ParameterValue(
-            xacro.process_file(xacro_file, mappings={'namespace': ns}).toxml(),
+            xacro.process_file(xacro_file).toxml(),
             value_type=str
         )
         return GroupAction(actions=[
@@ -105,7 +105,6 @@ def generate_launch_description():
     robot1_group = robot_group('robot1', x=-3.0, y=0.0,  yaw=0.0,     delay=2.0)
     robot2_group = robot_group('robot2', x= 3.0, y=0.0,  yaw=3.14159, delay=2.5)
 
-    # ── RViz2 ─────────────────────────────────────────────────────────────────
     rviz2 = TimerAction(
         period=5.0,
         actions=[Node(

@@ -4,10 +4,10 @@
   <version>2.0.0</version>
   <description>
     Paket ROS 2 Humble untuk belajar Gazebo Classic dari awal hingga advance.
-    Berisi 10 percobaan bertahap mulai dari world sederhana,
+    Berisi 20 percobaan bertahap mulai dari world sederhana,
     model shapes, URDF, spawn robot, sensor (kamera+LIDAR),
-    kontrol teleop, SLAM, navigasi Nav2, manipulator, multi-robot,
-    hingga plugin C++ custom.
+    kontrol teleop, SLAM, navigasi Nav2, multi-robot, manipulator,
+    kinematika FK/IK, TurtleBot3, robot omni wheel, dan robot mecanum.
   </description>
 
   <maintainer email="praktikan@robotika.id">Praktikan Mekatronika</maintainer>
@@ -55,6 +55,9 @@
   <exec_depend>nav2_map_server</exec_depend>
   <exec_depend>teleop_twist_keyboard</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>turtlebot3_gazebo</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

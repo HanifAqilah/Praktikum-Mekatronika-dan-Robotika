@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<!--
+  XACRO Robot Omni-Directional (rs_robot)
+  Percobaan 15-17
+
+  Berdasarkan omni_navigation/src/omni_robot_description/robots/omni_robot.urdf.xacro
+  Mesh: gazebo_praktikum/meshes/omni/
+  Gerakan: libgazebo_ros_planar_move.so (ROS2) → /cmd_vel
+  LIDAR 360°: libgazebo_ros_ray_sensor.so → /scan
+
+  Posisi roda (dari omni_robot.urdf.xacro):
+    first  ( 0.086338, -0.086338, -0.022) yaw=-135°
+    second ( 0.086338,  0.086338, -0.022) yaw= -45°
+    third  (-0.086338,  0.086338, -0.022) yaw=  45°
+    fourth (-0.086338, -0.086338, -0.022) yaw= 135°
+-->
+<robot name="robot_omni" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.14159274"/>
+  <xacro:property name="pkg"  value="gazebo_praktikum"/>
+
+  <!-- ── Base ──────────────────────────────────────────────────────── -->
+  <link name="base_footprint"/>
+
+  <joint name="base_link_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://${pkg}/meshes/omni/base_link.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://${pkg}/meshes/omni/base_link.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="1.167"/>
+      <inertia ixx="0.0016" ixy="0" ixz="0"
+               iyy="0.0016" iyz="0" izz="0.0032"/>
+    </inertial>
+  </link>
+
+  <!-- ── Macro: omni wheel ─────────────────────────────────────────── -->
+  <xacro:macro name="omni_wheel" params="prefix x y yaw">
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <origin xyz="${x} ${y} -0.022" rpy="0 0 ${yaw}"/>
+      <parent link="base_link"/>
+      <child  link="${prefix}_wheel_link"/>
+      <limit effort="100" velocity="100"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+
+    <link name="${prefix}_wheel_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://${pkg}/meshes/omni/omni_wheel.stl"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://${pkg}/meshes/omni/omni_wheel.stl"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0.0 -0.011 0.0"/>
+        <mass value="0.25"/>
+        <inertia ixx="0.00031" ixy="0" ixz="0"
+                 iyy="0.0005"  iyz="0" izz="0.00031"/>
+      </inertial>
+    </link>
+
+    <gazebo reference="${prefix}_wheel_link">
+      <selfCollide>false</selfCollide>
+      <mu1>0.0</mu1>
+      <mu2>0.0</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Posisi roda sesuai omni_navigation/omni_robot.urdf.xacro -->
+  <xacro:omni_wheel prefix="first"  x=" 0.086338" y="-0.086338" yaw="${-3*M_PI/4}"/>
+  <xacro:omni_wheel prefix="second" x=" 0.086338" y=" 0.086338" yaw="${  -M_PI/4}"/>
+  <xacro:omni_wheel prefix="third"  x="-0.086338" y=" 0.086338" yaw="${   M_PI/4}"/>
+  <xacro:omni_wheel prefix="fourth" x="-0.086338" y="-0.086338" yaw="${ 3*M_PI/4}"/>
+
+  <!-- ── LIDAR 360° ───────────────────────────────────────────────── -->
+  <joint name="lidar_joint" type="fixed">
+    <origin xyz="0 0 0.08" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child  link="lidar_link"/>
+  </joint>
+
+  <link name="lidar_link">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0"
+               iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry><cylinder radius="0.04" length="0.04"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry><cylinder radius="0.04" length="0.04"/></geometry>
+      <material name="omni_lidar_black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ── Gazebo: base ──────────────────────────────────────────────── -->
+  <gazebo reference="base_link">
+    <selfCollide>false</selfCollide>
+    <mu1>0.05</mu1>
+    <mu2>0.05</mu2>
+  </gazebo>
+
+  <!-- ── Plugin: Planar Move (cmd_vel → odom) ─────────────────────── -->
+  <gazebo>
+    <plugin name="gazebo_ros_planar_move" filename="libgazebo_ros_planar_move.so">
+      <ros>
+        <remapping>cmd_vel:=cmd_vel</remapping>
+        <remapping>odom:=odom</remapping>
+      </ros>
+      <update_rate>50</update_rate>
+      <publish_rate>20</publish_rate>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+    </plugin>
+  </gazebo>
+
+  <!-- ── Plugin: LIDAR ────────────────────────────────────────────── -->
+  <gazebo reference="lidar_link">
+    <material>Gazebo/Black</material>
+    <sensor name="lidar_sensor" type="ray">
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>8.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>lidar_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

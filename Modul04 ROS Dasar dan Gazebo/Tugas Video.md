@@ -28,10 +28,11 @@
 - [ ] Jelaskan arsitektur `ros2_control` (controller_manager, controller, hardware interface)
 - [ ] Jelaskan SLAM Toolbox dan Nav2 secara singkat
 
-### BAGIAN 2 — DEMO 10 PERCOBAAN (Maks. 14 menit)
+### BAGIAN 2 — DEMO 20 PERCOBAAN (Maks. 20 menit)
 
 Jalankan setiap percobaan menggunakan `ros2 launch gazebo_praktikum <launch_file>`:
 
+**Dasar (Percobaan 1–7B):**
 - [ ] **Percobaan 1:** World Gazebo kosong — tampilkan panel dan kamera Gazebo
 - [ ] **Percobaan 2:** Objek SDF primitif — identifikasi setiap objek
 - [ ] **Percobaan 3:** URDF di RViz2 — gerakkan slider joint
@@ -40,9 +41,27 @@ Jalankan setiap percobaan menggunakan `ros2 launch gazebo_praktikum <launch_file
 - [ ] **Percobaan 6:** Teleop robot dengan keyboard — tampilkan odometri
 - [ ] **Percobaan 7A:** SLAM — gerakkan robot + tampilkan peta yang terbentuk
 - [ ] **Percobaan 7B:** Navigasi Nav2 — set goal dan robot bergerak otonom
-- [ ] **Percobaan 8:** Manipulator 3-DOF — demo_manipulator.py berjalan
-- [ ] **Percobaan 9:** Multi-robot — kontrol robot1 dan robot2 secara terpisah
-- [ ] **Percobaan 10:** Advanced plugin — tampilkan `/plugin/sim_time` dan spawn kotak
+
+**Multi-Robot & Manipulator (Percobaan 8–11):**
+- [ ] **Percobaan 8:** Multi-robot — kontrol robot1 dan robot2 secara terpisah
+- [ ] **Percobaan 9:** Manipulator 3-DOF — gerakkan slider joint_state_publisher_gui
+- [ ] **Percobaan 10:** Manipulator ros2_control — jalankan demo_manipulator.py
+- [ ] **Percobaan 11:** Kinematika FK/IK — tampilkan marker end-effector dan target
+
+**TurtleBot3 (Percobaan 12–14):**
+- [ ] **Percobaan 12:** TurtleBot3 Waffle di Gazebo — teleop
+- [ ] **Percobaan 13:** TurtleBot3 SLAM — peta terbentuk
+- [ ] **Percobaan 14:** TurtleBot3 Navigasi — otonom ke tujuan
+
+**Omni Wheel (Percobaan 15–17):**
+- [ ] **Percobaan 15:** Robot omni teleop — demo gerak lateral
+- [ ] **Percobaan 16:** Robot omni SLAM — peta terbentuk
+- [ ] **Percobaan 17:** Robot omni navigasi — otonom ke tujuan
+
+**Mecanum Wheel (Percobaan 18–20):**
+- [ ] **Percobaan 18:** Robot mecanum teleop — demo gerak lateral
+- [ ] **Percobaan 19:** Robot mecanum SLAM — peta terbentuk
+- [ ] **Percobaan 20:** Robot mecanum navigasi — otonom ke tujuan
 
 ### BAGIAN 3 — DEMO PROJECT (Maks. 8 menit)
 
@@ -55,8 +74,9 @@ Jalankan setiap percobaan menggunakan `ros2 launch gazebo_praktikum <launch_file
 ### BAGIAN 4 — PENJELASAN KODE (Maks. 3 menit)
 
 - [ ] Jelaskan isi file `urdf/robot_lengkap.urdf.xacro` (fokus pada plugin Gazebo)
+- [ ] Jelaskan isi file `urdf/robot_omni.urdf.xacro` (plugin planar_move)
 - [ ] Jelaskan isi file `config/nav2_params.yaml` (minimal: AMCL + planner)
-- [ ] Jelaskan bagaimana `my_world_plugin.cpp` mempublikasikan topik ke ROS 2
+- [ ] Jelaskan perbedaan kinematika diff-drive, omni, dan mecanum
 
 ### BAGIAN 5 — PENUTUP (Maks. 2 menit)
 
@@ -71,7 +91,7 @@ Jalankan setiap percobaan menggunakan `ros2 launch gazebo_praktikum <launch_file
 | No | Komponen | Bobot | Indikator |
 |----|---------|-------|-----------|
 | 1 | Penjelasan konsep ROS 2 + ros2_control + Nav2 | 20 | Akurat, tidak membaca script |
-| 2 | Demo 10 percobaan (paket gazebo_praktikum) | 35 | Semua percobaan jalan, dijelaskan |
+| 2 | Demo 20 percobaan (paket gazebo_praktikum) | 35 | Semua percobaan jalan, dijelaskan |
 | 3 | Demo project kelompok | 25 | Custom world + robot + SLAM + Nav2 |
 | 4 | Penjelasan kode (URDF, nav2_params, plugin) | 10 | Pemahaman kode |
 | 5 | Kualitas produksi (audio, screen, webcam, durasi) | 10 | Jelas, dalam durasi |
@@ -84,9 +104,9 @@ Jalankan setiap percobaan menggunakan `ros2 launch gazebo_praktikum <launch_file
 - [ ] Nama dan NIM terlihat di awal video
 - [ ] Screen recording aktif sepanjang video
 - [ ] Webcam terlihat di sudut layar
-- [ ] Seluruh 10 percobaan didemonstrasikan
+- [ ] Seluruh 20 percobaan didemonstrasikan
 - [ ] Demo project kelompok (world custom + SLAM + Nav2)
-- [ ] Penjelasan kode minimal 3 file
+- [ ] Penjelasan kode minimal 4 file
 - [ ] Durasi 18–30 menit, resolusi ≥ 720p
 
 **Penamaan file:** `Video_Modul04_[NIM]_[NamaLengkap].mp4`

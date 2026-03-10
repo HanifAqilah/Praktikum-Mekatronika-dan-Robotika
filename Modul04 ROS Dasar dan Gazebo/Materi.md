@@ -26,8 +26,10 @@
 14. [Navigasi Otonom (Nav2)](#14-navigasi-otonom-nav2)
 15. [Robot Lengan dan Manipulator](#15-robot-lengan-dan-ros2_control-manipulator)
 16. [Multi-Robot dan Namespace](#16-multi-robot-dan-namespace)
-17. [Gazebo World Plugin (rclcpp)](#17-gazebo-world-plugin-rclcpp)
-18. [Referensi](#18-referensi)
+17. [TurtleBot3](#17-turtlebot3)
+18. [Robot Omnidirectional](#18-robot-omnidirectional)
+19. [Robot Mecanum](#19-robot-mecanum)
+20. [Referensi](#20-referensi)
 
 ---
 
@@ -738,10 +740,10 @@ ros2 launch nav2_bringup bringup_launch.py \
 ### 15.1 Deskripsi Hardware Interface (ros2_control)
 
 ```xml
-<!-- Dalam XACRO: menggantikan <transmission> -->
+<!-- Dalam XACRO: mock_components untuk simulasi tanpa Gazebo physics -->
 <ros2_control name="ManipulatorSystem" type="system">
   <hardware>
-    <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    <plugin>mock_components/GenericSystem</plugin>
   </hardware>
   <joint name="joint_1">
     <command_interface name="position"/>
@@ -754,10 +756,38 @@ ros2 launch nav2_bringup bringup_launch.py \
 ### 15.2 Perintah ke Manipulator
 
 ```bash
-# Gerakkan joint_1 ke 1.57 rad
-ros2 topic pub /manipulator/joint_1_position_controller/commands \
-  std_msgs/msg/Float64MultiArray "data: [1.57]"
+# Gerakkan semua joint sekaligus (joint_1=1.57, joint_2=0.5, joint_3=-1.0)
+ros2 topic pub /arm_position_controller/commands \
+  std_msgs/msg/Float64MultiArray "data: [1.57, 0.5, -1.0]"
 ```
+
+### 15.3 Forward dan Inverse Kinematics
+
+**Forward Kinematics (FK):** Menghitung posisi end-effector dari sudut joint.
+Untuk robot 3-DOF dengan parameter: `BASE_H=0.10`, `L1=0.30`, `L2=0.25`, `L3=0.20`:
+
+```
+r  = L2·cos(θ2) + L3·cos(θ2+θ3)          # jarak horizontal dari sumbu Z
+x  = r·cos(θ1)
+y  = r·sin(θ1)
+z  = (BASE_H + L1) + L2·sin(θ2) + L3·sin(θ2+θ3)   # = 0.40 + ...
+```
+
+Dimana `θ1` = rotasi base (sumbu Z), `θ2` = sudut bahu (sumbu Y), `θ3` = sudut siku (sumbu Y).
+
+**Inverse Kinematics (IK):** Menghitung sudut joint dari posisi target `(tx, ty, tz)`.
+Menggunakan cosine rule dan solusi analitik untuk 3-DOF:
+
+```
+θ1 = atan2(ty, tx)
+r  = sqrt(tx² + ty²)
+z_eff = tz - (BASE_H + L1)
+d  = sqrt(r² + z_eff²)          # jarak bahu ke target
+θ3 = -acos((d²-L2²-L3²)/(2·L2·L3))   # elbow down
+θ2 = atan2(z_eff, r) + atan2(L3·sin(-θ3), L2+L3·cos(-θ3))
+```
+
+Demo FK dan IK smooth (interpolasi 50 Hz) tersedia di `scripts/kinematics_demo.py`.
 
 ---
 
@@ -789,61 +819,85 @@ GroupAction([
 
 ---
 
-## 17. GAZEBO WORLD PLUGIN (rclcpp)
+## 17. TURTLEBOT3
 
-### 17.1 Anatomi World Plugin
+### 17.1 Apa itu TurtleBot3?
 
-```cpp
-#include <gazebo/gazebo.hh>
-#include <gazebo_ros/node.hpp>
-#include <rclcpp/rclcpp.hpp>
-#include <std_msgs/msg/float64.hpp>
+TurtleBot3 adalah robot platform standar dari ROBOTIS, populer untuk edukasi dan riset ROS 2.
 
-namespace gazebo {
-class MyWorldPlugin : public WorldPlugin {
-public:
-  void Load(physics::WorldPtr world, sdf::ElementPtr sdf) override {
-    // Dapatkan node ROS 2 via gazebo_ros::Node::Get()
-    ros_node_ = gazebo_ros::Node::Get(sdf);
-    pub_ = ros_node_->create_publisher<std_msgs::msg::Float64>("/topic", 10);
-    
-    // Daftarkan callback per physics step
-    update_conn_ = event::Events::ConnectWorldUpdateBegin(
-        std::bind(&MyWorldPlugin::OnUpdate, this));
-  }
+**Tipe TurtleBot3:**
 
-  void OnUpdate() {
-    // Dipanggil setiap step simulasi
-    auto msg = std_msgs::msg::Float64();
-    msg.data = world_->SimTime().Double();
-    pub_->publish(msg);
-    rclcpp::spin_some(ros_node_);
-  }
+| Model | Dimensi | Sensor | Kecepatan Max |
+|-------|---------|--------|---------------|
+| Burger | 138×178×192 mm | LDS-01 LIDAR 360° | 0.22 m/s |
+| Waffle | 281×306×141 mm | LDS-01 + Intel RealSense | 0.26 m/s |
 
-private:
-  gazebo_ros::Node::SharedPtr ros_node_;
-  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub_;
-  event::ConnectionPtr update_conn_;
-};
-GZ_REGISTER_WORLD_PLUGIN(MyWorldPlugin)
-}
-```
+### 17.2 Menjalankan TurtleBot3 di Gazebo
 
-### 17.2 CMakeLists.txt untuk Plugin
+```bash
+# Set model (wajib)
+export TURTLEBOT3_MODEL=waffle
 
-```cmake
-find_package(gazebo_ros REQUIRED)
-find_package(gazebo_dev REQUIRED)
-find_package(gazebo REQUIRED)
-
-add_library(my_world_plugin SHARED src/plugins/my_world_plugin.cpp)
-ament_target_dependencies(my_world_plugin rclcpp std_msgs gazebo_ros gazebo_dev)
-target_link_libraries(my_world_plugin ${GAZEBO_LIBRARIES})
+# Menggunakan package turtlebot3_gazebo (model dan world siap pakai)
+ros2 launch gazebo_praktikum percobaan12_turtlebot3.launch.py
 ```
 
 ---
 
-## 18. REFERENSI
+## 18. ROBOT OMNIDIRECTIONAL
+
+### 18.1 Prinsip Roda Omni
+
+Roda omni memiliki roller kecil yang dipasang **tegak lurus** (90°) terhadap sumbu utama roda. Ini memungkinkan roda bergerak **bebas** ke arah samping, sehingga robot dapat bergerak ke segala arah planar.
+
+**Kinematika Holonomic**: Robot omni 4-roda memiliki 3 DOF terkontrol di bidang datar (x, y, yaw), berbeda dengan diff-drive yang hanya 2 DOF (linear, angular).
+
+### 18.2 Plugin Gazebo untuk Robot Omni
+
+```xml
+<!-- libgazebo_ros_planar_move.so memungkinkan gerak 3-DOF planar -->
+<plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+  <ros>
+    <remapping>cmd_vel:=cmd_vel</remapping>
+    <remapping>odom:=odom</remapping>
+  </ros>
+  <publish_odom>true</publish_odom>
+  <publish_odom_tf>true</publish_odom_tf>
+  <odometry_frame>odom</odometry_frame>
+  <robot_base_frame>base_footprint</robot_base_frame>
+</plugin>
+```
+
+---
+
+## 19. ROBOT MECANUM
+
+### 19.1 Prinsip Roda Mecanum
+
+Roda mecanum memiliki roller yang dipasang **miring 45°** terhadap sumbu roda. Dengan 4 roda mecanum, robot dapat bergerak holonomic.
+
+**Perbedaan Omni vs Mecanum:**
+
+| Aspek | Omni Wheel | Mecanum Wheel |
+|-------|-----------|---------------|
+| Sudut roller | 90° (tegak lurus) | 45° (miring) |
+| Jumlah roda minimum | 3 | 4 |
+| Beban maksimum | Sedang | Tinggi |
+| Kehalusan lateral | Sangat halus | Cukup halus |
+| Kompleksitas | Sedang | Sedang |
+
+### 19.2 Perbandingan Tipe Robot
+
+| Tipe | DOF Planar | Sensor Tipikal | Cocok Untuk |
+|------|-----------|----------------|-------------|
+| Differential Drive | 2 (linear, angular) | LIDAR, kamera | Outdoor, koridor lebar |
+| Omni 4-roda | 3 (x, y, yaw) | LIDAR | Warehouse, ruang sempit |
+| Mecanum 4-roda | 3 (x, y, yaw) | LIDAR, kamera | Industri, beban berat |
+| TurtleBot3 | 2 (diff-drive) | LIDAR, kamera | Edukasi, riset |
+
+---
+
+## 20. REFERENSI
 
 1. ROS 2 Humble Documentation: https://docs.ros.org/en/humble/
 2. Gazebo Tutorials: https://gazebosim.org/docs
@@ -853,6 +907,8 @@ target_link_libraries(my_world_plugin ${GAZEBO_LIBRARIES})
 6. Pyo, Y. et al. (2017). *ROS Robot Programming*. ROBOTIS.
 7. URDF Tutorial: https://docs.ros.org/en/humble/Tutorials/Intermediate/URDF/URDF-Main.html
 8. Joseph, L. (2018). *ROS Robotics Projects* (2nd ed). Packt.
+9. TurtleBot3 e-Manual: https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/
+10. Siegwart, R., Nourbakhsh, I., Scaramuzza, D. (2011). *Introduction to Autonomous Mobile Robots*. MIT Press.
 
 ---
 
