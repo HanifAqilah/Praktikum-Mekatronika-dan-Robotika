@@ -37,3 +37,60 @@ Modul04 ROS Dasar dan Gazebo/log/
 __pycache__/
 *.pyc
 *.pyo
+
+# Modul05 Project Server build/runtime artifacts
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/node_modules/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/dist/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/build/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/coverage/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.next/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.nuxt/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.svelte-kit/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.angular/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.vite/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.venv/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/venv/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/__pycache__/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.pytest_cache/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.mypy_cache/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.ruff_cache/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.tox/
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.server.log
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.backend.log
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.frontend.log
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.preview.log
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.server.pid
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.backend.pid
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.frontend.pid
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/*.tsbuildinfo
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/*.db
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/*.sqlite
+Modul05 IoT WebServer MQTT ESP32/Project Server/**/.coverage
+
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/node_modules/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/dist/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/build/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/coverage/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.next/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.nuxt/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.svelte-kit/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.angular/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.vite/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.venv/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/venv/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/__pycache__/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.pytest_cache/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.mypy_cache/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.ruff_cache/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.tox/
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.server.log
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.backend.log
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.frontend.log
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.preview.log
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.server.pid
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.backend.pid
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.frontend.pid
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/*.tsbuildinfo
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/*.db
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/*.sqlite
+Modul05 IoT WebServer MQTT ESP32/Project Server IoT/**/.coverage
