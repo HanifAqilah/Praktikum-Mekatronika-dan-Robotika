@@ -1,5 +1,5 @@
 // ============================================
-// RofiqCP - IoT Solutions - Main Script
+// Ardi Salim - IoT Solutions - Main Script
 // ============================================
 
 // ---- Navbar Scroll Effect ----

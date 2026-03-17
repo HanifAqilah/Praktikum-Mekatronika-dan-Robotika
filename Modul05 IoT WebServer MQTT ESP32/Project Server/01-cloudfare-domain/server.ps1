@@ -547,6 +547,75 @@ function Ensure-CloudflareService {
     return $false
 }
 
+function Refresh-ProcessPathFromMachineAndUser {
+    $machinePath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+    $userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+    $env:Path = ($machinePath, $userPath -join ";")
+}
+
+function Ensure-WingetAvailable {
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        return $true
+    }
+
+    Write-Host "winget tidak ditemukan. Mencoba install App Installer (winget)..."
+
+    try {
+        $tempFile = Join-Path $env:TEMP "Microsoft.DesktopAppInstaller.msixbundle"
+        Invoke-WebRequest -Uri "https://aka.ms/getwinget" -OutFile $tempFile -UseBasicParsing -ErrorAction Stop
+        Add-AppxPackage -Path $tempFile -ErrorAction Stop
+        Remove-Item -Path $tempFile -ErrorAction SilentlyContinue
+
+        Refresh-ProcessPathFromMachineAndUser
+        return [bool](Get-Command winget -ErrorAction SilentlyContinue)
+    }
+    catch {
+        Write-Host "Gagal install winget otomatis: $($_.Exception.Message)"
+        return $false
+    }
+}
+
+function Ensure-ChocoAvailable {
+    if (Get-Command choco -ErrorAction SilentlyContinue) {
+        return $true
+    }
+
+    Write-Host "chocolatey tidak ditemukan. Mencoba install chocolatey..."
+
+    try {
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+        Refresh-ProcessPathFromMachineAndUser
+        return [bool](Get-Command choco -ErrorAction SilentlyContinue)
+    }
+    catch {
+        Write-Host "Gagal install chocolatey otomatis: $($_.Exception.Message)"
+        return $false
+    }
+}
+
+function Get-PreferredPackageManager {
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        return "winget"
+    }
+
+    if (Get-Command choco -ErrorAction SilentlyContinue) {
+        return "choco"
+    }
+
+    if (Ensure-WingetAvailable) {
+        return "winget"
+    }
+
+    if (Ensure-ChocoAvailable) {
+        return "choco"
+    }
+
+    return $null
+}
+
 function Install-Cloudflare {
     Write-Host "Installing and configuring cloudflared..."
 
@@ -557,19 +626,21 @@ function Install-Cloudflare {
 
     $cloudflaredPath = Get-CloudflaredCommand
     if (-not $cloudflaredPath) {
-        if (Get-Command winget -ErrorAction SilentlyContinue) {
+        $packageManager = Get-PreferredPackageManager
+        if ($packageManager -eq "winget") {
             Write-Host "Installing cloudflared using winget..."
             winget install --id Cloudflare.cloudflared -e --accept-package-agreements --accept-source-agreements
         }
-        elseif (Get-Command choco -ErrorAction SilentlyContinue) {
+        elseif ($packageManager -eq "choco") {
             Write-Host "Installing cloudflared using chocolatey..."
             choco install cloudflared -y
         }
         else {
-            Write-Host "winget/choco not found. Install cloudflared manually first."
+            Write-Host "winget/choco tidak tersedia dan instalasi otomatis package manager gagal."
             return
         }
 
+        Refresh-ProcessPathFromMachineAndUser
         $cloudflaredPath = Get-CloudflaredCommand
         if (-not $cloudflaredPath) {
             Write-Host "cloudflared binary still not found after install."
