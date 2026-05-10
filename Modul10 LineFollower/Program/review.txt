@@ -1,0 +1,323 @@
+================================================================================
+                        CODE REVIEW - LINE FOLLOWER PROGRAM
+================================================================================
+Tanggal Review: 2026-05-10
+Lokasi: /home/otomasi/Praktikum-Mekatronika-dan-Robotika/Modul10 LineFollower/Program
+
+================================================================================
+1. RINGKASAN UMUM
+================================================================================
+
+Program ini adalah kumpulan kode untuk praktikum mekatronika dan robotika
+menggunakan ESP32 S2 Mini. Terdiri dari 6 modul utama:
+- 01LcdI2c: Test OLED I2C display
+- 02PushButton: Test input button dengan debouncing
+- 03Motor: Test kontrol motor DC dengan PWM
+- 04Sensor: Kalibrasi sensor IR dan threshold
+- 05PID: (Tidak ditemukan di direktori)
+- 06PathPlanning: Path planning dengan waypoint navigation
+
+================================================================================
+2. STRUKTUR KODE
+================================================================================
+
++ Baik:
+  - Kode terstruktur dengan baik per modul (01-06)
+  - Penggunaan config.h sebagai centralized configuration
+  - Dokumentasi kode sangat lengkap (comment header setiap file)
+  - Pemisahan antara konfigurasi dan implementasi
+
+- Masalah:
+  - Modul 05PID tidak ditemukan di direktori (disebut di README)
+  - Duplikasi kode eeprom_config.h (ada di root dan 04Sensor/src/)
+  - Duplikasi implementasi fungsi EEPROM (eeprom_config.h vs eeprom_config.cpp)
+  - Tidak ada library bersama (lib/) seperti yang disebut di README
+
+================================================================================
+3. REVIEW PER FILE
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 config.h (Root)
+--------------------------------------------------------------------------------
++ Pin configuration lengkap dan terdokumentasi dengan baik
++ Support 3 mode driver motor (2PIN, 3PIN, 1PWM_1DIR)
++ Parameter PID sudah didefinisikan
++ Fungsi helper untuk motor, sensor, dan perhitungan posisi
+
+- Isu:
+  * Masalah: Konflik pin motor dan sensor di README vs kode:
+    - README: Motor EN=GPIO 11/8, IN1=10/7, IN2=9/6
+    - config.h: Sama, tapi SENSOR_5/6/7 menggunakan GPIO 16/17/18
+    - 03Motor main.cpp comment salah: menyebut GPIO 16/17/18/19 (tidak ada di config.h)
+  * Global variable 'lastPos' di header file (bisa konflik jika di-include di multiple file)
+  * Fungsi calculatePosition() sangat panjang dengan switch-case besar
+  * Sensor pins untuk S5/S6/S7 (16/17/18) bisa konflik dengan strapping pins ESP32 S2
+
+--------------------------------------------------------------------------------
+3.2 eeprom_config.h (Root) vs 04Sensor/src/eeprom_config.h
+--------------------------------------------------------------------------------
++ Struktur LineFollowerConfig lengkap dengan checksum
+
+- Isu Kritis:
+  * DUPLIKASI: Ada 2 file eeprom_config.h dengan struktur BERBEDA
+    - Root: LineFollowerConfig (fields: sensor_smoothing, turn_speed, dll)
+    - 04Sensor/src/: LineFollowerConfig (fields sama tapi nama berbeda: sensor_smoothing vs sensor_smoothing)
+    - Root: EEPROM_MAGIC (0xAB) vs src: EEPROM_MAGIC_NUMBER (0xABCD) - BERBEDA!
+    - Root: EEPROM_SIZE 512 vs config.h: EEPROM_SIZE 512 (sama)
+  * DUPLIKASI IMPLEMENTASI:
+    - Root eeprom_config.h: implementasi langsung di header (bad practice)
+    - 04Sensor/src/eeprom_config.cpp: implementasi terpisah (good practice)
+    - Fungsi yang diduplikasi: initEEPROM, loadConfig, saveConfig, resetToDefaults, 
+      validateConfig, calculateChecksum, dll
+  * Potensi konflik: 04Sensor/main.cpp include "../../config.h" DAN "eeprom_config.h"
+    yang menyebabkan redefinition karena config.h line 410-411 include EEPROM.h tapi
+    tidak include eeprom_config.h secara langsung
+
+--------------------------------------------------------------------------------
+3.3 01LcdI2c/src/main.cpp
+--------------------------------------------------------------------------------
++ Kode bersih, mudah dibaca
++ Animasi lingkaran sederhana tapi efektif
++ Error handling untuk OLED tidak terdeteksi
+
+- Isu:
+  * Tidak ada tombol kontrol (hanya display)
+  * Delay 2000ms di setup bisa dihilangkan jika ingin startup cepat
+  * Animasi menggunakan sin/cos yang berat untuk ESP32 S2 (bisa pakai lookup table)
+
+--------------------------------------------------------------------------------
+3.4 02PushButton/src/main.cpp
+--------------------------------------------------------------------------------
++ Implementasi debouncing yang baik
++ 4 mode tampilan (RAW, DIGITAL, BARS, POS) sangat edukatif
++ Edge detection untuk counter
+
+- Isu:
+  * Penggunaan String concatenation di Serial.print (line 241-245) bisa dioptimasi
+  * DisplayMode enum di file, padahal sudah ada di config.h (jika PATH_PLANNING_ADVANCED tidak didefinisikan)
+  * Delay 10ms di loop bisa menyebabkan miss button press
+
+--------------------------------------------------------------------------------
+3.5 03Motor/src/main.cpp
+--------------------------------------------------------------------------------
++ 3 mode operasi (MANUAL, PID, TUNING) bagus untuk pembelajaran
++ Safety timeout (5 detik) untuk mencegah motor jalan terus
++ Tuning PID interaktif
+
+- Isu Kritis:
+  * Komentar SALAH tentang pin motor (line 44-48):
+    "MOTOR_LEFT_PIN1: GPIO 16" - seharusnya GPIO 11/10/9
+    Ini bisa membingungkan mahasiswa!
+  * PathTable tidak diinisialisasi (line 181: pathTable[MAX_PATH_POINTS])
+  * runPathPlanning() tidak lengkap (TODO di line 265-269)
+  * Penggunaan PathPoint dari config.h tapi struct di config.h berbeda dengan
+    yang diharapkan (ada PathPoint di config.h line 148, tapi struct tersebut
+    tidak digunakan dengan benar di 03Motor)
+  * BUTTON_DEBOUNCE digunakan tapi BUTTON_PINS dideklarasikan ulang di file ini
+
+--------------------------------------------------------------------------------
+3.6 04Sensor/src/main.cpp
+--------------------------------------------------------------------------------
++ Kalibrasi otomatis dengan gerakan maju/mundur
++ 4 mode tampilan (RAW, DIGITAL, POSITION, THRESHOLD)
++ Penyimpanan EEPROM
+
+- Isu:
+  * Penggunaan config.sensor_min[] dan config.sensor_max[] padahal
+    config.h tidak mendefinisikan variabel config (itu ada di eeprom_config.h)
+  * Konflik include: include "../../config.h" dan "eeprom_config.h"
+    tapi config.h tidak include eeprom_config.h (lihat line 410-411 config.h)
+  * Fungsi updateCalibration() menampilkan LCD tapi juga dipanggil di loop
+    yang sudah punya display update (double update)
+  * Penggunaan String() di Serial.print (line 241) - bisa pakai format biasa
+
+--------------------------------------------------------------------------------
+3.7 06PathPlanning/src/main.cpp
+--------------------------------------------------------------------------------
++ State machine yang kompleks dan terstruktur
++ Menu system interaktif
++ Support multiple sensor trigger
+
+- Isu Kritis:
+  * DUPLIKASI PathPoint struct:
+    - Di config.h line 148: PathPoint (dengan PathSensorMode)
+    - Di 06PathPlanning: PathPoint (dengan SensorPosition) - BERBEDA!
+  * KONFLIK DEFINE:
+    - 06PathPlanning/platformio.ini mendefinisikan -DPATH_PLANNING_ADVANCED
+    - config.h line 131: #ifndef PATH_PLANNING_ADVANCED - berarti PathPoint di config.h
+      tidak akan digunakan, tapi bisa menyebabkan konflik jika kedua struct terinclude
+  * Fungsi performAction() menggunakan delay() blokir (line 796, 800, 804, 812)
+    - Ini akan menyebabkan robot tidak responsif selama aksi berlangsung
+  * calculatePositionSwitchCase() mengembalikan nilai -4 s/d 4, tapi
+    pengecekan di line 664, 702: if (linePosition >= -4 && linePosition <= 4)
+    - Seharusnya tidak perlu karena itu memang range normal
+  * Penggunaan delay() di performAction() bisa dihilangkan dengan state machine
+  * Typo: "CENTER" di enum (line 213) seharusnya "CENTER", tapi di tampilan LCD
+    "CENTER" (line 914) - tidak konsisten
+
+--------------------------------------------------------------------------------
+3.8 platformio.ini Files
+--------------------------------------------------------------------------------
++ Konfigurasi platformio konsisten (espressif32, lolin_s2_mini, arduino)
+
+- Isu:
+  * Typo: "espressif32" seharusnya "espressif32" (semua file platformio.ini)
+    - Cek: platform = espressif32 (BENAR) vs espressif32 (SALAH)
+    - Di file asli: "espressif32" - INI TYPO! Seharusnya "espressif32"
+    - PlatformIO mungkin toleran, tapi seharusnya "espressif32" (Espressif)
+  * 01-03 dan 06 include ArduinoJson padahal tidak digunakan (boros ruang)
+  * 04Sensor tidak include ArduinoJson (tapi 01-03 ada)
+  * build_flags = -I../ digunakan untuk include config.h dari parent directory
+    (solusi baik, tapi bisa lebih baik dengan lib_dir)
+
+================================================================================
+4. ISSUES DAN BUGS
+================================================================================
+
+ISSUE #1: Typo PlatformIO Platform (CRITICAL)
+-------------------------------------------------
+File: Semua platformio.ini
+Line: platform = espressif32
+
+Status: KEMUNGKINAN TYPO
+Detail: PlatformIO menggunakan "espressif32" untuk ESP32. Jika ini typo 
+        ("espressif32"), build mungkin gagal atau menggunakan platform yang salah.
+        
+Fix: Pastikan "platform = espressif32" (bukan espressif32)
+
+ISSUE #2: Duplikasi eeprom_config.h (HIGH)
+-------------------------------------------------
+File: /Program/eeprom_config.h vs /Program/04Sensor/src/eeprom_config.h
+
+Status: DUPLIKASI BERBAHAYA
+Detail: Dua file dengan nama sama tapi struktur dan implementasi berbeda.
+        - Magic number berbeda (0xAB vs 0xABCD)
+        - Struktur config berbeda
+        - Implementasi fungsi diduplikasi
+        
+Fix: Gunakan satu sumber kebenaran (single source of truth). 
+     Hapus duplikasi, pindahkan ke lib/.
+
+ISSUE #3: Konflik Struct PathPoint (HIGH)
+-------------------------------------------------
+File: config.h line 148 vs 06PathPlanning/src/main.cpp line 227
+
+Status: KONFLIK TIPE DATA
+Detail: Dua definisi PathPoint yang berbeda. 06PathPlanning mendefinisikan
+        PATH_PLANNING_ADVANCED yang menyebabkan PathPoint di config.h di-skip,
+        tapi ini berisiko konflik include.
+
+Fix: Standardisasi PathPoint struct, gunakan conditional compilation dengan benar.
+
+ISSUE #4: Pin Motor Comment Salah (MEDIUM)
+-------------------------------------------------
+File: 03Motor/src/main.cpp line 44-48
+
+Status: DOKUMENTASI SALAH
+Detail: Komentar menyebut GPIO 16/17/18/19, padahal config.h menggunakan
+        GPIO 11/10/9/8/7/6.
+
+Fix: Perbaiki komentar sesuai config.h yang sebenarnya.
+
+ISSUE #5: Global Variable di Header (MEDIUM)
+-------------------------------------------------
+File: config.h line 166: static int8_t lastPos = 0;
+
+Status: BAD PRACTICE
+Detail: Mendefinisikan variabel global di header file bisa menyebabkan
+        multiple definition jika diinclude di beberapa translation unit.
+
+Fix: Gunakan 'extern' declaration di header, define di satu .cpp file.
+
+ISSUE #6: blocking delay() di performAction() (MEDIUM)
+-------------------------------------------------
+File: 06PathPlanning/src/main.cpp line 796, 800, 804, 812
+
+Status: BLOCKING CODE
+Detail: Penggunaan delay(800), delay(500), delay(1000) akan membuat
+        robot tidak bisa merespons interrupt/tombol selama aksi berlangsung.
+
+Fix: Implementasi non-blocking delay dengan millis().
+
+ISSUE #7: Sensor Pin Conflik (LOW)
+-------------------------------------------------
+File: config.h line 105-108
+
+Status: POTENSI KONFLIK
+Detail: GPIO 16/17/18 digunakan untuk sensor, padahal bisa jadi strapping
+        pins atau konflik dengan fungsi lain di ESP32 S2.
+
+Fix: Cek datasheet ESP32 S2 Mini, pastikan pin tidak konflik.
+
+ISSUE #8: Modul 05PID Hilang (INFO)
+-------------------------------------------------
+File: README.md menyebutkan 05PID, tapi tidak ada di direktori
+
+Status: MISSING FILE
+Detail: Modul tersulit (PID) tidak ada, padahal di README durations 80 menit.
+
+Fix: Buat modul 05PID atau update README.
+
+================================================================================
+5. SARAN PERBAIKAN
+================================================================================
+
+PRIORITAS TINGGI (Harus diperbaiki):
+1. **Hapus duplikasi eeprom_config.h** - gunakan satu file di lib/ atau root
+2. **Perbaiki typo "espressif32" di platformio.ini** - pastikan "espressif32"
+3. **Standardisasi PathPoint struct** - hilangkan konflik antara config.h dan 06PathPlanning
+4. **Perbaiki komentar pin motor di 03Motor** - sesuai config.h sebenarnya
+
+PRIORITAS SEDANG (Disarankan):
+5. **Hapus global variable di header** - gunakan extern di header, define di .cpp
+6. **Ganti delay() blokir dengan millis()** di 06PathPlanning performAction()
+7. **Buat modul 05PID** yang hilang atau update README
+8. **Hapus include ArduinoJson** jika tidak digunakan (01-03, 06)
+
+PRIORITAS RENDAH (Optional):
+9. **Gunakan lib/ directory** seperti yang disebutkan di README
+10. **Pisahkan implementasi function dari header** - jangan inline di .h
+11. **Tambahkan unit test** untuk fungsi calculatePosition()
+12. **Gunakan const variables** daripada #define untuk konstanta yang butuh type-safety
+
+================================================================================
+6. PENILAIAN KESELURUHAN
+================================================================================
+
++ Dokumentasi kode: Sangat Baik (9/10)
++ Struktur modul: Baik (7/10)
++ Kualitas kode: Cukup (6/10)
++ Konsistensi: Kurang (4/10) - banyak duplikasi dan konflik
++ Keamanan (Safety): Baik (8/10) - ada timeout motor
+
+SKOR KESELURUHAN: 6.8/10
+
+Kekuatan Utama:
+- Dokumentasi yang sangat lengkap dan edukatif
+- Program terstruktur per modul pembelajaran
+- Safety features (motor timeout, debouncing)
+
+Kelemahan Utama:
+- Duplikasi kode yang berbahaya (eeprom_config.h)
+- Konflik struct (PathPoint)
+- Typo dan dokumentasi yang salah (pin motor)
+- Modul 05PID hilang
+
+================================================================================
+7. KESIMPULAN
+================================================================================
+
+Kode ini sangat baik dari sisi edukasi dengan dokumentasi yang luar biasa lengkap.
+Namun, ada beberapa isu teknis yang perlu diperbaiki, terutama:
+1. Duplikasi eeprom_config.h yang bisa menyebabkan behavior tak terduga
+2. Konflik struct PathPoint antara config.h dan 06PathPlanning
+3. Typo platform di platformio.ini
+4. Komentar pin motor yang salah
+
+Disarankan untuk merefactor kode sebelum digunakan untuk praktikum agar
+mahasiswa tidak bingung dengan inkonsistensi yang ada.
+
+================================================================================
+                              END OF REVIEW
+================================================================================

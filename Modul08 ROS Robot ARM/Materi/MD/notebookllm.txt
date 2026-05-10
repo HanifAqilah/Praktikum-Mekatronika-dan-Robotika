@@ -1,0 +1,134 @@
+slide 1 (Judul dan Identitas)
+Buat slide pembuka berjudul Modul 08 ROS Robot ARM Dobot Magician. Tampilkan Program Studi Sarjana Terapan Teknologi Rekayasa Otomasi, mata kuliah Praktikum Mekatronika 2 SKS, durasi 5 jam 40 menit praktikum, dosen Rofiq Cahyo Prayogo, S.T., M.T.
+
+slide 2 (Outline Materi)
+Buat slide outline materi: robot manipulator, Dobot Magician 4-DOF, sistem koordinat dan transformasi, kinematika maju dan balik, workspace, Jacobian, trajectory planning, kendali robot, ROS 2, topic-service-action, end effector, akurasi, keselamatan, troubleshooting.
+
+slide 3 (Outline Tugas)
+Buat slide outline tugas: praktikan membuat video YouTube masing-masing/kelompok sesuai arahan, berisi teori, setup, running robot, program, eksperimen 10 percobaan, analisis data, kesimpulan. Deadline 2 minggu setelah praktikum. Tidak ada laporan tertulis.
+
+slide 4 (Robot Manipulator)
+Buat slide tentang robot manipulator sebagai sistem mekanik berantai yang terdiri atas link, joint, aktuator, sensor, controller, dan end effector. Jelaskan fungsi robot arm untuk pemindahan objek, sorting, inspeksi, dispensing, edukasi robotika, serta otomasi proses sederhana.
+
+slide 5 (Komponen Robot Arm)
+Buat slide komponen utama robot arm: link sebagai struktur penghubung, joint sebagai sambungan gerak, actuator sebagai penggerak, sensor untuk umpan balik, controller sebagai pengendali, end effector sebagai alat kerja, workspace sebagai area jangkau, dan TCP sebagai titik kerja.
+
+slide 6 (Dobot Magician)
+Buat slide Dobot Magician sebagai robot edukasi 4-DOF dengan basis, lengan atas, lengan bawah, dan rotasi tool. Jelaskan bahwa robot dikendalikan melalui ROS 2, serial USB, action PTP, service end effector, homing, RViz, RQT, dan validasi trajectory.
+
+slide 7 (Derajat Kebebasan)
+Buat slide tentang degree of freedom atau DOF sebagai jumlah variabel independen untuk menentukan konfigurasi robot. Untuk Dobot 4-DOF gunakan vektor q=[theta1,theta2,theta3,theta4]. Bahas posisi, kecepatan q_dot, percepatan q_ddot, dan arti tiap joint.
+
+slide 8 (Frame Koordinat)
+Buat slide sistem koordinat robot arm: world frame, base frame, joint frame, tool frame, TCP frame, dan camera frame. Jelaskan bahwa posisi ditulis p=[x,y,z], orientasi dapat memakai Euler, rotation matrix, axis-angle, atau quaternion untuk menyatakan pose.
+
+slide 9 (Rotasi dan Transformasi)
+Buat slide ringkas rotasi 3D terhadap sumbu X, Y, dan Z, komposisi rotasi ZYX, serta sifat R^T R=I, R^-1=R^T, det(R)=1. Hubungkan rotasi dengan orientasi tool robot saat bergerak pada ruang kerja tiga dimensi.
+
+slide 10 (Transformasi Homogen)
+Buat slide transformasi homogen T yang menggabungkan rotasi R dan translasi p dalam matriks 4x4. Jelaskan fungsi T untuk memindahkan titik antar frame, menghitung pose TCP, membuat komposisi T_0n, dan menyusun hubungan base sampai end effector.
+
+slide 11 (Denavit-Hartenberg)
+Buat slide metode Denavit-Hartenberg untuk model kinematika serial. Tampilkan parameter a_i, alpha_i, d_i, theta_i. Jelaskan bahwa matriks A_i membangun transformasi tiap link, lalu T_0n=A1 A2 ... An menghasilkan pose TCP dari nilai joint.
+
+slide 12 (Kinematika Maju)
+Buat slide kinematika maju Dobot 4-DOF konseptual. Gunakan basis yaw dan lengan planar. Jelaskan r=L2 cos theta2+L3 cos(theta2+theta3)+L4 cos(theta2+theta3+theta4), z dari sinus, x=r cos theta1, y=r sin theta1.
+
+slide 13 (Kinematika Balik)
+Buat slide kinematika balik untuk mencari joint dari target Cartesian. Jelaskan theta1=atan2(y,x), r=sqrt(x^2+y^2), koreksi offset tool, syarat reachable -1<=D<=1, solusi elbow up/down, theta2 shoulder, theta3 elbow, dan theta4 orientasi tool.
+
+slide 14 (Workspace)
+Buat slide workspace sebagai himpunan posisi TCP yang dapat dijangkau robot. Jelaskan batas link, batas joint q_min sampai q_max, batas kecepatan, batas percepatan, self-collision, dan validasi target agar robot tidak bergerak keluar area aman atau menabrak.
+
+slide 15 (Jacobian)
+Buat slide Jacobian yang menghubungkan kecepatan joint dan kecepatan TCP melalui x_dot=J(q)q_dot. Jelaskan kolom Jacobian untuk joint revolute, rank Jacobian, singularitas ketika rank turun, dan manipulability w(q) yang mendekati nol saat robot sulit bergerak.
+
+slide 16 (Statika dan Dinamika)
+Buat slide hubungan gaya TCP dan torsi joint: tau=J^T F. Jelaskan torsi akibat beban, gaya gravitasi, gesekan, serta model dinamika M(q)q_ddot+C(q,q_dot)q_dot+g(q)+tau_f=tau sebagai dasar memahami keterbatasan payload dan gerak aman.
+
+slide 17 (Trajectory Planning)
+Buat slide perencanaan lintasan untuk menentukan posisi, kecepatan, dan percepatan terhadap waktu. Bahas interpolasi linear, cubic polynomial dengan kecepatan awal-akhir nol, quintic polynomial, dan trapezoidal velocity agar gerak robot halus dan aman.
+
+slide 18 (Kendali Robot)
+Buat slide kendali posisi robot: error e=q_d-q, kontrol P, PD, dan PID. Jelaskan pengaruh Kp, Ki, Kd terhadap respons, tracking, dan kestabilan. Tambahkan metrik RMSE tracking dan error posisi akhir untuk mengevaluasi performa gerak robot.
+
+slide 19 (Arsitektur ROS 2)
+Buat slide ROS 2 sebagai middleware robotika modular. Jelaskan node sebagai proses, topic untuk publish-subscribe, service untuk request-response, action untuk goal-feedback-result, parameter, launch, workspace colcon, package, dan TF untuk transformasi frame.
+
+slide 20 (Topic Service Action Dobot)
+Buat slide komunikasi Dobot di ROS 2: topic /joint_states, /dobot_TCP, /dobot_pose_raw; service /dobot_homing_service, /dobot_gripper_service, /dobot_suction_cup_service; action /PTP_action untuk gerak PointToPoint dengan target pose dan rasio kecepatan.
+
+slide 21 (Homing dan End Effector)
+Buat slide homing sebagai prosedur menentukan referensi awal Dobot setelah power on. Jelaskan area kerja harus kosong, speed rendah, emergency stop siap. Tambahkan gripper untuk menjepit objek dan suction cup untuk mengangkat objek datar atau ringan memakai vakum.
+
+slide 22 (Akurasi dan Keselamatan)
+Buat slide akurasi, presisi, repeatability, success rate, throughput, dan cycle time. Sertakan prinsip safety: cek area kerja, jangan menyentuh robot saat berjalan, gunakan speed rendah, hindari target luar workspace, pastikan payload aman, dan dokumentasikan alarm.
+
+slide 23 (Pemrograman ROS Dobot)
+Buat slide alur program ROS Dobot: inisialisasi rclpy node, buat ActionClient ke /PTP_action, tunggu server, kirim target, pantau feedback, tunggu result, aktifkan service gripper atau suction, ulangi sequence, tangani timeout/error, lalu shutdown node.
+
+slide 24 (Topik Lanjut dan Troubleshooting)
+Buat slide topik lanjut: multi-point trajectory, workspace mapping, kamera dan visual servoing, kalibrasi hand-eye, collision avoidance, digital twin RViz, state machine, logging, optimasi cycle time. Tambahkan troubleshooting USB, dialout, MAGICIAN_TOOL, action rejected, alarm.
+
+slide 25 (Jobsheet Tujuan dan Waktu)
+Buat slide jobsheet tujuan praktikum: instalasi, setup, build, source workspace, koneksi Dobot, homing, RViz, RQT, PTP, end effector, pick and place, troubleshooting. Tampilkan alokasi 5 jam 40 menit dari briefing sampai evaluasi dan dokumentasi.
+
+slide 26 (Peralatan dan Safety)
+Buat slide peralatan: laptop Ubuntu 22.04, ROS 2 Humble, Dobot Magician, kabel USB, power adapter, gripper/suction cup, objek ringan, alas datar, kamera atau screen recorder, internet. Tambahkan safety: area kosong, speed rendah, jangan sentuh robot, siap stop.
+
+slide 27 (Struktur Workspace)
+Buat slide struktur workspace ROS_DOBOT berisi build, install, log, src. Pada src tampilkan package utama: dobot_bringup, dobot_driver, dobot_motion, dobot_kinematics, dobot_homing, dobot_end_effector, dobot_description, dobot_demos, dobot_msgs, state updater.
+
+slide 28 (Cek Sistem dan ROS 2)
+Buat slide tahap awal jobsheet: cek Ubuntu dengan lsb_release -a, cek arsitektur uname -m, instal ROS 2 Humble Desktop, development tools colcon, rosdep, pip, vcstool, inisialisasi rosdep, source /opt/ros/humble/setup.bash, dan siapkan terminal praktikum.
+
+slide 29 (Dependensi Dobot)
+Buat slide instal dependensi Dobot: masuk ke ROS_DOBOT/src, jalankan pip3 install -r requirements.txt, instal diagnostic aggregator, rqt robot monitor, PyKDL, PyQt5, joint state publisher GUI, lalu gunakan rqt --force-discover jika plugin RQT belum muncul.
+
+slide 30 (Setup Serial)
+Buat slide setup akses serial: sambungkan USB Dobot, cek lsusb untuk CP210x atau QinHeng, cek /dev/ttyUSB*, tambahkan user ke grup dialout dengan sudo usermod -a -G dialout $USER, logout/login atau reboot, lalu pastikan groups menampilkan dialout.
+
+slide 31 (Build Workspace)
+Buat slide build workspace: masuk folder ROS_DOBOT, source ROS 2 Humble, jalankan rosdep install -i --from-path src --rosdistro humble -y, colcon build, source install/setup.bash. Jika berhasil, cek package Dobot dengan ros2 pkg list | grep dobot.
+
+slide 32 (RViz Tanpa Robot)
+Buat slide visualisasi tanpa robot: jalankan ros2 launch dobot_description display.launch.py DOF:=4 tool:=extended_gripper use_camera:=true gui:=true. Amati model Dobot di RViz, Joint State Publisher GUI, slider joint, frame, link, dan simpan screenshot.
+
+slide 33 (Menyiapkan Robot Fisik)
+Buat slide persiapan robot fisik: letakkan Dobot di meja datar, kosongkan area kerja, pasang end effector, sambungkan power dan USB, nyalakan robot, cek lsusb dan /dev/ttyUSB0, jangan menyentuh robot setelah stack berjalan, pastikan objek aman.
+
+slide 34 (Set Tool Environment)
+Buat slide pengaturan MAGICIAN_TOOL sesuai alat: none, suction_cup, gripper, atau extended_gripper. Tampilkan contoh export MAGICIAN_TOOL=suction_cup dan cek echo $MAGICIAN_TOOL. Tekankan tool environment harus benar agar service dan URDF sesuai alat terpasang.
+
+slide 35 (Launch Control Stack)
+Buat slide launch control stack: terminal 1 masuk ROS_DOBOT, source ROS 2 dan install/setup.bash, export MAGICIAN_TOOL, lalu jalankan ros2 launch dobot_bringup dobot_magician_control_system.launch.py. Jelaskan node driver, diagnostics, homing, validator, PTP, state updater aktif.
+
+slide 36 (Cek ROS Interface)
+Buat slide terminal 2 untuk mengecek interface: source ROS 2 dan workspace, jalankan ros2 node list, ros2 topic list, ros2 service list, ros2 action list, dan ros2 action info /PTP_action. Tujuannya memastikan semua node, topic, service, action Dobot aktif.
+
+slide 37 (Homing dan Monitoring)
+Buat slide homing wajib setelah robot menyala: pastikan area aman lalu panggil /dobot_homing_service. Setelah selesai, pantau /dobot_pose_raw. Monitoring data dilakukan lewat /joint_states, /dobot_TCP, /dobot_pose_raw untuk mencatat joint, x y z, orientasi, dan perubahan pose.
+
+slide 38 (Gerak PTP Pertama)
+Buat slide gerak PTP pertama dengan target aman dan velocity_ratio serta acceleration_ratio 0.3. Gunakan /PTP_action untuk target [200,0,100,0], [220,50,120,0], [220,-50,120,0]. Catat feedback, pose akhir, serta hentikan bila gerak berbahaya.
+
+slide 39 (Kontrol End Effector)
+Buat slide kontrol gripper dan suction cup. Gripper: service open, close, dan matikan kompresor. Suction: enable_suction true untuk ambil objek dan false untuk melepas. Tekankan objek ringan, permukaan sesuai, compressor tidak dibiarkan menyala tanpa kebutuhan.
+
+slide 40 (RQT dan Diagnostics)
+Buat slide RQT control panel dengan rqt -s dobot_control_panel untuk melihat pose, mengirim posisi manual, mengatur velocity/acceleration, mengaktifkan tool, dan cek status. Tambahkan rqt_robot_monitor untuk alarm, warning komunikasi, error motion, dan status node.
+
+slide 41 (Demo dan Program Sendiri)
+Buat slide menjalankan demo dobot_demos seperti homing_client, PTP_client, pick_and_place. Lanjutkan membuat program sendiri: node, ActionClient, client service, target home, above_pick, pick, above_place, place, aktif/nonaktif tool, kembali home, dan sesuaikan z.
+
+slide 42 (Pengujian dan Analisis Jobsheet)
+Buat slide pengujian pick and place 10 percobaan. Tabel mencatat pick berhasil, place berhasil, waktu siklus, error posisi, catatan. Hitung success rate, T_avg, error rata-rata. Analisis fungsi homing, topic-service-action, goal rejected, velocity_ratio, dan solusi gagal.
+
+slide 43 (Project Modul 08)
+Buat slide project: praktikan memilih satu variasi seperti pick and place, sorting posisi, palletizing, drawing, workspace mapping, repeatability, conveyor manual, mini assembly, vision-guided pick, atau state machine. Semua memakai ROS 2, homing, safety, 10 percobaan, data.
+
+slide 44 (Ketentuan dan Penilaian Project)
+Buat slide ketentuan project: program memakai stack ROS_DOBOT, velocity_ratio dan acceleration_ratio awal <=0.5, wajib video proses dan screen record, data metrik, analisis kegagalan, kesimpulan. Penilaian: ide, implementasi ROS 2, keberhasilan, analisis, safety, dokumentasi.
+
+slide 45 (Tugas Video YouTube)
+Buat slide tugas akhir: setiap praktikan/kelompok membuat video YouTube minimal 15 menit berisi pembukaan, teori, alat, safety, setup, launch, homing, monitoring, PTP, end effector, kode project, 10 percobaan, analisis, kesimpulan. Deadline 2 minggu setelah praktikum.

@@ -1,0 +1,182 @@
+slide 1 (Judul dan Identitas)
+Buat slide pembuka berjudul Modul 07 ROS YOLO untuk Robotika. Cantumkan Program Studi Sarjana Terapan Teknologi Rekayasa Otomasi, mata kuliah Praktikum Mekatronika 2 SKS, durasi 5 jam 40 menit praktikum, dosen Rofiq Cahyo Prayogo, S.T., M.T., dan identitas kelompok.
+
+slide 2 (Outline Materi)
+Tampilkan outline materi: citra digital, neural network, CNN, object detection, format label YOLO, IoU, precision, recall, mAP, dataset, anotasi, augmentasi, transfer learning, training YOLOv8, evaluasi model, inferensi, integrasi ROS 2, cv_bridge, OpenCV, dan troubleshooting.
+
+slide 3 (Outline Tugas)
+Tampilkan outline tugas praktikum: mahasiswa membuat satu video YouTube minimal 15 menit, menjelaskan teori dan praktik ROS YOLO, menunjukkan dataset, anotasi, training, evaluasi, build ROS, demo deteksi real-time, kendala solusi, lalu submit hanya link YouTube maksimal 2 minggu setelah praktikum.
+
+slide 4 (Tujuan Pembelajaran)
+Jelaskan tujuan Modul 07: praktikan mampu menghubungkan computer vision, neural network, CNN, object detection, dan YOLO; memahami alur dataset sampai deployment; membaca label YOLO; melatih YOLOv8 custom; mengintegrasikan model ke ROS 2; serta mengevaluasi performa secara terukur.
+
+slide 5 (Peta Konsep ROS YOLO)
+Buat peta konsep runtut: citra digital menjadi dataset, dataset diberi bounding box, model CNN belajar fitur, YOLO mendeteksi class dan lokasi objek, hasil training menghasilkan file best.pt, lalu ROS 2 membaca kamera, menjalankan inferensi, menerbitkan topic, dan mendukung keputusan robotika.
+
+slide 6 (Citra Digital)
+Jelaskan citra digital sebagai matriks angka. Grayscale memiliki intensitas piksel 0 sampai 255, sedangkan RGB memiliki kanal R, G, B. Gambar 640 x 480 RGB berbentuk tensor 480 x 640 x 3. Sebelum masuk neural network, nilai piksel dinormalisasi dengan x_norm = x / 255.
+
+slide 7 (Machine Learning dan Deep Learning)
+Jelaskan machine learning sebagai proses mencari fungsi prediksi y_hat = f(x; theta). Training bertujuan menemukan parameter theta terbaik dengan meminimalkan loss. Deep learning memakai banyak lapisan nonlinier sehingga mampu mempelajari fitur kompleks dari gambar, objek, warna, bentuk, dan tekstur.
+
+slide 8 (Neuron Buatan)
+Terangkan neuron buatan: input dikalikan bobot, dijumlahkan dengan bias, lalu masuk fungsi aktivasi. Rumus utama z = w^T x + b dan a = phi(z). Sebutkan aktivasi sigmoid, tanh, ReLU, Leaky ReLU, dan SiLU. Tekankan ReLU umum dipakai karena sederhana dan cepat.
+
+slide 9 (MLP dan Backpropagation)
+Jelaskan multilayer perceptron sebagai susunan layer yang memproses input menjadi prediksi. Untuk klasifikasi multi-kelas digunakan softmax dan cross entropy. Training memakai backpropagation dan gradient descent, yaitu pembaruan parameter theta mengikuti arah turunan loss agar kesalahan makin kecil.
+
+slide 10 (Convolutional Neural Network)
+Jelaskan CNN untuk data grid seperti gambar. Operasi konvolusi memakai kernel untuk mengekstraksi fitur tepi, tekstur, warna, bentuk, dan pola objek. Output dipengaruhi ukuran input, padding, kernel, dan stride. CNN menjadi dasar penting dalam object detection modern termasuk YOLO.
+
+slide 11 (Feature Map dan Pooling)
+Bahas feature map sebagai hasil aktivasi layer CNN. Layer awal menangkap tepi dan warna, layer tengah menangkap tekstur dan bentuk, layer akhir menangkap objek kompleks. Pooling mereduksi ukuran fitur, sedangkan batch normalization menstabilkan distribusi aktivasi dan mempercepat training.
+
+slide 12 (Object Detection)
+Jelaskan object detection menjawab dua hal: objek apa yang muncul dan di mana lokasinya. Output umum berisi class, confidence, x_min, y_min, x_max, y_max. Pada format YOLO, label ditulis class_id, x_center, y_center, width, height dan seluruh koordinat dinormalisasi terhadap ukuran gambar.
+
+slide 13 (Bounding Box YOLO)
+Tampilkan cara konversi bounding box piksel ke YOLO: x_center = ((x_min + x_max)/2)/W, y_center = ((y_min + y_max)/2)/H, width = (x_max - x_min)/W, height = (y_max - y_min)/H. Tekankan label harus tepat karena menjadi dasar model belajar lokasi objek.
+
+slide 14 (IoU dan Evaluasi Deteksi)
+Jelaskan Intersection over Union sebagai ukuran tumpang tindih box prediksi dan ground truth. Rumus IoU = area intersection / area union. IoU tinggi berarti lokasi prediksi baik. Threshold 0,5 umum dipakai untuk mAP50, sedangkan 0,5 sampai 0,95 lebih ketat seperti standar COCO.
+
+slide 15 (Precision Recall mAP)
+Bahas metrik evaluasi: True Positive adalah prediksi benar, False Positive adalah prediksi salah, False Negative adalah objek yang tidak terdeteksi. Precision = TP/(TP+FP), recall = TP/(TP+FN), F1 menyeimbangkan keduanya, AP adalah luas kurva precision-recall, dan mAP rata-rata AP semua kelas.
+
+slide 16 (Prinsip YOLO)
+Jelaskan YOLO, You Only Look Once, sebagai detektor satu tahap. Gambar diproses sekali untuk menghasilkan bounding box, confidence, dan class. Keunggulannya cepat, cocok untuk real-time robotika, pipeline sederhana, serta dapat dilatih ulang dengan dataset custom sesuai objek praktikum.
+
+slide 17 (Evolusi dan Arsitektur YOLO)
+Ringkas evolusi YOLO dari YOLOv1 berbasis grid, YOLOv2 memakai anchor, YOLOv3 multi-scale, YOLOv4 dengan optimasi akurasi, YOLOv5 berbasis PyTorch, hingga YOLOv8 yang mudah dipakai. Jelaskan arsitektur modern terdiri dari backbone, neck, dan head untuk prediksi akhir.
+
+slide 18 (Multi-Scale dan Anchor-Free)
+Jelaskan YOLO mendeteksi objek kecil, sedang, dan besar melalui feature map multi-scale, misalnya stride 8, 16, dan 32 pada input 640. YOLOv8 dikenal anchor-free, sehingga tidak perlu anchor prior eksplisit dan konfigurasi deteksi menjadi lebih sederhana untuk praktikum robotika.
+
+slide 19 (Loss dan NMS)
+Bahas loss YOLO sebagai gabungan kesalahan box, class, dan Distribution Focal Loss. Setelah prediksi, Non-Maximum Suppression memilih box terbaik dengan confidence tertinggi lalu menghapus box lain yang IoU-nya melewati threshold. Conf terlalu rendah memicu false positive, terlalu tinggi melewatkan objek.
+
+slide 20 (Dataset YOLO)
+Jelaskan struktur dataset YOLOv8: data.yaml, train/images, train/labels, valid/images, valid/labels, test/images, test/labels. File data.yaml berisi path, train, val, test, dan names. Setiap gambar memiliki file label txt berisi class_id serta koordinat bounding box ternormalisasi.
+
+slide 21 (Split dan Variasi Dataset)
+Jelaskan pembagian data umum train 70 persen, valid 20 persen, dan test 10 persen. Dataset baik harus bervariasi dalam jarak, sudut, pencahayaan, background, orientasi, dan kondisi objek tertutup sebagian. Rekomendasi praktikum minimal 50 sampai 100 gambar per kelas.
+
+slide 22 (Anotasi dan Augmentasi)
+Jelaskan anotasi dapat memakai Roboflow, CVAT, atau LabelStudio. Bounding box harus pas, tidak longgar, tidak sempit, label konsisten, dan direview. Augmentasi seperti flip, rotation, scale, brightness, blur, noise, mosaic, dan HSV membantu model tahan variasi tetapi tidak boleh merusak makna label.
+
+slide 23 (Transfer Learning dan Training)
+Jelaskan transfer learning memakai model pretrained seperti yolov8n.pt dari dataset besar lalu fine-tuning pada dataset custom. Keuntungannya butuh data lebih sedikit, training lebih cepat, dan akurasi awal lebih baik. Training YOLOv8 dapat dilakukan dengan Ultralytics CLI atau Python menggunakan data.yaml.
+
+slide 24 (Evaluasi dan Inferensi)
+Bahas evaluasi model dengan metrics.box.map50, metrics.box.map, precision, recall, loss, dan FPS. Overfitting tampak saat train loss turun tetapi val loss naik atau mAP stagnan. Inferensi dapat dilakukan pada gambar, folder validasi, webcam, atau frame kamera ROS dengan parameter conf dan iou.
+
+slide 25 (ROS 2 dan YOLO)
+Jelaskan ROS 2 menghubungkan kamera, model YOLO, visualisasi, dan robot melalui node dan topic. Alur utama: camera_node menerbitkan /camera/image_raw, yolo_node melakukan inferensi, lalu menerbitkan /yolo/annotated dan /yolo/detections untuk tampilan serta keputusan robotika.
+
+slide 26 (OpenCV cv_bridge YOLO)
+Jelaskan integrasi citra: ROS memakai sensor_msgs/Image, OpenCV memakai array NumPy, sehingga cv_bridge mengubah ROS Image menjadi OpenCV image. Frame diproses YOLO predict, hasil plot menjadi annotated image, lalu dikonversi kembali menjadi ROS Image dan dipublish ke topic.
+
+slide 27 (Workspace dan Build)
+Tampilkan struktur workspace ROS_YOLO dengan src/yolo_ros, package.xml, setup.py, launch, config, models, scripts, training_data, dan roboflow_data. Build dilakukan memakai colcon build --symlink-install, kemudian source install/setup.bash, cek executable, dan jalankan node atau launch file.
+
+slide 28 (Kesalahan Umum)
+Ringkas troubleshooting: dataset not found akibat data.yaml salah, labels kosong karena struktur folder keliru, class mismatch karena nama label tidak konsisten, CUDA out of memory karena batch besar, kamera tidak terbuka karena device salah, package tidak terdeteksi karena workspace belum disource atau build gagal.
+
+slide 29 (Praktik Ilmiah)
+Tekankan setiap eksperimen harus dicatat: nama dataset, jumlah kelas, jumlah gambar per split, model awal, epoch, image size, batch, optimizer, learning rate, precision, recall, mAP50, mAP50-95, FPS, screenshot deteksi, kendala, solusi, dan kesimpulan berbasis data.
+
+slide 30 (Etika dan Keselamatan)
+Sampaikan etika dataset dan keselamatan: jangan memakai data yang melanggar privasi, hindari merekam wajah tanpa izin, jangan mengunggah data sensitif, pastikan kabel kamera aman, gunakan area uji terkendali, siapkan emergency stop, dan verifikasi deteksi sebelum menggerakkan aktuator robot.
+
+slide 31 (Identitas Jobsheet)
+Buat slide jobsheet Modul 07 Praktikum ROS YOLO. Cantumkan topik ROS 2 dan YOLO untuk object detection robotika, durasi 5 jam 40 menit, mode kerja sesuai arahan dosen atau asisten, output utama berupa video YouTube minimal 15 menit, dan deadline tugas 2 minggu setelah praktikum.
+
+slide 32 (Capaian Praktikum)
+Tampilkan capaian praktikum: menyiapkan environment YOLO dan ROS 2, mengambil gambar objek robotika, memberi anotasi bounding box, mengekspor dataset YOLOv8, melatih YOLOv8, mengevaluasi precision recall mAP, menjalankan model di ROS 2, dan mendokumentasikan praktik dalam video.
+
+slide 33 (Perangkat dan Bahan)
+Jelaskan kebutuhan hardware: laptop Ubuntu 22.04, kamera laptop atau USB camera, GPU NVIDIA opsional, objek latihan seperti kotak merah, silinder hijau, bola biru, botol, gelas, atau komponen robotika, serta internet. Software: ROS 2 Humble, Python, OpenCV, Ultralytics, colcon, rosdep.
+
+slide 34 (Keselamatan Praktikum)
+Tampilkan aturan keselamatan: kabel kamera tidak mengganggu area kerja, jangan menaruh objek tajam atau berbahaya, jangan merekam wajah tanpa izin, jangan unggah dataset sensitif, gunakan emergency stop bila terhubung aktuator, dan jalankan robot perlahan saat pengujian awal.
+
+slide 35 (Alur 5 Jam 40 Menit)
+Buat timeline praktikum: 20 menit briefing teori YOLO dan ROS, 30 menit cek instalasi workspace kamera, 40 menit akuisisi dataset, 50 menit anotasi, 25 menit export validasi dataset, 60 menit training, 35 menit evaluasi, 50 menit integrasi ROS, dan 30 menit demo troubleshooting.
+
+slide 36 (Cek Tools dan Dependensi)
+Jelaskan tahap awal jobsheet: cek ros2 --version, python3 --version, dan colcon --help. Source ROS dengan source /opt/ros/humble/setup.bash. Install dependensi workspace memakai rosdep, lalu install ultralytics, opencv-python, numpy, pyyaml, dan verifikasi YOLO dapat diimport.
+
+slide 37 (Cek Kamera)
+Tampilkan tahap cek kamera: lihat device dengan ls /dev/video*, uji OpenCV memakai VideoCapture(0), pastikan kamera opened dan frame terbaca. Jika gagal, coba indeks 1 atau 2, cabut pasang ulang kamera USB, cek izin device, dan tutup aplikasi lain yang memakai kamera.
+
+slide 38 (Akuisisi Dataset)
+Jelaskan pembuatan folder dataset_raw/images dan script capture_dataset.py. Praktikan menekan SPACE untuk menyimpan gambar dan Q untuk keluar. Target minimal 3 kelas x 50 gambar. Variasi wajib meliputi jarak dekat-sedang-jauh, sudut berbeda, cahaya terang-redup, background polos-ramai, dan multi-objek.
+
+slide 39 (Anotasi Roboflow)
+Jelaskan opsi Roboflow: login, create project object detection, upload gambar, annotate dengan bounding box, gunakan label konsisten seperti kotak_merah, silinder_hijau, bola_biru, buka dataset, export format YOLOv8, download zip, ekstrak, lalu salin ke folder training_data di workspace ROS_YOLO.
+
+slide 40 (Anotasi CVAT)
+Jelaskan opsi CVAT: buat project, isi label, buat task object detection, upload gambar, gunakan rectangle tool, pilih label, gambar bounding box, simpan, export YOLO 1.1 dengan save images, ekstrak dataset, cek data.yaml, lalu salin hasilnya ke training_data agar siap dipakai training YOLOv8.
+
+slide 41 (Anotasi LabelStudio)
+Jelaskan opsi LabelStudio: buat virtual environment, install label-studio, jalankan di port 8080, buat project, upload gambar, pilih template object detection with bounding boxes, tambahkan label, anotasi semua gambar, export YOLOv5 PyTorch atau JSON, lalu susun ulang struktur dataset YOLOv8.
+
+slide 42 (Validasi Dataset)
+Tampilkan validasi dataset: masuk folder training_data, cek tree, buka data.yaml, pastikan folder train, valid, test masing-masing memiliki images dan labels. Jalankan script pengecekan label txt, pastikan tiap baris berisi 5 elemen dan koordinat x_center, y_center, width, height berada pada rentang 0 sampai 1.
+
+slide 43 (Training Google Colab)
+Jelaskan training Colab: kompres dataset_yolo.zip, upload ke Google Drive, buka Colab, aktifkan GPU, cek torch.cuda.is_available, mount Drive, install ultralytics, unzip dataset ke /content/dataset_yolo, tampilkan data.yaml, lalu train YOLOv8n dengan epochs 50, imgsz 640, batch 16, device 0.
+
+slide 44 (Training VSCode Colab)
+Jelaskan alternatif VSCode Colab: install VSCode dan extension Colab, buka notebook, connect hosted runtime, pilih GPU, mount Drive, install Ultralytics, salin dataset ke /content/dataset_yolo, cek data.yaml, lalu training YOLOv8n dengan project /content/runs dan nama eksperimen yolov8n_vscode_colab.
+
+slide 45 (Training GPU Lokal)
+Jelaskan training lokal GPU NVIDIA: cek lspci dan nvidia-smi, install driver jika perlu, buat virtual environment yolo_env, install PyTorch CUDA, verifikasi torch.cuda.is_available, install ultralytics, masuk folder training_data, lalu jalankan yolo detect train data=data.yaml model=yolov8n.pt epochs=50 imgsz=640 batch=16 device=0.
+
+slide 46 (Evaluasi Model)
+Tampilkan evaluasi model dari best.pt menggunakan model.val(). Catat mAP50, mAP50-95, precision, recall, dan inference time atau FPS. Uji prediksi pada folder validasi dengan conf 0.25 dan iou 0.45. Simpan hasil gambar deteksi untuk bukti analisis dan materi video tugas.
+
+slide 47 (Simpan Model ke ROS)
+Jelaskan setelah training selesai, unduh atau salin hasil runs/detect/yolov8n_custom. Ambil file weights/best.pt, rename jika perlu menjadi custom_yolov8.pt, lalu copy ke ROS_YOLO/src/yolo_ros/models. Pastikan path model benar agar launch file dan node YOLO dapat memuat model custom.
+
+slide 48 (Build Package ROS)
+Tampilkan langkah build package ROS 2: masuk workspace ROS_YOLO, jalankan colcon build --symlink-install. Jika error, hapus build, install, dan log lalu build ulang. Setelah sukses, source install/setup.bash, cek ros2 pkg executables yolo_ros, dan pastikan node camera_node, yolo_node, yolo_camera_node tersedia.
+
+slide 49 (Running Node ROS)
+Jelaskan running node: terminal kamera menjalankan ros2 run yolo_ros camera_node, terminal detector menjalankan yolo_node, atau gunakan yolo_camera_node untuk kamera langsung dengan YOLO. Alternatif gunakan ros2 launch yolo_ros yolo.launch.py dengan parameter model_path menuju custom_yolov8.pt.
+
+slide 50 (Cek Topic dan Output)
+Tampilkan pengecekan topic: ros2 topic list, ros2 topic info /camera/image_raw, ros2 topic echo /yolo/detections, dan ros2 topic info /yolo/annotated. Output minimal berhasil adalah kamera terbuka, window menampilkan gambar, bounding box muncul, class dan confidence terlihat, serta topic deteksi aktif.
+
+slide 51 (Analisis Hasil)
+Buat tabel analisis percobaan berisi objek, jarak, cahaya, confidence threshold, dan hasil terdeteksi atau tidak. Minta praktikan membahas kelas paling mudah, kelas paling sering salah, pengaruh jarak, pengaruh pencahayaan, kebutuhan mengubah confidence, dan apakah dataset perlu ditambah.
+
+slide 52 (Checklist Keberhasilan)
+Tampilkan checklist: ROS 2 Humble aktif, workspace bisa dibuild, kamera terbaca, dataset minimal 3 kelas tersedia, anotasi selesai, export YOLO valid, data.yaml benar, training berjalan, best.pt dibuat, model dievaluasi, model masuk folder ROS, node berjalan, bounding box real-time muncul, dan video direkam.
+
+slide 53 (Output Jobsheet)
+Tekankan output yang dikumpulkan hanya link video YouTube. Tidak ada tugas laporan, ketik, atau print. Format pengumpulan mencakup nama kelompok, anggota, link YouTube, durasi, dan tanggal upload. Semua dataset, training, evaluasi, kendala, solusi, dan demo harus dijelaskan dalam video serta deskripsi.
+
+slide 54 (Kriteria Minimal Lulus)
+Tampilkan kriteria minimal lulus: video YouTube minimal 15 menit, menjelaskan teori neural network CNN YOLO, menampilkan dataset anotasi training evaluasi, menunjukkan ROS YOLO running dan demo real-time, deskripsi video lengkap dengan hasil evaluasi, link dapat diakses, dan deadline terpenuhi.
+
+slide 55 (Mini Project ROS YOLO)
+Jelaskan mini project sebagai pengembangan dari praktikum. Setiap kelompok memilih satu ide proyek dan membuat rancangan singkat berisi judul, latar belakang, tujuan, objek yang dideteksi, dataset, metode anotasi, model YOLO, ROS node dan topic, metrik keberhasilan, risiko, serta output akhir.
+
+slide 56 (Pilihan Project)
+Tampilkan contoh pilihan project: sorting objek warna, deteksi komponen mekatronika, deteksi APD laboratorium, robot pengikut objek, deteksi rambu mini, deteksi sampah, deteksi cacat produk conveyor, deteksi jalur dan halangan, pick and place, serta benchmark YOLOv8n, YOLOv8s, YOLOv8m.
+
+slide 57 (Metrik dan Integrasi Project)
+Jelaskan metrik minimal project: precision, recall, mAP50, mAP50-95, FPS atau inference time, serta keberhasilan demo ROS. Tekankan integrasi topic seperti /camera/image_raw menuju /yolo/detections, lalu digunakan node keputusan misalnya sorting, safety warning, cmd_vel, atau dashboard deteksi.
+
+slide 58 (Rekomendasi Project)
+Berikan rekomendasi: pemula memilih sorting objek warna, komponen mekatronika, atau rambu mini; minat mobile robot memilih pengikut objek, rambu, jalur, dan halangan; minat robot arm memilih sorting, sampah, atau pick and place; minat industri memilih APD, cacat produk, atau benchmark model.
+
+slide 59 (Tugas Video)
+Jelaskan tugas akhir modul: mahasiswa hanya membuat satu video YouTube dan upload masing-masing sesuai ketentuan dosen. Video harus berisi teori 3 sampai 5 menit, praktik 10 sampai 25 menit, identitas kelompok, environment, dataset, anotasi, training, evaluasi, ROS YOLO, demo, kendala, solusi, dan kesimpulan.
+
+slide 60 (Deskripsi YouTube)
+Tampilkan isi deskripsi YouTube: Modul 07 ROS YOLO, nama kelompok, anggota, objek yang dideteksi, tool anotasi, platform training, model YOLO, jumlah gambar train valid test, hasil precision recall mAP50 mAP50-95, kendala utama, solusi, prodi Sarjana Terapan Teknologi Rekayasa Otomasi, dan dosen.
+
+slide 61 (Rubrik dan Deadline)
+Tutup dengan rubrik tugas: kelengkapan proses, pemahaman teori, dataset dan anotasi, training evaluasi, integrasi ROS 2, penjelasan program, analisis kendala, dan kualitas komunikasi video. Syarat diterima: durasi minimal 15 menit, audio jelas, link dapat diakses, deadline 2 minggu setelah praktikum.

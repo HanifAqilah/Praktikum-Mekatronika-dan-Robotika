@@ -1,0 +1,134 @@
+slide 1 (Modul 10: Line Follower Robot)
+Praktikum Mekatronika dan Robotika | Sarjana Terapan Teknologi Rekayasa Otomasi | Dosen: Rofiq Cahyo Prayogo S.T. M.T. | 2 SKS, 5 jam 40 menit | Topik: Sensor IR, Motor DC, PID Controller, ESP32 S2 Mini, OLED I2C, Path Planning                                                     
+
+slide 2 (Outline Materi Praktikum)
+1.Pengantar LF 2.Dasar Listrik 3.ESP32 S2 Mini 4.OLED I2C 5.Push Button 6.Motor DC 7.Sensor IR 8.Estimasi Posisi 9.Teori PID 10.Tuning PID 11.Lost Line 12.Path Planning 13.EEPROM 14.Analisis Performa 15.Topik Lanjutan                                                               
+
+slide 3 (Outline Tugas dan Deadline)
+Tugas: Video YouTube masing-masing mahasiswa | Durasi min 30 menit | Konten: teori, setup, kalibrasi, tuning PID, demo robot | Deadline: 2 minggu setelah praktikum | Format judul: [Modul10] Line Follower — Nama — NIM — PraktikumMekatronika                                         
+
+slide 4 (Pengantar Robot Line Follower)
+Line follower adalah robot otonom yang mengikuti garis di lantai menggunakan sensor reflektansi. Komponen utama: sensor IR 8 channel, motor DC differential drive, kontroler ESP32 S2 Mini, driver H-Bridge L298N/TB6612, dan display OLED 128x64.                                      
+
+slide 5 (Dasar Listrik dan Elektronika)
+Hukum Ohm: V=I·R. Daya: P=V·I. Pembagi tegangan: Vout=Vin·R2/(R1+R2). ADC 13-bit ESP32 S2: resolusi 0,403 mV/bit, range 0-3,3V. PWM duty cycle mengontrol kecepatan motor. Ground bersama wajib untuk semua subsistem agar referensi tegangan sama.                                     
+
+slide 6 (ESP32 S2 Mini: Mikrokontroler)
+Spesifikasi: Xtensa LX7 240 MHz, 4MB Flash, 320KB SRAM. ADC 13-bit (0-8191). PWM LEDC 8-bit (0-255) frekuensi 5000 Hz. I2C: SDA=GPIO33, SCL=GPIO35, kecepatan 400 kHz. Sensor: GPIO1-5, 16-18. Motor kiri: EN=GPIO11, IN1=10, IN2=9. Kanan: EN=8.                                       
+
+slide 7 (OLED I2C SSD1306: Display Robot)
+OLED 128x64 piksel, komunikasi I2C alamat 0x3C. Library: Adafruit SSD1306. Inisialisasi: Wire.begin(33,35), display.begin(). Fungsi utama: display.clearDisplay(), display.setCursor(x,y), display.print(text), display.display(). Update tiap 200ms untuk efisiensi.                   
+
+slide 8 (Push Button dan Debouncing)
+4 tombol: B1=GPIO0, B2=GPIO12, B3=GPIO13, B4=GPIO15, mode INPUT_PULLUP, aktif LOW. Debounce 50ms mencegah pembacaan ganda akibat bouncing mekanik. Implementasi: cek millis()-lastTime > 50 sebelum proses. Tombol digunakan untuk start, stop, pilih mode.                             
+
+slide 9 (Motor DC dan Driver H-Bridge)
+H-Bridge L298N/TB6612 memungkinkan motor berputar dua arah. Mode 2-pin: EN=PWM kecepatan, IN1/IN2=arah. IN1=HIGH IN2=LOW: maju. IN1=LOW IN2=HIGH: mundur. Rumus kecepatan: v=vmax*(duty/255). Dead zone: duty 30-80 sebelum motor mulai bergerak.                                       
+
+slide 10 (Sensor Infrared 8 Channel)
+TCRT5000/QTR-8A: LED IR 940nm + phototransistor. Nilai ADC di atas hitam: 0-1500. Di atas putih: 2500-8191. Jarak optimal ke lantai: 5-10mm. Threshold: T=(Vmin+Vmax)/2. Konversi digital: di[i]=1 jika ADC<T (hitam). Output: array biner 8-bit.                                       
+
+slide 11 (Estimasi Posisi Garis: Weighted Average)
+Bobot sensor: w=[0,1000,2000,3000,4000,5000,6000,7000]. Rumus: pos=sum(w[i]*d[i])/sum(d[i]). Setpoint=3500 (tengah). Jika semua sensor=0 (lost line): gunakan posisi terakhir. Contoh: S3 dan S4 aktif → pos=(3000+4000)/2=3500 → error=0 → robot lurus.                                
+
+slide 12 (Teori Kontrol PID)
+PID: P=Kp*e, I=Ki*integral(e), D=Kd*(e-ePrev)/dt. Correction=P+I+D. LeftSpeed=base+correction, RightSpeed=base-correction. Kp: respons proporsional. Ki: koreksi steady-state error. Kd: meredam osilasi. Anti-windup: batasi integral agar tidak meledak.                              
+
+slide 13 (Tuning PID: Metode Sistematis)
+Mulai: Kp=0.05, Ki=0, Kd=0, Speed=120. Step 1: naikkan Kp sampai osilasi. Step 2: naikkan Kd dari 0.5 sampai stabil (target 1.5). Step 3: Ki hanya jika offset persisten. Nilai referensi pemula: Kp=0.08, Kd=1.5, Speed=130. Catat tiap percobaan.                                     
+
+slide 14 (Lost Line Handling)
+Deteksi: semua sensor putih (sum digital=0) lebih dari 200ms. Recovery: lastError<0 → putar kiri; lastError>0 → putar kanan. Jika >1 detik tidak ketemu → maju pelan. Jika >3 detik → STOP. Simpan lastError setiap loop. Constrain speed agar tidak negatif.                           
+
+slide 15 (Path Planning dengan Sensor Mask)
+Sensor mask: pola bit aktif yang memicu aksi. Deteksi: (currentMask & targetMask)==targetMask. Contoh: 0b10000000 (S7 aktif) → belok kanan 800ms. 0b00000001 (S0 aktif) → belok kiri 800ms. 0b11111111 (semua aktif) → STOP (finish marker).                                            
+
+slide 16 (EEPROM: Penyimpanan Konfigurasi)
+EEPROM 512 byte menyimpan struct LineFollowerConfig (Kp, Ki, Kd, speed, threshold). Magic number 0xABCD dan checksum memvalidasi data. Checksum=sum semua byte kecuali 2 terakhir. EEPROM.begin(512), EEPROM.put(addr, data), EEPROM.commit(). Load saat startup.                       
+
+slide 17 (Analisis Performa Robot)
+Metrik: waktu lap, jumlah exit lintasan, RMS error=sqrt(sum(e^2)/n). Overshoot=(pos_max-setpoint)/setpoint*100%. Steady-state error=rata-rata error 10 sampel terakhir. Bandingkan on-off vs P vs PD vs PID. Log data CSV dari Serial untuk analisis grafik.                            
+
+slide 18 (Topik Lanjutan: Adaptive PID dan Encoder)
+Adaptive PID: Kp berubah berdasarkan abs(error). Fuzzy logic: aturan IF error BESAR THEN koreksi BESAR. Feedforward: koreksi antisipasi berdasarkan kelengkungan. Encoder: ukur kecepatan aktual omega=Npulse/(dt*PPR)*2pi untuk kontrol kecepatan presisi.                             
+
+slide 19 (Praktikum: Alat dan Bahan)
+Hardware: ESP32 S2 Mini, sensor IR 8ch, motor DC 2x, driver H-Bridge, OLED 128x64, push button 4x, baterai 7.4V, kabel jumper, chassis robot. Software: VS Code, PlatformIO, library Adafruit SSD1306 dan GFX. Lintasan: lakban hitam di lantai putih.                                  
+
+slide 20 (Keselamatan Kerja Laboratorium)
+Matikan power sebelum memasang komponen. Jangan hubungkan motor ke 5V tanpa driver. Gunakan multimeter sebelum power-on pertama kali. Jangan pegang motor berputar. Hindari korsleting: cek wiring dua kali. Emergency: cabut baterai jika ada asap atau panas.                         
+
+slide 21 (Instalasi VS Code dan PlatformIO)
+1. Install VS Code dari code.visualstudio.com. 2. Buka Extensions, cari PlatformIO IDE, install. 3. Buka folder Program/ di VS Code. 4. PlatformIO otomatis mendeteksi platformio.ini. 5. Build: pio run. 6. Upload: pio run -t upload. 7. Monitor: pio device monitor -b 115200.       
+
+slide 22 (Upload Program Pertama: OLED)
+Buka folder 01OLED. Build dengan klik centang di toolbar PlatformIO. Jika error library: pio lib install Adafruit SSD1306. Upload: klik panah upload. Jika gagal: tekan tahan BOOT → klik upload → lepas BOOT setelah Connecting... muncul. Buka Serial Monitor 115200.                 
+
+slide 23 (Wiring OLED I2C ke ESP32 S2 Mini)
+OLED VCC → 3.3V ESP32 (BUKAN 5V). OLED GND → GND. OLED SDA → GPIO33. OLED SCL → GPIO35. Jika OLED tidak muncul: cek alamat I2C dengan scanner. Upload I2C Scanner, buka Serial Monitor, alamat 0x3C atau 0x3D harus terdeteksi. Cek pull-up 4.7kOhm.                                    
+
+slide 24 (Wiring Motor DC dan Driver)
+Motor kiri: driver EN→GPIO11 (PWM), IN1→GPIO10, IN2→GPIO9. Motor kanan: EN→GPIO8, IN1→GPIO7, IN2→GPIO6. GND bersama: ESP32 GND, driver GND, baterai GND harus terhubung. Tes motor: upload Program 03, amati arah putaran. Jika terbalik: tukar kabel motor.                            
+
+slide 25 (Wiring Sensor IR 8 Channel)
+S0=GPIO1, S1=GPIO2, S2=GPIO3, S3=GPIO4, S4=GPIO5, S5=GPIO16, S6=GPIO17, S7=GPIO18. Sensor VCC→3.3V, GND→GND. Jarak ke lantai: 5-10mm. Amati LED sensor: merah di atas putih, redup di atas hitam. Jika nilai tidak berubah: cek VCC dan jarak ke lantai.                                
+
+slide 26 (Kalibrasi Sensor: Prosedur)
+Buka Program 04Sensor. Upload dan buka Serial Monitor. Letakkan semua sensor di atas putih, catat ADC. Letakkan semua sensor di atas hitam, catat ADC. Hitung threshold: T=(ADC_putih+ADC_hitam)/2. Ubah SENSOR_THRESHOLD di config.h. Uji posisi garis di Serial.                      
+
+slide 27 (Tabel Kalibrasi Sensor (Wajib Diisi))
+Isi tabel 8 sensor: kolom ADC_putih, ADC_hitam, Threshold. Threshold=(putih+hitam)/2. Target ADC hitam: 0-1500. Target ADC putih: 2500-8191. Jika selisih kecil (<1000): sensor terlalu jauh atau kotor. Uji posisi: garis di kiri→position=0, tengah→3500, kanan→7000.                 
+
+slide 28 (Uji Push Button: Program 02)
+Buka folder 02Button. Upload. B1=GPIO0, B2=GPIO12, B3=GPIO13, B4=GPIO15, INPUT_PULLUP aktif LOW. Amati OLED berubah saat tombol ditekan. Serial Monitor menampilkan tombol yang ditekan. Debounce 50ms mencegah double-press. Uji semua 4 tombol berfungsi.                             
+
+slide 29 (Uji Motor DC: Program 03)
+Buka folder 03Motor. Upload. Mode default MOTOR_MODE_2PIN. B1: maju. B2: mundur. B3: belok kiri. B4: belok kanan. Tekan lagi: berhenti. Jika satu motor terbalik: set MOTOR_LEFT_INVERT=true atau MOTOR_RIGHT_INVERT=true di config.h. Build ulang dan upload.                          
+
+slide 30 (Setup PID Line Follower: Program 05)
+Buka folder 05PID. Cek config.h: Kp=0.08, Ki=0.0, Kd=0.4, BaseSpeed=150. Build dan upload. Letakkan robot di lintasan. Tekan B1 untuk start PID mode. Amati OLED: tampil position, error, correction, speed L/R. Jika robot langsung liar: turunkan BaseSpeed ke 120.                   
+
+slide 31 (Tuning Kp: Langkah Pertama)
+Set Ki=0, Kd=0, Speed=120. Mulai Kp=0.05. Letakkan robot di lintasan lurus. Amati: terlalu lambat berbelok→naikkan Kp. Zig-zag cepat→turunkan Kp. Osilasi kecil stabil→Kp bagus. Naikkan/turunkan Kp sebesar 0.01 tiap percobaan. Catat di tabel tuning.                                
+
+slide 32 (Tuning Kd: Tambah Derivative)
+Setelah Kp stabil, mulai Kd=0.5. Test di lintasan dengan tikungan. Masih zig-zag→naikkan Kd +0.5. Lambat bereaksi→turunkan Kd -0.2. Target Kd=1.5 untuk pemula. Jangan terlalu besar karena Kd sensitif terhadap noise sensor. Catat setiap percobaan di tabel.                         
+
+slide 33 (Tuning Base Speed dan Hasil Akhir)
+Mulai speed=120, naikkan +10 sampai robot mulai tidak stabil, turunkan -5 sebagai safety margin. Parameter referensi pemula: Kp=0.08, Ki=0, Kd=1.5, Speed=130. Lakukan minimal 5 percobaan. Isi tabel tuning: Kp, Ki, Kd, Speed, Hasil per percobaan.                                   
+
+slide 34 (Analisis Perilaku PID)
+Kp besar: respons cepat tapi osilasi. Kp kecil: lambat, keluar tikungan. Kd besar: meredam osilasi tapi lambat bereaksi. Kd kecil: masih zig-zag. Ki kecil: koreksi offset lambat. Ki besar: overshoot, tidak stabil. Contoh: error=-2500, Kp=0.08 → P=-200.                            
+
+slide 35 (Setup Path Planning: Program 06)
+Buka folder 06PathPlanning. Siapkan lintasan dengan persimpangan. Definisikan PathPoint: baseSpeed, sensorMask1, sensorMask2, aksi (LEFT/RIGHT/STRAIGHT/STOP), durasi. Contoh: mask 0b10000000 (S7 aktif) + durasi 800ms → belok kanan selama 800ms. Upload dan test.                   
+
+slide 36 (Sensor Mask: Deteksi Persimpangan)
+Sensor mask adalah pola bit sensor yang memicu aksi. S7=bit7, S0=bit0. Contoh: 0b10000000=S7 aktif=kanan. 0b00000001=S0 aktif=kiri. 0b10000001=S0 dan S7=lurus di T. 0b11111111=semua aktif=finish. Deteksi: (currentMask & targetMask)==targetMask.                                    
+
+slide 37 (Troubleshooting: Upload Gagal)
+Error Failed to connect: 1.Pakai kabel USB data bukan charge. 2.Pilih port yang benar. 3.Tutup Serial Monitor. 4.Tahan BOOT, klik upload, lepas BOOT setelah Connecting. 5.Linux: sudo usermod -a -G dialout USER lalu logout. 6.Cek platformio.ini board=lolin_s2_mini.                
+
+slide 38 (Troubleshooting Performa Robot)
+Robot keluar tikungan: turunkan speed, naikkan Kd. Robot zig-zag: turunkan Kp atau naikkan Kd. Robot offset satu sisi: kalibrasi ulang sensor atau tambah Ki=0.001. Robot stuck/lost line: cek threshold, tambah recovery handler. Motor terbalik: set INVERT=true.                     
+
+slide 39 (Pilihan Proyek 1 sampai 3)
+P1 (Bintang1): Optimalkan PID, target 3 lap tanpa exit, min 10 percobaan tuning. P2 (Bintang2): Adaptive speed, robot lambat di tikungan dan cepat di lurus berdasarkan abs(error). P3 (Bintang2): 3 mode operasi (Slow/Normal/Fast) via tombol, tampil di OLED.                        
+
+slide 40 (Pilihan Proyek 4 sampai 6)
+P4 (Bintang2): Logging CSV via Serial, buat grafik Error vs Waktu dan Speed vs Waktu di Excel. P5 (Bintang2): EEPROM tuning interface, ubah Kp/Kd via tombol tanpa laptop. P6 (Bintang3): Path planning 4 persimpangan, robot ikuti rute Kanan-Kiri-Lurus-Stop.                         
+
+slide 41 (Pilihan Proyek 7 sampai 9)
+P7 (Bintang3): Anti-lost line system, recovery otomatis 3 skenario, waktu recovery <3 detik. P8 (Bintang3): Dashboard OLED 5 layar: posisi, PID, kecepatan, sensor raw, statistik lap. P9 (Bintang3): Auto-kalibrasi sensor saat startup, simpan threshold EEPROM.                      
+
+slide 42 (Proyek 10: Competition Ready (Bintang4))
+Integrasi semua fitur: auto-kalibrasi, multi-mode, PID optimal, anti-lost line, path planning 3 titik, OLED dashboard, start/stop tombol, logging CSV. Lintasan: 5m+, 2 tikungan tajam, 1 garis putus, 2 persimpangan. Final test: 3 run, catat waktu terbaik.                          
+
+slide 43 (Tugas Video: Struktur Konten Wajib)
+6 bagian: (1) Pembukaan+teori 10-15 menit. (2) Setup+instalasi 5-10 menit. (3) Praktikum bertahap 15-20 menit, min 4 dari 6 sub-praktikum. (4) Proses tuning PID live, min 5 percobaan. (5) Demo robot berjalan 2 lap. (6) Analisis+kendala+kesimpulan 5-10 menit.                      
+
+slide 44 (Tugas Video: Teknis dan Pengumpulan)
+Durasi: 30-60 menit. Resolusi min 720p. Judul YouTube: [Modul10] Line Follower Nama NIM PraktikumMekatronika. Visibilitas: Publik atau Unlisted bukan Privat. Bahasa Indonesia. Submit link YouTube + foto tabel kalibrasi + foto tabel tuning ke form dosen.                           
+
+slide 45 (Rubrik Penilaian Video (100 Poin))
+Kelengkapan konten 40 poin: identitas, teori, upload, kalibrasi, tuning, demo. Kualitas penjelasan 30 poin: rumus PID, analisis tuning, kendala solusi. Teknis video 15 poin: resolusi, audio, screen record, deskripsi YouTube. Tepat waktu 10 poin. Kreativitas 5 poin.               

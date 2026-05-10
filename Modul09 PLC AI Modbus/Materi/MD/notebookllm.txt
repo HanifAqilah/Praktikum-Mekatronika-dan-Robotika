@@ -1,0 +1,134 @@
+slide 1 (Judul dan Identitas)
+Buat slide pembuka berjudul Modul 09 PLC AI Modbus: Integrasi AI Vision, ROS 2, dan PLC. Cantumkan Program Studi Sarjana Terapan Teknologi Rekayasa Otomasi, mata kuliah Praktikum Mekatronika 2 SKS, durasi 5 jam 40 menit praktikum, dosen Rofiq Cahyo Prayogo, S.T., M.T.
+
+slide 2 (Outline Materi)
+Buat slide outline materi berisi urutan bahasan: konsep PLC dan scan cycle, jaringan industri, Modbus TCP, coil dan register, computer vision, MediaPipe Hands, ROS 2 node, integrasi AI ke PLC, pengukuran delay, akurasi, troubleshooting, keselamatan, watchdog, heartbeat, dan fail-safe.
+
+slide 3 (Outline Tugas)
+Buat slide outline tugas: praktikan menjalankan sistem AI vision ke PLC, membuat video YouTube masing-masing, menampilkan identitas, teori, folder program, instalasi, setup Modbus, mapping jari, demo running, tabel uji, delay, akurasi, troubleshooting, kesimpulan. Deadline 2 minggu setelah praktikum.
+
+slide 4 (Capaian Pembelajaran)
+Buat slide capaian pembelajaran: mahasiswa mampu menjelaskan PLC, scan cycle, I/O digital, coil, register, komunikasi industri, Modbus TCP, AI vision, MediaPipe, ROS 2 node, workspace, topic, parameter, serta mampu menghubungkan kamera, GUI, jaringan, PLC/V-BOX, dan output trainer.
+
+slide 5 (Gambaran Sistem)
+Buat slide gambaran sistem: tangan praktikan ditangkap kamera, citra diproses OpenCV dan MediaPipe Hands, status jari ditentukan Python, GUI menampilkan kondisi, ROS 2 node mengirim data melalui Modbus TCP ke PLC/V-BOX, lalu coil/register mengaktifkan LED atau output trainer.
+
+slide 6 (Dasar PLC)
+Buat slide dasar PLC: Programmable Logic Controller adalah komputer industri untuk membaca input, menjalankan logika kontrol, dan menghasilkan output deterministik. Jelaskan komponen CPU, power supply, input module, output module, memory, dan communication port untuk otomasi mesin.
+
+slide 7 (Scan Cycle PLC)
+Buat slide scan cycle PLC: PLC membaca input, mengeksekusi program ladder/ST/FBD, memperbarui output, lalu melakukan komunikasi dan diagnosis. Jelaskan respon dipengaruhi input filter, waktu scan, output delay, dan network delay. Contoh Tscan 10 ms menghasilkan fscan 100 Hz.
+
+slide 8 (Data dan Logika PLC)
+Buat slide jenis data PLC: X/I untuk input digital, Y/Q untuk output, M sebagai internal relay, T timer, C counter, D/R register, AI/AQ analog. Tambahkan logika boolean AND, OR, NOT, latch start-stop, timer ON delay, counter rising edge, dan scaling analog sensor.
+
+slide 9 (Keselamatan PLC)
+Buat slide keselamatan PLC: output berbahaya harus memakai interlock fisik, AI vision tidak boleh menjadi satu-satunya safety device, emergency stop harus hardwired, jaringan praktikum dipisah dari produksi, alamat coil divalidasi, dan hindari write register acak ke PLC produksi.
+
+slide 10 (Jaringan Industri)
+Buat slide jaringan industri: IP address IPv4, subnet mask, gateway, port, firewall, kabel, switch, dan konflik IP menentukan keberhasilan komunikasi. Jelaskan perangkat harus satu subnet atau memiliki routing benar. Tekankan port Modbus TCP standar 502 dan pengecekan ping.
+
+slide 11 (Latency dan Throughput)
+Buat slide latency sistem: total waktu kontrol dipengaruhi kamera, processing AI, ROS, TCP, dan PLC. Tampilkan rumus Ttotal = Tcamera + Tprocessing + Tros + Ttcp + Tplc. Jelaskan FPS kamera, waktu antar-frame, throughput data, dan contoh 30 FPS berarti 33,3 ms per frame.
+
+slide 12 (Dasar Modbus TCP)
+Buat slide Modbus TCP: protokol komunikasi industri client-server melalui Ethernet. Client mengirim request, PLC/server memberi response. Jelaskan model data coil 0xxxx, discrete input 1xxxx, input register 3xxxx, holding register 4xxxx, serta fungsi read/write data.
+
+slide 13 (Function Code Modbus)
+Buat slide function code: FC01 read coils, FC02 read discrete inputs, FC03 read holding registers, FC04 read input registers, FC05 write single coil, FC06 write single register, FC15 write multiple coils, FC16 write multiple registers. Jelaskan pemilihan fungsi sesuai area data.
+
+slide 14 (Struktur dan Addressing Modbus)
+Buat slide struktur Modbus TCP: MBAP header berisi transaction ID, protocol ID, length, unit ID, lalu PDU berisi function code dan data. Jelaskan banyak library memakai alamat berbasis 0, sehingga coil manual 00005 sering diprogram sebagai address 4.
+
+slide 15 (Coil dan Register)
+Buat slide coil dan register: coil bernilai 0 atau 1, write ON memakai 0xFF00 dan OFF 0x0000. Holding register menyimpan 16-bit 0 sampai 65535, bisa signed atau unsigned. Dua register dapat digabung menjadi 32-bit atau float IEEE 754 dengan aturan endian.
+
+slide 16 (Exception Modbus)
+Buat slide exception Modbus: bila error, function code response menjadi FC request + 0x80, misalnya FC03 menjadi 0x83. Jelaskan kode umum: illegal function, illegal data address, illegal data value, slave device failure. Kaitkan dengan troubleshooting alamat, nilai, dan server PLC.
+
+slide 17 (Computer Vision)
+Buat slide computer vision: citra digital adalah matriks piksel RGB, resolusi = width x height. Jelaskan konversi grayscale, normalisasi koordinat landmark 0 sampai 1, konversi ke piksel, jarak Euclidean, sudut antar vektor, serta pengaruh pencahayaan dan background.
+
+slide 18 (Akurasi Deteksi)
+Buat slide akurasi deteksi: jelaskan confusion matrix biner berisi TP, FP, TN, FN. Tampilkan rumus accuracy, precision, recall, dan F1-score secara ringkas. Hubungkan dengan uji gestur tangan: jumlah prediksi benar dibanding total percobaan untuk setiap jari dan kombinasi.
+
+slide 19 (Smoothing Gestur)
+Buat slide smoothing gestur: status jari dapat bergetar karena noise kamera dan landmark. Gunakan voting N frame, threshold stabil, moving average, atau exponential moving average. Jelaskan state bernilai 1 jika jumlah frame aktif melewati threshold sehingga output PLC tidak berkedip.
+
+slide 20 (MediaPipe Hands)
+Buat slide MediaPipe Hands: algoritma mendeteksi 21 landmark tangan, mulai wrist, thumb, index, middle, ring, hingga pinky. Deteksi jari terbuka dapat memakai perbandingan tip dan PIP. Untuk jari selain jempol, tip lebih tinggi dari PIP menandakan jari terbuka.
+
+slide 21 (Dasar ROS 2)
+Buat slide ROS 2: middleware robotika berbasis node. Node berkomunikasi melalui topic, service, action, parameter, dan transform. Pada modul ini node membaca kamera, memproses MediaPipe, menampilkan GUI, lalu menulis data ke PLC via Modbus TCP dari package mediapipe_modbus_pkg.
+
+slide 22 (Workspace dan Eksekusi ROS 2)
+Buat slide workspace ROS 2: struktur berisi src, build, install, dan log. Build package memakai colcon build --packages-select mediapipe_modbus_pkg, source install/setup.bash, lalu jalankan ros2 run mediapipe_modbus_pkg mediapipe_modbus_node. Tekankan source ROS 2 sebelum running.
+
+slide 23 (Integrasi AI ke PLC)
+Buat slide integrasi AI-PLC: status lima jari dinyatakan F=[f1,f2,f3,f4,f5], setiap fi bernilai 0 atau 1. Mapping sederhana Coil_i = fi. Jumlah jari terbuka Nopen = jumlah fi, sedangkan kode gestur 5-bit menghasilkan nilai 0 sampai 31 untuk perintah PLC.
+
+slide 24 (State Machine Gestur)
+Buat slide state machine gestur: alur IDLE, DETECT, VALIDATE, SEND_MODBUS, PLC_ACTION, MONITOR. Gestur dianggap valid jika confidence minimal terpenuhi dan stable frames cukup. Jelaskan validasi diperlukan agar perintah tidak terkirim akibat noise sesaat dari kamera.
+
+slide 25 (Analisis Latensi)
+Buat slide analisis latensi end-to-end: Te2e terdiri dari capture, preprocess, inference, GUI, Modbus, dan scan PLC. Contoh capture 33 ms, inference 20 ms, GUI 5 ms, Modbus 10 ms, PLC scan 10 ms menghasilkan total 78 ms. Tekankan pengukuran nyata dengan video.
+
+slide 26 (Troubleshooting Materi)
+Buat slide troubleshooting konsep: kamera gagal karena device salah atau dipakai aplikasi lain; MediaPipe error karena versi numpy/opencv; PLC tidak terkoneksi karena IP, subnet, kabel, port; coil tidak berubah karena offset alamat; deteksi tidak stabil karena cahaya buruk; delay besar karena FPS rendah.
+
+slide 27 (Tujuan Jobsheet)
+Buat slide tujuan jobsheet: praktikan menyiapkan ROS 2 Python, menguji kamera dan dependencies, menghubungkan laptop ke PLC/V-BOX, menjalankan GUI MediaPipe Modbus, melakukan scan IP, koneksi Modbus TCP, mapping lima jari ke coil/register, menguji output, dan menganalisis hasil.
+
+slide 28 (Alat dan Bahan)
+Buat slide alat dan bahan: laptop Ubuntu dengan ROS 2, webcam internal atau USB, PLC/V-BOX yang mendukung Modbus TCP, kabel Ethernet atau Wi-Fi lab, power supply, LED/output trainer, switch jika perlu. Software meliputi Python, OpenCV, MediaPipe, PyModbus, PyQt5, PyYAML, colcon.
+
+slide 29 (Keselamatan Kerja)
+Buat slide keselamatan kerja jobsheet: pastikan tegangan PLC sesuai spesifikasi, jangan menyentuh terminal saat menyala, gunakan LED/trainer bukan aktuator besar, jangan menulis register tak dikenal, jangan mengubah jaringan kelompok lain, dan matikan power bila output tidak terkendali.
+
+slide 30 (Struktur Folder)
+Buat slide struktur folder praktikum: lokasi workspace ROS_PLC_AI berisi README.md, requirements.txt, run_node.sh, test_node.sh, src/mediapipe_modbus_pkg, build, install, dan log. Jelaskan file penting: requirements untuk dependency, script untuk test/run, src untuk package node utama.
+
+slide 31 (Pembagian Waktu)
+Buat slide pembagian waktu 5 jam 40 menit: briefing teori dan safety 30 menit, cek perangkat 40 menit, instalasi 45 menit, build dan test 45 menit, koneksi Modbus 50 menit, uji gestur dan mapping 70 menit, analisis serta troubleshooting 40 menit, dokumentasi video 40 menit.
+
+slide 32 (Persiapan Awal)
+Buat slide persiapan awal: buka terminal Linux, masuk ke folder ROS_PLC_AI, cek isi folder, pastikan README.md, requirements.txt, run_node.sh, test_node.sh, dan src tersedia. Cek python3 --version dan pip3 --version, lalu catat hasil sebagai bukti setup awal praktikum.
+
+slide 33 (Pemeriksaan ROS 2)
+Buat slide pemeriksaan ROS 2: jalankan ros2 --version, source /opt/ros/humble/setup.bash bila command belum tersedia, cek colcon --help, install colcon bila diperlukan, dan catat printenv ROS_DISTRO. Pastikan distro ROS 2 sesuai komputer lab sebelum build package.
+
+slide 34 (Instalasi Dependencies)
+Buat slide instalasi dependencies: masuk workspace, jalankan pip3 install -r requirements.txt. Jika konflik MediaPipe dan NumPy, gunakan numpy<2, mediapipe, opencv-python<4.10, pymodbus, PyQt5, pyyaml. Verifikasi import cv2, mediapipe, pymodbus, PyQt5, yaml sampai Dependencies OK.
+
+slide 35 (Pemeriksaan Kamera)
+Buat slide pemeriksaan kamera: cek device /dev/video*, uji OpenCV dengan VideoCapture(0), pastikan Camera opened True dan frame captured True. Jika gagal, tutup aplikasi kamera lain, ganti index 0 ke 1, cabut pasang USB camera, cek permission user, dan perbaiki pencahayaan.
+
+slide 36 (Build ROS 2 Package)
+Buat slide build package: source ROS 2, masuk workspace, jalankan colcon build --packages-select mediapipe_modbus_pkg --symlink-install, source install/setup.bash, lalu cek ros2 pkg list untuk memastikan mediapipe_modbus_pkg terdeteksi. Build sukses menjadi syarat menjalankan node.
+
+slide 37 (Test Node)
+Buat slide test node: beri permission chmod +x test_node.sh run_node.sh, jalankan ./test_node.sh, lalu catat status Python, OpenCV, MediaPipe, PyModbus, PyQt5, ROS 2 package, dan kamera. Jika ada error, perbaiki dependency, source workspace, atau perangkat kamera sebelum lanjut.
+
+slide 38 (Konfigurasi Jaringan PLC)
+Buat slide konfigurasi jaringan: identifikasi IP laptop dengan ip addr, pastikan satu subnet dengan PLC/V-BOX, contoh 10.41.168.x/24. Uji ping IP PLC dan cek port 502 memakai nc -vz. Jika gagal, periksa kabel, switch, firewall, IP PLC, Modbus server, dan konflik IP.
+
+slide 39 (Menjalankan GUI)
+Buat slide menjalankan GUI: gunakan metode script ./run_node.sh dari folder ROS_PLC_AI atau metode manual dengan source ROS 2, source install/setup.bash, lalu ros2 run mediapipe_modbus_pkg mediapipe_modbus_node. Aplikasi berhasil jika GUI terbuka dan tampilan kamera muncul real-time.
+
+slide 40 (Scan dan Koneksi PLC)
+Buat slide scan dan koneksi PLC: buka GUI, tekan Scan, pilih IP PLC/V-BOX dari dropdown atau isi manual, set port 502, unit ID 1, timeout 1-3 detik, lalu klik CONNECT. Koneksi berhasil bila status berubah CONNECTED, tidak ada timeout, dan PLC menerima request Modbus TCP.
+
+slide 41 (Mapping dan Uji Gestur)
+Buat slide mapping jari: atur jempol coil 0, telunjuk coil 1, tengah coil 2, manis coil 3, kelingking coil 4, enabled true, lalu simpan konfigurasi. Aktifkan kontrol gestur, tampilkan tangan 30-80 cm dari kamera, uji tiap jari, semua jari, kepal, dan kombinasi biner.
+
+slide 42 (Readback, Delay, Akurasi)
+Buat slide pengujian: bandingkan command AI dengan readback PLC untuk coil 0 sampai 4. Ukur delay memakai video: Delay = selisih frame/FPS video. Uji akurasi 10 percobaan tiap gestur, hitung Accuracy = jumlah benar/total x 100%, catat error dan solusi teknis.
+
+slide 43 (Pilihan Project)
+Buat slide project: setiap kelompok memilih minimal satu project berbasis kamera, AI vision/MediaPipe, ROS 2/Python, GUI atau monitoring, Modbus TCP, dan PLC/V-BOX. Project wajib punya tujuan, diagram blok, mapping data, program berjalan, indikator berhasil, 10 percobaan, analisis delay, akurasi, video.
+
+slide 44 (Contoh Project)
+Buat slide contoh project: kontrol 5 lampu dengan lima jari, start-stop motor simulator, conveyor sorting berdasarkan jumlah jari, password gestur 1-3-5-2, HMI mini dengan manual override, monitoring kualitas sinyal, lampu lalu lintas mini, pick and place simulator, watchdog, dan dashboard logging.
+
+slide 45 (Tugas Video YouTube)
+Buat slide tugas video: tugas hanya membuat video dan upload YouTube masing-masing, public atau unlisted, minimal 15 menit, resolusi 720p, audio jelas, semua anggota berkontribusi. Isi wajib identitas, teori, program, instalasi, Modbus, mapping, demo, data uji, troubleshooting, kesimpulan.
