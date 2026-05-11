@@ -1,0 +1,143 @@
+PROMPT NOTEBOOKLM — MODUL 6: WEBSERVER MQTT ESP32
+Praktikum Mekatronika | Sarjana Terapan Teknologi Rekayasa Otomasi
+Dosen: Rofiq Cahyo Prayogo, S.T., M.T. | 2 SKS | 5 jam 40 menit
+==================================================================
+Total: 45 slide | Per slide: 280-300 karakter dengan spasi
+Struktur: 3 slide pembuka, 15 slide materi, 20 slide jobsheet,
+          4 slide project, 3 slide tugas
+==================================================================
+
+slide 1 (Judul dan Identitas Program Studi dan Dosen)
+Buat slide cover profesional. Judul: Modul 6 WebServer MQTT ESP32. Program Studi Sarjana Terapan Teknologi Rekayasa Otomasi. Dosen: Rofiq Cahyo Prayogo, S.T., M.T. Matakuliah Praktikum Mekatronika 2 SKS, durasi 5 jam 40 menit. Desain IoT modern berwarna biru teal. Sertakan ikon WiFi dan chip ESP32.
+
+slide 2 (Outline Materi 15 Topik)
+Tampilkan outline 15 materi: pengenalan IoT, protokol HTTP, protokol MQTT, QoS level, rumus latency bandwidth, arsitektur ESP32, WiFi link budget, TCP/IP WebSocket, JSON ArduinoJson, keamanan IoT TLS, cloud IoT Node-RED, FreeRTOS scheduling, sampling Nyquist, dashboard visualisasi, integrasi sistem.
+
+slide 3 (Outline Tugas Praktikum)
+Outline tugas praktikum: mahasiswa wajib buat 2 video YouTube pribadi. Video 1 screen recording jelaskan teori WebServer MQTT dan kode program. Video 2 rekaman demo hardware running. Deadline 2 minggu setelah praktikum. Rubrik nilai 100 poin: teori, kode, demo, kualitas, kreativitas.
+
+slide 4 (Pengenalan IoT dan Arsitektur 3 Layer)
+Jelaskan konsep Internet of Things: definisi, sejarah, dan arsitektur 3 layer. Perception Layer berisi sensor dan aktuator. Network Layer berisi protokol WiFi MQTT HTTP. Application Layer berisi pemrosesan data dan dashboard. Sertakan diagram alur IoT: sensor ESP32 WiFi router cloud dashboard.
+
+slide 5 (Protokol HTTP pada ESP32)
+Jelaskan protokol HTTP pada ESP32: metode GET POST PUT DELETE, format request header body, HTTP status codes 200 201 400 404 500. Tampilkan contoh kode AsyncWebServer dengan route GET dan POST. Bandingkan WebServer sinkron vs asinkron. Jelaskan REST API untuk IoT. Contoh endpoint GET /api/sensor.
+
+slide 6 (Rumus HTTP dan Bandwidth)
+Tampilkan rumus komunikasi HTTP: Throughput T = Dpayload dibagi ttransfer tambah toverhead, Efisiensi E = payload dibagi total 100 persen, Latency L = tpropagasi tambah ttransmisi tambah tproses. Contoh hitung: kirim JSON 100 byte, bandwidth 1Mbps, RTT 50ms. Hitung throughput dan efisiensi protokol.
+
+slide 7 (Pengenalan Protokol MQTT)
+Jelaskan MQTT: protokol publish-subscribe ringan untuk IoT dibuat IBM 1999. Karakteristik: header minimal 2 byte, port 1883 plaintext dan 8883 TLS, efisien di bandwidth rendah dan jaringan tidak stabil. Komponen utama: Publisher, Subscriber, Broker, Topic. Bandingkan dengan HTTP dan CoAP.
+
+slide 8 (Arsitektur MQTT Publish-Subscribe)
+Tampilkan diagram arsitektur MQTT: Publisher kirim ke Broker via topik tertentu, Broker distribusikan ke semua Subscriber yang subscribe topik itu. Contoh topik: home/sensor/suhu dan factory/motor/rpm. Jelaskan wildcard plus untuk single level dan hash untuk multi-level topik. Sertakan aturan topik.
+
+slide 9 (QoS MQTT Level 0, 1, dan 2)
+Jelaskan tiga level QoS MQTT: Level 0 At Most Once tanpa acknowledgment pesan bisa hilang. Level 1 At Least Once dengan PUBACK pesan minimal sekali bisa duplikat. Level 2 Exactly Once four-way handshake PUBLISH PUBREC PUBREL PUBCOMP dijamin tepat sekali. Pilih QoS sesuai kebutuhan aplikasi.
+
+slide 10 (Rumus Latency dan Efisiensi MQTT)
+Tampilkan rumus MQTT: efisiensi eta = payload dibagi total 100 persen. Latency QoS0 = Lnet tambah Lbroker. QoS1 = RTTpub-broker tambah RTTbroker-sub tambah 2Lbroker. QoS2 = 2xRTTpub tambah 2xRTTsub tambah 4Lbroker. Contoh: payload 50 byte total 70 byte RTT 30ms. Hitung buat tabel perbandingan.
+
+slide 11 (Arsitektur dan Spesifikasi ESP32)
+Tampilkan spesifikasi ESP32: CPU Xtensa LX6 dual-core 240 MHz, RAM 520 KB, Flash 4 MB, WiFi 802.11b/g/n 2.4GHz, Bluetooth 4.2 BLE, 34 GPIO, ADC 12-bit 18 channel, DAC 8-bit, UART 3, SPI 4, I2C 2, PWM 16 channel. Sertakan diagram pin ESP32 DevKit dan blok diagram SoC. Tegangan 2.2-3.6V.
+
+slide 12 (WiFi ESP32 dan Rumus Link Budget)
+Jelaskan mode WiFi ESP32: Station, AP, STA+AP. Rumus Free Space Path Loss: FSPL = 20log(d) tambah 20log(f) dikurang 147.55 dB. Untuk WiFi 2.4GHz: FSPL = 20log(d) tambah 100 dB. Link Budget: Prx = Ptx tambah Gtx tambah Grx dikurang FSPL. Tabel kualitas RSSI: Excellent lebih dari minus 50dBm.
+
+slide 13 (TCP/IP dan WebSocket)
+Jelaskan model TCP/IP 4 layer: Network Access, Internet, Transport, Application. Bandingkan TCP vs UDP untuk IoT. MQTT pakai TCP. Jelaskan WebSocket handshake HTTP Upgrade, format frame, full-duplex. Rumus Throughput TCP = Wwindow dibagi RTT. Bandingkan HTTP, WebSocket, SSE untuk real-time data.
+
+slide 14 (JSON dan ArduinoJson)
+Jelaskan format JSON untuk IoT: struktur object array tipe data. Contoh JSON sensor: device_id timestamp temperature humidity status. Kode ArduinoJson: StaticJsonDocument serializeJson deserializeJson. Rumus memori: size = 1.5 kali JSONstring. Tampilkan kode publish JSON ke MQTT topic.
+
+slide 15 (Keamanan IoT dan Enkripsi)
+Jelaskan OWASP IoT Top 10 ancaman. MQTT TLS port 8883: proses handshake sertifikat enkripsi. Rumus AES-128: C = AES(K,P) dan P = AES inverse(K,C). Kode ESP32: setCACert, setCertificate, setPrivateKey. Autentikasi username password. Jangan hardcode credentials, simpan di SPIFFS atau NVS.
+
+slide 16 (Cloud IoT dan Node-RED)
+Tampilkan perbandingan platform Cloud IoT: HiveMQ Cloud, Adafruit IO, ThingSpeak, AWS IoT, Google Cloud. Jelaskan Node-RED flow-based programming. Flow dasar: MQTT In lalu JSON Parser lalu Function lalu Dashboard. Instalasi Node-RED: npm install node-red. Buka di browser localhost:1880.
+
+slide 17 (FreeRTOS dan RMS Scheduling)
+Jelaskan FreeRTOS ESP32: task, semaphore, queue, mutex. Kode xTaskCreate parameter: function name stacksize priority handle. Rumus RMS schedulability: U = sigma Ci dibagi Ti kurang sama dengan n kali 2 pangkat 1/n minus 1, batas teoritis 0.693. Contoh analisis dua task: sensor dan MQTT.
+
+slide 18 (Sampling Nyquist dan Power Management)
+Jelaskan Nyquist: fs lebih besar sama dengan 2 kali fmax. Sensor suhu fmax 0.1Hz maka fs min 0.2Hz interval max 5 detik. Rumus battery life: t = Cbattery dibagi Iavg, Iavg = Iaktif dikali D tambah Isleep dikali 1-D. Tabel mode power ESP32: Active 200mA, Light Sleep 0.8mA, Deep Sleep 0.1mA.
+
+slide 19 (Tujuan Praktikum dan Alat Bahan)
+Tampilkan tujuan praktikum 9 poin dan daftar alat bahan: ESP32 DevKit, kabel USB, sensor DHT22, LED, resistor 220Ω dan 10kΩ, breadboard, kabel jumper, laptop, router WiFi. Software: Arduino IDE 2.x, Mosquitto, MQTT Explorer, Node.js, Node-RED, Postman. Perhatikan keselamatan kerja.
+
+slide 20 (Instalasi Arduino IDE dan Board ESP32)
+Langkah instalasi Arduino IDE 2.x: download arduino.cc, install sesuai OS. Tambahkan board ESP32 via Preferences URL boards manager espressif. Pilih ESP32 Dev Module di Tools Board. Install driver CH340 atau CP2102 jika port tidak muncul. Verifikasi board terdeteksi di port serial.
+
+slide 21 (Instalasi Library Arduino)
+Install library via Arduino Library Manager: AsyncTCP dan ESPAsyncWebServer untuk WebServer, PubSubClient untuk MQTT, ArduinoJson untuk JSON, DHT sensor library dan Adafruit Unified Sensor. Untuk ESPAsyncWebServer unduh ZIP dari GitHub lalu Sketch Add ZIP Library. Cek kompatibilitas versi.
+
+slide 22 (Instalasi Mosquitto MQTT Broker)
+Instalasi Mosquitto MQTT Broker: Windows download mosquitto.org dan install sebagai service. Linux: sudo apt install mosquitto mosquitto-clients. Edit mosquitto.conf: listener 1883, allow_anonymous true. Test dengan mosquitto_pub dan mosquitto_sub di dua terminal berbeda. Verifikasi broker running.
+
+slide 23 (Rangkaian Hardware ESP32)
+Tampilkan wiring diagram ESP32: DHT22 VCC ke 3V3, DATA ke GPIO4 dengan pull-up 10kΩ, GND ke GND. LED dengan resistor 220Ω dari GPIO2 ke GND. Catatan penting: ESP32 hanya toleran 3.3V, jangan hubungkan 5V langsung. Cek rangkaian dengan multimeter sebelum power on. Tampilkan foto breadboard.
+
+slide 24 (Konfigurasi WiFi ESP32)
+Tampilkan kode koneksi WiFi ESP32: include WiFi.h, WiFi.mode WIFI_STA, WiFi.begin ssid password, loop tunggu WL_CONNECTED, Serial.println IP. Mode STA vs AP vs STA+AP. Tips gunakan WiFiManager untuk konfigurasi tanpa hardcode password. Handle reconnect otomatis saat koneksi putus.
+
+slide 25 (WebServer Dasar ESP32)
+Tampilkan kode WebServer ESP32 dengan AsyncWebServer: setup route GET slash kirim HTML, GET /api/sensor kirim JSON data DHT22, POST /api/led toggle LED. Compile upload dan buka Serial Monitor cek IP. Akses browser http://IP_ESP32. Test endpoint dengan Postman atau curl. Sertakan kode 404 handler.
+
+slide 26 (HTML Dashboard di ESP32 SPIFFS)
+Jelaskan cara simpan HTML di ESP32: inline string dengan PROGMEM untuk hemat RAM, atau SPIFFS filesystem. Contoh halaman HTML Bootstrap responsif dengan card suhu kelembaban dan tombol LED. Cara update otomatis dengan JavaScript fetch setiap 3 detik. Upload SPIFFS menggunakan plugin Arduino IDE.
+
+slide 27 (REST API GET dan POST ESP32)
+Implementasi REST API ESP32: endpoint GET /api/sensor kembalikan JSON suhu kelembaban LED uptime, endpoint POST /api/led terima JSON body state true false. Gunakan request getParam untuk parameter URL. Tambahkan header Content-Type application/json. Test dengan curl dan Postman koleksi.
+
+slide 28 (MQTT Publisher Program)
+Tampilkan kode MQTT Publisher dengan PubSubClient: include PubSubClient.h, buat objek WiFiClient dan PubSubClient, setServer broker IP port 1883, fungsi connect dengan LWT, publish JSON ke topic lab/esp32/sensor setiap 5 detik. LED kedip konfirmasi publish. Monitor di MQTT Explorer.
+
+slide 29 (MQTT Subscriber Program)
+Tampilkan kode MQTT Subscriber: fungsi callback menerima topic payload length, subscribe ke topic lab/esp32/control, parse JSON payload toggle LED sesuai perintah. Loop memanggil client.loop menjaga koneksi. Test dengan mosquitto_pub kirim perintah on dan off dari terminal laptop.
+
+slide 30 (Integrasi WebServer dan MQTT)
+Tampilkan arsitektur integrasi ESP32: WebServer dan MQTT Client berjalan bersamaan menggunakan FreeRTOS dua task di Core 1. Task1 baca sensor dan publish MQTT. Task2 handle HTTP request browser. Gunakan mutex untuk data bersama. Flowchart integrasi lengkap dari sensor ke dashboard.
+
+slide 31 (Dashboard Real-Time Chart.js dan SSE)
+Buat dashboard real-time ESP32: gunakan Chart.js untuk grafik live data suhu dan kelembaban. Implementasi Server-Sent Events: endpoint /events, EventSource JavaScript update tanpa refresh. Tampilkan card suhu kelembaban LED RSSI. Kode broadcast events dari ESP32 ke semua browser client.
+
+slide 32 (Setup dan Instalasi Node-RED)
+Langkah setup Node-RED: install Node.js LTS, npm install g node-red, jalankan di terminal. Buka browser http://localhost:1880. Drag MQTT In node konfigurasi broker localhost 1883. Hubungkan ke JSON node lalu Debug node. Install dashboard: npm install node-red-dashboard. Deploy dan test.
+
+slide 33 (MQTT ke Node-RED Dashboard)
+Tampilkan flow Node-RED lengkap: MQTT In subscribe lab/esp32/sensor, JSON parse, Function ekstrak field, Gauge suhu dan kelembaban, Chart historis 30 menit. Switch node untuk routing topik berbeda. Akses dashboard di localhost:1880/ui. Tambahkan MQTT Out untuk kirim perintah ke ESP32.
+
+slide 34 (Testing dan Debugging Sistem IoT)
+Panduan testing sistem: Serial Monitor untuk debug output ESP32. Test WebServer dengan browser dan Postman. Test MQTT dengan mosquitto_pub dan mosquitto_sub. Wireshark untuk capture traffic. Checklist: cek IP broker, pastikan Mosquitto running, cek SSID password, monitor free heap ESP32.
+
+slide 35 (Multitask FreeRTOS ESP32)
+Implementasi dua FreeRTOS task ESP32: SensorTask prioritas 1 baca DHT22 periode 2 detik, PublishTask prioritas 2 publish MQTT dan SSE periode 5 detik. Keduanya di Core 1. Mutex protect shared data. xSemaphoreTake dan xSemaphoreGive. Monitor heap dengan ESP.getFreeHeap di Serial Monitor.
+
+slide 36 (JSON Data Handling Lengkap)
+Demonstrasi penuh JSON handling: baca DHT22, buat StaticJsonDocument 256 byte, tambah field device_id timestamp temperature humidity uptime rssi. Serialize ke char buffer, publish ke MQTT. Di subscriber deserialize dan ambil tiap field. Tampilkan kode lengkap dan output Serial Monitor.
+
+slide 37 (Deep Sleep dan Power Management ESP32)
+Jelaskan mode power ESP32: Active 160-260mA, Modem Sleep 20-30mA, Light Sleep 0.8mA, Deep Sleep 10-150uA, Hibernation 5uA. Kode deep sleep: esp_sleep_enable_timer_wakeup dan esp_deep_sleep_start. Rumus battery life contoh baterai 18650 2600mAh. Hitung estimasi daya tahan baterai.
+
+slide 38 (Troubleshooting dan FAQ Praktikum)
+FAQ troubleshooting: ESP32 tidak terdeteksi install driver CH340 atau CP2102. Upload gagal tekan tombol BOOT saat upload. WiFi tidak connect cek SSID password gunakan 2.4GHz. MQTT tidak connect cek IP broker pastikan Mosquitto running. Brownout detected ganti kabel USB gunakan port USB 3.0.
+
+slide 39 (Project 1-3: Smart Home, Weather, LED)
+Tiga pilihan project ESP32 IoT: Project 1 bintang satu Smart Home Monitor tampilkan suhu kelembaban di dashboard real-time WebSocket. Project 2 bintang dua IoT Weather Station multi-sensor BME280 upload ke ThingSpeak. Project 3 bintang satu Smart LED Strip kontroler warna animasi MQTT.
+
+slide 40 (Project 4-6: Multi-Node, Door Lock, Industrial)
+Project 4 bintang dua Multi-Node Network tiga ESP32 node publish ke broker gateway agregasi Node-RED. Project 5 bintang dua Smart Door Lock servo RFID autentikasi log akses. Project 6 bintang tiga Industrial Monitor sensor arus tegangan vibrasi FFT analisis prediktif maintenance.
+
+slide 41 (Project 7-9: Plant, Energy, GPS Tracker)
+Project 7 bintang satu Smart Plant Watering sensor kelembaban tanah auto pompa MQTT status. Project 8 bintang dua Energy Monitor PZEM004T ukur daya hitung biaya listrik. Project 9 bintang tiga GPS Tracker Neo6M posisi real-time peta Leaflet.js geofencing alert dengan Haversine distance.
+
+slide 42 (Project 10 dan Panduan Pengerjaan)
+Project 10 bintang tiga Multi-Protocol IoT Gateway ESP32 jembatani MQTT ke HTTP REST, agregasi data multi node kirim ke Adafruit IO, rate limiting 100 request per menit, Telegram Bot alert. Panduan pengerjaan: pilih project, rancang sistem, implementasi bertahap, dokumentasi README, demo video.
+
+slide 43 (Deskripsi Tugas Video YouTube)
+Deskripsi tugas: setiap mahasiswa buat 2 video YouTube akun pribadi. Video 1 screen recording jelaskan teori IoT HTTP MQTT ESP32 dan kode program yang dibuat. Video 2 rekaman proses praktikum dan demo hardware running. Upload ke YouTube dan kumpulkan link via LMS. Deadline 2 minggu.
+
+slide 44 (Persyaratan Teknis Video)
+Persyaratan teknis video: durasi Video 1 min 10 maks 25 menit, Video 2 min 10 maks 30 menit. Resolusi minimum 720p, suara jelas, pencahayaan baik. Video 1 wajib ada wajah Picture-in-Picture. Judul format NIM-Nama-Modul6-MQTT. Gunakan OBS Studio atau Loom untuk screen recording gratis.
+
+slide 45 (Rubrik Penilaian 100 Poin)
+Rubrik penilaian 100 poin: Konten Teori 30 poin kedalaman penjelasan konsep dan rumus. Kode Program 25 poin WebServer MQTT JSON FreeRTOS. Demo Hardware 25 poin sistem running dan presentasi. Kualitas Video 10 poin audio visual struktur. Kreativitas 10 poin inovasi project dan penyampaian.

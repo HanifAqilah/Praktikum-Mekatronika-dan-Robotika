@@ -1,0 +1,137 @@
+slide 1 (Judul Modul)
+Praktikum Mekatronika dan Robotika Modul 02: Setup ROS 2. Program Studi Sarjana Terapan Teknologi Rekayasa Otomasi. Dosen Pengampu: Rofiq Cahyo Prayogo, S.T., M.T. Semester Praktikum 2 SKS.
+
+slide 2 (Identitas Prodi dan Dosen)
+Program Studi Sarjana Terapan Teknologi Rekayasa Otomasi. Mata Kuliah Praktikum Mekatronika dan Robotika 2 SKS. Waktu Praktikum: 5 Jam 40 Menit. Dosen: Rofiq Cahyo Prayogo, S.T., M.T.
+
+slide 3 (Outline Materi Praktikum)
+Outline Materi: 1. Pendahuluan ROS 2. 2. Instalasi Ubuntu 22.04 Dual Boot. 3. Setup ROS 2 Humble. 4. Instalasi Library Pendukung. 5. Verifikasi Talker-Listener. 6. Dasar Kinematika Robot.
+
+slide 4 (Outline Tugas Video)
+Outline Tugas: Video individu 10-20 menit. Demonstrasi lengkap setup ROS 2. Upload YouTube Unlisted. Deadline: 2 minggu setelah praktikum. Rubrik penilaian berdasarkan kelengkapan dan kualitas.
+
+slide 5 (Pendahuluan Robotika dan ROS 2)
+Robotika adalah cabang teknik robot. ROS 2 adalah framework middleware untuk pengembangan perangkat lunak robotika. Menggunakan DDS untuk komunikasi real-time. Versi yang digunakan: Humble Hawksbill di Ubuntu 22.04.
+
+slide 6 (Sistem Operasi Ubuntu untuk Robotika)
+Ubuntu 22.04 LTS digunakan karena dukungan resmi ROS 2. Spesifikasi minimum: RAM 8GB, Storage 50GB. Ubuntu menyediakan kernel stabil untuk real-time applications. Kompatibel dengan ROS packages dan Gazebo simulation.
+
+slide 7 (Arsitektur ROS 2 dan DDS)
+ROS 2 menggunakan DDS middleware. Graph abstraction: Nodes, Topics, Services, Actions. Komunikasi terdesentralisasi tanpa master. Quality of Service (QoS) configurable. Real-time capable dan modular system.
+
+slide 8 (Konsep Dasar ROS 2 Nodes dan Topics)
+Node adalah entitas komputasi. Topic adalah saluran komunikasi asinkron. Perintah: ros2 node list, ros2 topic list, ros2 topic echo. Frequency (Hz) = 1 / period (s). Komunikasi publikasi-subscripsi antar nodes.
+
+slide 9 (Services dan Actions ROS 2)
+Services menggunakan pola request-response sinkron. Actions untuk tugas long-running dengan feedback. Perintah: ros2 service list, ros2 action list. Memungkinkan interaksi kompleks antar komponen robot secara terstruktur.
+
+slide 10 (Kinematika Robot Maju dan Mundur)
+Forward Kinematics: x = l1*cos(θ1) + l2*cos(θ1+θ2). Inverse Kinematics: θ2 = arccos((x²+y²-l1²-l2²)/(2*l1*l2)). Menghitung posisi end-effector dari joint angles dan sebaliknya untuk robot manipulator.
+
+slide 11 (Denavit-Hartenberg Parameters)
+Metode sistematis untuk kinematika robot. Empat parameter: θ (rotasi z), d (translasi z), a (translasi x), α (rotasi x). Transformasi matrix 4x4 menghubungkan frame tiap joint dalam robot arm secara berurutan.
+
+slide 12 (Transformasi Koordinat dan TF2)
+Rotasi menggunakan matrix R_x, R_y, R_z. Quaternion: q = w + xi + yj + zk. Menghindari gimbal lock. Transform matrix: kombinasi rotasi 3x3 dan translasi 3x1. TF2 library mengelola transformasi antar frame.
+
+slide 13 (Kontrol Robot PID Controller)
+Persamaan PID: u(t) = Kp*e(t) + Ki*∫e(t)dt + Kd*de(t)/dt. Kp proporsional, Ki integral, Kd derivatif. Tuning Ziegler-Nichols: Ku (ultimate gain) dan Tu (period oscillasi). Essential untuk kontrol motor robot.
+
+slide 14 (Computer Vision OpenCV dan YOLO)
+OpenCV untuk image processing: acquisition, preprocessing, feature extraction. YOLO real-time object detection. Output: [x_center, y_center, width, height, confidence]. IoU = Area_Intersection / Area_Union untuk Non-Maximum Suppression.
+
+slide 15 (SLAM dan Navigasi)
+SLAM membangun map sambil melacak posisi. Extended Kalman Filter: Prediction μ̄ = g(u,μ), Correction dengan Kalman gain K. Odometry differential drive: Δx = (Δs_left+Δs_right)/2*cos(θ). A* path planning: f(n)=g(n)+h(n).
+
+slide 16 (Gazebo Simulation dan URDF)
+Gazebo physics engine: F=m*a, τ=I*α. URDF format XML untuk deskripsi robot. Xacro macro language untuk fleksibilitas. Link, joint, visual, collision, inertial. Plugin untuk sensor dan aktuator di simulasi Gazebo.
+
+slide 17 (MoveIt Motion Planning)
+Pipeline: Robot State → Goal State → Planning Scene → Planner → Trajectory. RRT algoritma sampling-based. RRT-Connect: start node, random sample, extend, check collision. OMPL library menyediakan berbagai algoritma planning untuk robot arm.
+
+slide 18 (Machine Learning dalam Robotika)
+Reinforcement Learning dengan Q-Learning: Q(s,a) = Q(s,a) + α[r + γ*max_a'Q(s',a') - Q(s,a)]. Deep Q-Network menggunakan neural network. Robot belajar melalui interaction dengan environment untuk tugas kompleks.
+
+slide 19 (Rekomendasi Buku Terbaik Robotika)
+Buku: 1. ROS Robotics Projects - Lentin Joseph. 2. Programming Robots with ROS - Quigley et al. 3. Robot Modeling and Control - Spong et al. 4. Probabilistic Robotics - Thrun et al. 5. Introduction to Robotics - Craig. Referensi lengkap untuk belajar.
+
+slide 20 (Rekomendasi Paper Terbaik ROS)
+Paper: 1. ROS: An Open-source Robot Operating System (Quigley 2009). 2. ORB-SLAM (Mur-Artal 2015). 3. RRT-Connect (Kuffner 2000). 4. You Only Look Once YOLO (Redmon 2016). 5. GMapping SLAM (Grisetti 2006). Literatur akademis terbaik.
+
+slide 21 (Persiapan dan Backup Data)
+Langkah 1: Backup data penting ke HDD eksternal atau cloud. Folder Documents, Desktop, Downloads. Selanjutnya buka Disk Management Windows, lakukan Shrink Volume 50GB. Pastikan unallocated space tersedia untuk Ubuntu.
+
+slide 22 (Boot Ventoy dan Pengaturan BIOS)
+Langkah 2: Masuk BIOS/UEFI (F2/F12/Del). Disable Secure Boot wajib. Set boot priority ke USB/Ventoy. Boot installer Ubuntu 22.04 dari menu Ventoy. Pastikan laptop terhubung charger selama proses instalasi berlangsung.
+
+slide 23 (Instalasi Ubuntu 22.04 Dual Boot)
+Langkah 3: Pilih Install Ubuntu, Minimal Installation. Tipe instalasi: Something else (manual). Buat partisi swap 8GB dan root / dengan sisa ruang (ext4). Tunggu proses instalasi 30-45 menit. Restart dan boot Ubuntu.
+
+slide 24 (Instalasi VS Code dan GitHub Education)
+Langkah 4: Install VS Code via terminal dengan repository Microsoft. Buka VS Code, Sign in dengan akun GitHub Education. Install extension GitHub Copilot. Verifikasi Copilot aktif. VS Code menjadi editor utama untuk coding ROS.
+
+slide 25 (Setup Repository ROS 2 Humble)
+Langkah 5: Tambahkan universe repository. Download ROS key dan tambahkan repository ROS 2. Update apt packages. Install ros-humble-desktop, python3-colcon-common-extensions, python3-rosdep. Initialize rosdep dan update.
+
+slide 26 (Instalasi ROS 2 Humble Desktop)
+Lanjutan: echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc. Verifikasi dengan ros2 --version. Cek environment: printenv | grep ROS. Pastikan ROS_DISTRO=humble. ROS 2 siap digunakan untuk praktikum lanjutan.
+
+slide 27 (Instalasi Machine Learning Libraries)
+Langkah 6: Install python3-numpy, scipy, pandas, sklearn, matplotlib, seaborn. Install pip3 dan jupyter notebook. Library ML untuk pengolahan data sensor robot dan implementasi algoritma pembelajaran mesin dalam robotika nantinya.
+
+slide 28 (Instalasi OpenCV dan YOLO)
+Lanjut: sudo apt install python3-opencv, ros-humble-cv-bridge, ros-humble-image-transport. Pip install ultralytics untuk YOLO. Computer vision siap digunakan untuk deteksi objek real-time dengan kamera robot.
+
+slide 29 (Instalasi Filter Libraries)
+Lanjut: sudo apt install ros-humble-filters, ros-humble-laser-filters, ros-humble-robot-localization. Filter untuk pemrosesan data sensor LIDAR dan IMU. Menghilangkan noise dan meningkatkan akurasi data sensor robot.
+
+slide 30 (Instalasi Kinematika Libraries)
+Lanjut: sudo apt install ros-humble-orocos-kdl, ros-humble-kdl-parser, ros-humble-tf2-kdl. KDL untuk perhitungan kinematika dan dinamika robot. TF2 untuk transformasi koordinat antar frame robot.
+
+slide 31 (Instalasi Controller Libraries)
+Lanjut: sudo apt install ros-humble-ros2-control, ros-humble-ros2-controllers, ros-humble-control-toolbox. Framework untuk kontroler robot. Mendukung berbagai jenis kontroler: position, velocity, effort controllers untuk motor.
+
+slide 32 (Instalasi MoveIt Motion Planning)
+Lanjut: sudo apt install ros-humble-moveit. MoveIt untuk motion planning robot arm. Menyediakan algoritma RRT, PRM, OMPL. Visualisasi di RViz. Merencanakan gerakan end-effector ke target pose dengan obstacle avoidance.
+
+slide 33 (Instalasi Robot Arm Libraries)
+Lanjut: sudo apt install ros-humble-urdf, ros-humble-xacro, ros-humble-joint-state-publisher, ros-humble-rviz2. Tools untuk deskripsi robot arm. RViz untuk visualisasi robot. Joint state publisher untuk mengontrol sudut tiap joint.
+
+slide 34 (Instalasi Gazebo Simulation)
+Lanjut: sudo apt install ros-humble-gazebo-ros-pkgs, ros-humble-gazebo-plugins, ros-humble-gazebo-ros2-control. Gazebo simulator untuk simulasi fisik robot. Plugin untuk sensor, aktuator, dan kontroler robot simulasi.
+
+slide 35 (Instalasi SLAM Navigasi)
+Lanjut: sudo apt install ros-humble-navigation2, ros-humble-nav2-bringup, ros-humble-slam-toolbox. Nav2 stack untuk navigasi otonom. SLAM Toolbox untuk mapping dan localization. Robot dapat bergerak autonomously di lingkungan.
+
+slide 36 (Verifikasi ROS Talker Terminal 1)
+Langkah 7: Buka Terminal 1. Source /opt/ros/humble/setup.bash. Jalankan: ros2 run demo_nodes_cpp talker. Talker akan mempublish pesan "Hello World" berkala. Ini menunjukkan node publisher berjalan dengan sukses.
+
+slide 37 (Verifikasi ROS Listener Terminal 2)
+Buka Terminal 2. Source /opt/ros/humble/setup.bash. Jalankan: ros2 run demo_nodes_py listener. Listener menerima pesan dari talker. Verifikasi komunikasi ROS 2 Topic berhasil. Cek dengan ros2 topic list dan ros2 node list.
+
+slide 38 (Membuat Workspace ROS 2)
+Langkah tambahan: mkdir -p ~/ros2_ws/src. cd ~/ros2_ws. colcon build. echo "source ~/ros2_ws/install/setup.bash" >> ~/.bashrc. Workspace siap untuk development package ROS 2. Struktur folder standar: src, build, install, log.
+
+slide 39 (Membuat Package dan Node Sederhana)
+ros2 pkg create --build-type ament_python my_package --dependencies rclpy. Buat file Python node. Implementasi class Node dengan timer callback. Build dengan colcon build. Jalankan node: ros2 run my_package my_node. Node custom berhasil.
+
+slide 40 (Membuat URDF Robot Differential Drive)
+Project: Buat deskripsi robot dengan URDF. Link: base_link, left_wheel, right_wheel. Joint: continuous type untuk roda. Tambahkan inertial, visual, collision. Launch di Gazebo dengan plugin differential drive. Robot simulasi bergerak.
+
+slide 41 (Project Node Pub/Sub Custom Message)
+Project: Buat custom message (.msg). Implementasi publisher sensor (temperature, humidity, pressure). Subscriber menerima dan memproses data. Gunakan rclpy Node, create_publisher, create_subscription. ROS 2 communication pattern lengkap.
+
+slide 42 (Project Kontrol PID Motor DC Simulasi)
+Project: Implementasi PID controller di Python. Kp, Ki, Kd tuning. Baca encoder feedback dari topic /wheel_odom. Hitung output PID. Publish ke /cmd_vel. Robot mencapai target kecepatan stabil. Analisis respon sistem kontrol.
+
+slide 43 (Project Navigasi 2D dengan Nav2)
+Project: Gunakan Nav2 stack. Buat map dengan SLAM Toolbox. Launch Nav2 bringup. Kirim goal pose dengan action. Robot navigasi otonom ke target. AMCL localization. Path planning dengan A* atau Dijkstra. Visualisasi di RViz.
+
+slide 44 (Tugas Video Pengantar dan Backup)
+Tugas Video Individual: Tampilkan nama, NIM di awal. Demonstrasi backup data ke media eksternal/cloud. Jelaskan pentingnya backup sebelum resize partisi. Tunjukkan folder yang dibackup. Narasi jelas Bahasa Indonesia.
+
+slide 45 (Tugas Video Instalasi dan Verifikasi)
+Lanjut tugas: Tunjukkan shrink disk 50GB, BIOS disable Secure Boot, instalasi Ubuntu minimal+swap 8GB, VS Code+GitHub Copilot. Instalasi ROS Humble dan library. Verifikasi talker-listener. Upload YouTube Unlisted.
+
+slide 46 (Tugas Video Penutup dan Rubrik)
+Tutup video: Ringkas hasil instalasi, sebutkan kendala dan solusi. Durasi 10-20 menit, resolusi 720p. Rubrik: Kelengkapan proses (25), Instalasi Ubuntu (15), ROS+Library (25), VS Code (10), Verifikasi (15), Kualitas (10).
