@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: dobot_description
+    relative_path: model/magician_standalone.urdf
+  srdf:
+    relative_path: config/magician.srdf
+  package_settings:
+    author_name: Syahid
+    author_email: ""
+    generated_timestamp: 1778573888
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
